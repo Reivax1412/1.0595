@@ -1,0 +1,1792 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>BrassGrid｜銅管格線 v31.2</title>
+<style>
+:root{
+  --charcoal:#0f1419;
+  --graphite:#1b222b;
+  --brass:#b8905a;
+  --bone:#f5f1e8;
+  --paper:#fffdf8;
+  --line:#d8d0c2;
+  --muted:#6f756f;
+  --soft:#eee8dc;
+  --ok:#0f766e;
+  --warn:#9a3412;
+  --bad:#991b1b;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bone);color:var(--charcoal);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",Arial,sans-serif;
+  line-height:1.5;
+}
+button,input,select{
+  font-family:inherit;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--charcoal);
+  padding:10px 11px;font-size:.86rem;font-weight:850;
+}
+button{cursor:pointer}
+button.primary,.navSelected{background:var(--graphite)!important;color:#fff!important;border-color:var(--graphite)!important}
+button.gold{background:var(--brass)!important;color:#fff!important;border-color:var(--brass)!important}
+button.full{width:100%;border-radius:15px}
+input,select{width:100%;text-align:center}
+input[type=range]{padding:0;accent-color:var(--brass)}
+
+.appShell{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.sidebar{
+  position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--charcoal);color:white;
+  padding:18px 12px;z-index:40;border-right:1px solid rgba(176,141,87,.28);
+}
+.logoRow{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.logo{width:42px;height:42px;flex:0 0 42px}
+.logo{filter:drop-shadow(0 2px 8px rgba(0,0,0,.16))}
+.brand b{color:#fff}
+.brand span{color:#cfc7b8}
+
+.brand b{display:block;font-size:1.03rem;letter-spacing:.04em}
+.brand span{display:block;font-size:.74rem;color:#d8d0c2}
+.closeSide{display:none;margin-left:auto;border-radius:12px;width:auto;height:36px;padding:0 10px;align-items:center;justify-content:center;background:transparent;color:white;border-color:rgba(255,255,255,.2)}
+.sidebar details{background:rgba(255,255,255,.055);border:0;border-radius:14px;padding:8px;margin:8px 0}
+.sidebar summary{font-weight:950;cursor:pointer;list-style:none;padding:4px 2px 8px;color:#f7f1e8}
+.sidebar summary::-webkit-details-marker{display:none}
+.navList{display:flex;flex-direction:column;gap:6px}
+.navItem{text-align:left;border-radius:12px;background:rgba(255,255,255,.06);color:#f7f1e8;border-color:rgba(255,255,255,.1)}
+.navItem.navSelected{background:var(--brass)!important;border-color:var(--brass)!important;color:white!important}
+
+.topbar{
+  position:sticky;top:0;z-index:30;background:rgba(245,241,232,.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:10px 16px;
+}
+.topInner{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.mobileMenu{
+  display:none;border-radius:12px;width:42px;height:38px;padding:0;align-items:center;justify-content:center;
+}
+.iconLines{display:inline-block;width:18px;height:12px;position:relative}
+.iconLines::before,.iconLines::after,.iconLines span{
+  content:"";position:absolute;left:0;width:18px;height:2px;background:currentColor;border-radius:99px;
+}
+.iconLines::before{top:0}.iconLines span{top:5px}.iconLines::after{top:10px}
+.iconGear{
+  width:40px;height:40px;border-radius:13px;padding:0;display:flex;align-items:center;justify-content:center;
+}
+.iconDots{display:inline-grid;grid-template-columns:repeat(2,4px);gap:4px}
+.iconDots i{display:block;width:4px;height:4px;background:currentColor;border-radius:2px}
+
+.pageTitle{min-width:0;flex:1}
+.pageTitle b{display:block;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pageTitle span{display:block;font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.sightMode .topbar{display:none}
+.content{max-width:980px;margin:0 auto;padding:14px 16px 80px}
+body.sightMode .content{padding-top:8px}
+.page{display:none}.page.visible{display:block}
+.isHidden{display:none!important}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:12px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.label{margin:0 0 6px;color:var(--muted);font-size:.76rem;font-weight:950;letter-spacing:.06em}
+h2{margin:.05rem 0 .4rem;font-size:1.28rem;font-weight:950}
+.small{font-size:.88rem;color:var(--muted)}
+.ok{color:var(--ok);font-weight:900}.warn{color:var(--warn);font-weight:900}.bad{color:var(--bad);font-weight:900}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.actions button{border-radius:15px;padding:13px 10px}
+.field{background:#fbf8f1;border:1px solid var(--line);border-radius:16px;padding:10px}
+.field label{display:block;color:var(--muted);font-size:.74rem;font-weight:950;margin-bottom:5px}
+.box{background:#fbf8f1;border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+details.fold{background:#fbf8f1;border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+details.fold summary{font-weight:950;cursor:pointer;list-style:none}
+details.fold summary::-webkit-details-marker{display:none}
+details.fold summary::after{content:"＋";float:right;color:var(--muted)}
+details.fold[open] summary::after{content:"－"}
+
+.keyGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;overflow-x:auto;min-height:76px}
+.fifthsWheel{position:relative;width:min(88vw,430px);height:min(88vw,430px);max-width:430px;max-height:430px;margin:6px auto 14px;border:1px solid var(--line);border-radius:50%;background:
+  radial-gradient(circle at center, rgba(176,141,87,.20) 0 2px, transparent 3px),
+  radial-gradient(circle at center, transparent 0 35%, rgba(176,141,87,.22) 35.5%, transparent 36.5%),
+  radial-gradient(circle at center, transparent 0 48%, rgba(176,141,87,.28) 48.5%, transparent 49.5%),
+  linear-gradient(145deg,#fffdf8,#eee8dc)}
+.wheelCenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36%;height:36%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--charcoal);color:#fff;font-weight:950;border:3px solid var(--brass);line-height:1.12;padding:10px;overflow:hidden}
+.wheelCenter b{font-size:clamp(1.05rem,4vw,1.45rem);line-height:1}
+.wheelCenter small{display:block;max-width:100%;font-size:clamp(.58rem,2vw,.78rem);color:#d8d0c2;font-weight:850;line-height:1.18;overflow-wrap:anywhere}
+.wheelBtn{position:absolute;width:62px;height:46px;margin-left:-31px;margin-top:-23px;border-radius:14px;padding:3px 4px;font-weight:950;background:var(--paper);box-shadow:0 1px 0 rgba(0,0,0,.04);line-height:1.05}
+.wheelBtn small{display:block;font-size:.6rem;color:var(--muted);font-weight:850;line-height:1.05;white-space:normal}
+.wheelBtn.keySelected{background:var(--graphite)!important;color:#fff!important;border-color:var(--graphite)!important}
+.wheelBtn.keySelected small{color:#f7f1e8}
+.tokenWrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.token{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:var(--paper);font-weight:900;white-space:normal;overflow-wrap:anywhere}
+.num.tokenWrap,.notes.tokenWrap{white-space:normal;overflow:visible;background:var(--soft)}
+.infoGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.infoTile{background:#fbf8f1;border:1px solid var(--line);border-radius:14px;padding:10px;min-width:0}
+.infoTile b{display:block;font-size:.76rem;color:var(--muted);margin-bottom:4px}
+.infoTile span{font-weight:950;overflow-wrap:anywhere}
+.practiceGrid{display:grid;grid-template-columns:1fr;gap:10px}
+.practiceQuick{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.practiceQuick button{border-radius:15px;padding:12px 8px}
+.keyMetaGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:820px){
+  .keyGrid{grid-template-columns:repeat(4,1fr)}
+  .fifthsWheel{width:min(92vw,350px);height:min(92vw,350px)}
+  .wheelBtn{width:54px;height:42px;margin-left:-27px;margin-top:-21px;font-size:.76rem}.wheelCenter{width:39%;height:39%;padding:8px}.infoGrid{grid-template-columns:1fr}
+  .practiceQuick,.keyMetaGrid{grid-template-columns:1fr}
+}
+.keyBtn{min-width:68px;border-radius:15px;padding:10px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.keyBtn b{font-size:1.02rem}.keyBtn span{font-size:.7rem;color:var(--muted);font-weight:850}
+.keyBtn.keySelected{background:var(--graphite)!important;color:white!important;border-color:var(--graphite)!important}
+.keyBtn.keySelected span{color:#f7f1e8}.keyBtn.centerKey{border:2px solid var(--brass)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin:.4rem 0}
+.badge{display:inline-flex;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:.78rem;font-weight:850;color:#3a3732}
+.num{font-size:1.05rem;font-weight:950;letter-spacing:.03em;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:9px 10px;overflow:auto;white-space:nowrap}
+.notes{font-size:1.02rem;font-weight:900;margin-top:5px;overflow:auto;white-space:nowrap}
+.degreeMap{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.degree{background:#fbf8f1;border:1px solid var(--line);border-radius:14px;padding:9px 4px;text-align:center}
+.degree b{display:block;color:var(--muted);font-size:.76rem}.degree span{font-weight:950}
+
+.sightShell{display:grid;gap:8px}
+.sightHead{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
+.sightMenuBtn{display:none}
+body.sightMode .sightMenuBtn{display:flex}
+.sightMeta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-weight:950}
+.pill{background:var(--graphite);color:white;border-radius:999px;padding:8px 10px;font-size:.84rem}
+.pill.gold{background:var(--brass)}
+.live{min-height:40px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--paper);font-weight:950;text-align:center}
+.live.good{background:#e9f7f4;color:var(--ok);border-color:#b8ddd3}
+.live.warn{background:#fff4e8;color:var(--warn);border-color:#edc59d}
+.live.bad{background:#fff0ec;color:var(--bad);border-color:#e7b5aa}
+.scoreCard{
+  background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:8px;
+  height:clamp(320px, calc(100svh - 250px), var(--score-height-px,560px));
+  min-height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.scoreSvg{display:block;width:100%;height:100%;max-width:100%;max-height:100%;overflow:visible}
+.scoreGuide{font-size:12px;fill:#6f756f;font-weight:850}
+.vexScore{display:block;width:100%;height:100%;overflow:hidden}
+.vexScore svg{width:100%;height:100%;display:block}
+.scoreCard{position:relative}
+.scoreFeedbackLayer{position:absolute;inset:8px;pointer-events:none;z-index:8}
+.fbMark{position:absolute;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:17px;border:2px solid currentColor;background:rgba(255,253,248,.90);box-shadow:0 2px 8px rgba(0,0,0,.14);animation:fbPop .45s ease-out}
+.fbGood{color:#1f7a4d}.fbEarly{color:#a66316}.fbLate{color:#8f2f2f}
+@keyframes fbPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
+.hiddenField{display:none!important}
+.scoreCard svg{max-width:100%;max-height:100%}
+@media(max-width:820px){
+  .scoreCard{height:clamp(320px, calc(100svh - 230px), var(--score-height-px,520px));}
+  body.sightMode .content{padding:8px}
+}
+@media(orientation:landscape) and (max-height:620px){
+  .scoreCard{height:clamp(260px, calc(100svh - 150px), var(--score-height-px,460px));}
+}
+
+
+.scoreCard{height:min(62vh,var(--score-height-px,540px))}
+.freqPanel{background:#fbf8f1;border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+.logList{display:grid;gap:8px}
+.logItem{background:#fbf8f1;border:1px solid var(--line);border-radius:14px;padding:10px}
+.logItem b{display:block;margin-bottom:3px}
+.settingHint{font-size:.78rem;color:var(--muted);margin:.4rem 0 0}
+.accidental{font-size:22px;font-weight:900;fill:#171b20;text-anchor:middle;dominant-baseline:middle}
+
+
+
+
+.compactData .token{padding:4px 7px;min-height:24px;font-size:.82rem}
+
+.tapPad{
+  width:100%;height:104px;border:0;border-radius:20px;background:var(--graphite);color:white;
+  font-size:1.32rem;font-weight:950;letter-spacing:.08em;box-shadow:0 10px 28px rgba(32,40,50,.14);
+}
+.tapPad:active{transform:scale(.99);background:#0f1419}
+.scoreButtons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.scoreButtons button{border-radius:14px}
+.beatBar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.beat{height:12px;background:#e6dfd1;border-radius:999px}.beat.on{background:var(--brass)}
+.resultGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.metric{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center}
+.metric b{display:block;font-size:1.06rem}.metric span{font-size:.73rem;color:var(--muted);font-weight:900}
+.sightPanel{
+  display:none;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px;margin:8px 0;
+}
+.sightPanel.open{display:block}
+.customBpmField{display:none;margin-top:8px}.customBpmField.show{display:block}
+.toggleLine{display:flex;align-items:center;gap:8px;justify-content:space-between;background:#fbf8f1;border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin:8px 0}
+.toggleLine label{font-size:.84rem;font-weight:900;color:var(--muted)}
+.toggleLine input{width:auto}
+
+.metroDisplay{text-align:center;font-size:2.5rem;font-weight:950;line-height:1;margin:8px 0 4px}
+.subRow{display:grid;grid-template-columns:90px 64px 1fr 46px;gap:8px;align-items:center;background:#fbf8f1;border:1px solid var(--line);border-radius:16px;padding:10px;margin-top:8px}
+.noteName{font-weight:950}.noteName small{display:block;font-size:.7rem;color:var(--muted)}
+.toggleBtn.on{background:var(--graphite)!important;color:white!important}
+.sliderLine{display:grid;grid-template-columns:96px 1fr 58px;gap:8px;align-items:center;margin:10px 0}
+.sliderLine label{font-size:.82rem;color:var(--muted);font-weight:900}.sliderLine b{text-align:right;font-size:.82rem}
+.linearControl{display:grid;grid-template-columns:108px 1fr 82px;gap:8px;align-items:center;margin:10px 0}
+.linearControl label{font-size:.82rem;color:var(--muted);font-weight:900}
+.linearControl input[type=number]{border-radius:12px;padding:8px 6px;font-size:.82rem}
+.subRow{grid-template-columns:90px 58px 1fr 74px}
+.subNum{border-radius:12px!important;padding:7px 5px!important;font-size:.78rem!important;min-width:0}
+.paramNote{font-size:.76rem;color:var(--muted);margin:.35rem 0 0}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.32);z-index:35}
+
+@media(max-width:820px){
+  .appShell{display:block}
+  .sidebar{position:fixed;left:0;top:0;width:min(82vw,300px);transform:translateX(-105%);transition:.2s ease;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+  .sidebar.open{transform:translateX(0)}
+  .overlay.show{display:block}
+  .mobileMenu{display:flex}.closeSide{display:flex}
+  .topbar{padding:10px}
+  .content{padding:10px 8px 76px}
+  body.sightMode .content{padding-top:6px}
+  .grid2,.grid3,.resultGrid{grid-template-columns:1fr}
+  .actions,.scoreButtons{grid-template-columns:1fr}
+  .degreeMap{grid-template-columns:repeat(3,1fr)}
+  .scoreCard{height:60vh;min-height:360px;padding:4px}
+  .tapPad{height:100px}
+  .sightHead{grid-template-columns:auto 1fr auto}
+  .sightMeta{font-size:.78rem}
+  .pill{padding:7px 8px}
+  .live{font-size:.82rem;padding:7px 9px}
+  .subRow{grid-template-columns:82px 58px 1fr 42px}
+  .sliderLine{grid-template-columns:82px 1fr 54px}.linearControl{grid-template-columns:92px 1fr 70px}.subRow{grid-template-columns:80px 52px 1fr 64px}
+}
+
+
+.plainLog{white-space:pre-wrap;line-height:1.65;font-size:.88rem;color:var(--charcoal);background:#fbf8f1;border:1px solid var(--line);border-radius:14px;padding:12px;overflow-wrap:anywhere}
+
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay"></div>
+<div class="appShell">
+  <aside class="sidebar" id="sidebar">
+    <div class="logoRow">
+      <svg class="logo" viewBox="0 0 100 100" aria-label="BrassGrid logo">
+        <rect x="10" y="10" width="80" height="80" rx="20" fill="#0f1419"/>
+        <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" font-size="28" font-weight="950" fill="#f5f1e8">¹²√2</text>
+        <path d="M23 68H77" stroke="#b8905a" stroke-width="3.4" stroke-linecap="round"/>
+        <text x="50" y="82" text-anchor="middle" font-size="9" font-weight="900" fill="#b8905a">12-TET</text>
+      </svg>
+      <div class="brand"><b>BrassGrid</b><span>¹²√2 MIDI 格線</span></div>
+      <button class="closeSide" id="closeSidebar">關閉</button>
+    </div>
+    <details open><summary>練習</summary><div class="navList">
+      <button class="navItem navSelected" data-page="home">五度圈音階</button>
+      <button class="navItem" data-page="sight">讀譜測驗</button>
+      <button class="navItem" data-page="metro">自訂節拍器</button>
+    </div></details>
+    <details open><summary>聲音</summary><div class="navList">
+      <button class="navItem" data-page="sound">MIDI 音色</button>
+    </div></details>
+    <details open><summary>偏好</summary><div class="navList">
+      <button class="navItem" data-page="settings">顯示與操作</button>
+    </div></details>
+    <details><summary>說明</summary><div class="navList">
+      <button class="navItem" data-page="guide">快速上手</button>
+      <button class="navItem" data-page="changelog">更新日誌</button>
+    </div></details>
+  </aside>
+
+  <section class="main">
+    <header class="topbar"><div class="topInner">
+      <button class="mobileMenu" id="openSidebar" aria-label="開啟選單"><span class="iconLines"><span></span></span></button>
+      <div class="pageTitle"><b id="topTitle">五度圈音階</b><span id="topSub">¹²√2 頻率格線</span></div>
+      <button class="soft" id="centerNextBtn">下一調</button>
+    </div></header>
+
+    <main class="content">
+      <section id="home" class="page visible">
+        <div class="card">
+          <p class="label">五度調性｜Circle of Fifths</p>
+          <h2 id="homeTitle">C 大調</h2>
+          <div class="infoGrid" id="homeBadges"></div>
+          <div class="practiceQuick">
+            <button onclick="playCurrent('up')">音階上行</button>
+            <button onclick="playCurrent('down')">音階下行</button>
+            <button onclick="playCurrent('chord')" class="primary">和弦線</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="label">五度圈選調｜順時針升號、逆時針降號</p>
+          <div class="fifthsWheel" id="fifthsWheel" aria-label="五度圈選調"></div>
+          <details class="fold">
+            <summary>12 大調列表</summary>
+            <div class="keyGrid" id="keyGrid" aria-label="全調性列表"></div>
+          </details>
+        </div>
+
+        <div class="card">
+          <p class="label">音階圖｜Scale Map</p>
+          <div class="practiceGrid">
+            <div class="box">
+              <p class="label">上行</p>
+              <div class="num" id="upNum"></div>
+              <div class="notes" id="upNotes"></div>
+            </div>
+            <details class="fold">
+              <summary>下行</summary>
+              <div class="box">
+                <div class="num" id="downNum"></div>
+                <div class="notes" id="downNotes"></div>
+              </div>
+            </details>
+            <details class="fold" open>
+              <summary>級數對照</summary>
+              <div class="degreeMap" id="degreeMap"></div>
+            </details>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="label">和弦線｜Chord Line</p>
+          <div class="box">
+            <p class="label">1–3–5–1′–7–5–4–2–1</p>
+            <div class="num" id="chordNum"></div>
+            <div class="notes" id="chordNotes"></div>
+          </div>
+          <details class="fold" open>
+            <summary>記憶</summary>
+            <p class="small"><b>先找家，再回家。</b></p>
+            <p class="small">1–3–5–1′：先吹「家裡最穩的三個音」。<br>7–5–4–2–1：再像走下坡一樣回到 1。</p>
+            <p class="small"><b>口訣：</b>家、三、五、屋頂；七、五、四、二、回家。</p>
+          </details>
+        </div>
+
+        <div class="card">
+          <p class="label">練習流程</p>
+          <div class="box">
+            <b>選調 → 看音階 → 看和弦線 → 播放 → 吹奏。</b>
+            <p class="small">往右是升號增加，往左是降號增加。調性、音階、和弦放在同一頁，減少跳頁，讓練習流程像吹長音一樣直，不要繞路。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="sight" class="page">
+        <div class="sightShell">
+          <div class="sightHead">
+            <button class="iconGear sightMenuBtn" id="openSidebarFromSight" aria-label="開啟選單"><span class="iconLines"><span></span></span></button>
+            <div class="sightMeta">
+              <span class="pill" id="sightInfo">2 小節｜4/4｜♩=--</span>
+              <span class="pill gold">預備 1 小節</span>
+            </div>
+            <button class="iconGear" id="toggleSightPanel" aria-label="譜例設定"><span class="iconDots"><i></i><i></i><i></i><i></i></span></button>
+          </div>
+
+          <div class="live" id="liveFeedback">等待作答</div>
+
+          <section class="sightPanel" id="sightPanel">
+            <div class="box">
+              <p class="label">譜例結構</p>
+              <p class="small">譜例採兩行兩系統：上方第 1 小節、下方第 2 小節。每小節 4 拍等距，調性可固定或隨機；調號、音符、提示與聲音會同步。</p>
+            </div>
+            <div class="grid3">
+              <div class="field"><label>難度</label><select id="sightLevel"><option value="1">入門</option><option value="2" selected>基礎</option><option value="3">中級</option><option value="4">進階</option></select></div>
+              <div class="field"><label>提示</label><select id="hintMode"><option value="none" selected>隱藏</option><option value="degree">級數</option><option value="note">音名</option></select></div>
+              <div class="field"><label>調性模式</label><select id="sightKeyMode"><option value="current" selected>目前五度圈調性</option><option value="fixed">指定調性</option><option value="random">隨機調性</option></select></div>
+            </div>
+            <div class="grid3" style="margin-top:8px">
+              <div class="field"><label>速度</label><select id="tempoRange"><option value="normal" selected>正常 66–132</option><option value="slow">慢速 48–80</option><option value="fast">快速 120–176</option><option value="custom">自訂 BPM</option></select></div>
+              <div class="field hiddenField" id="sightFixedKeyField"><label>指定調性</label><select id="sightFixedKey"></select></div>
+              <div class="field"><label>題目調性</label><div id="sightKeyReadout" class="badge">C 大調</div></div>
+              <div class="field"><label>同步內容</label><div class="small">調號、升降記號、音符、提示與聲音</div></div>
+            </div>
+            <div class="field customBpmField" id="customBpmField">
+              <label>自訂 BPM（30–300）</label>
+              <div class="linearControl"><label>速度</label><input id="customSightBpmSlider" type="range" min="30" max="300" step="1" value="84"><input id="customSightBpm" type="number" min="30" max="300" step="1" value="84"></div>
+            </div>
+            <div class="grid3" style="margin-top:8px">
+              <div class="field"><label>音域</label><select id="rangeMode"><option value="low">低音域</option><option value="mid" selected>中音域</option><option value="mixed">混合</option></select></div>
+              <div class="field"><label>題長</label><select id="measureCount"><option value="2" selected>2 小節</option></select></div>
+              <div class="field"><label>節拍聲</label><select id="sightClickMode"><option value="all" selected>全程</option><option value="countin">只預備</option><option value="none">關閉</option></select></div>
+            </div>
+            <div class="box" style="margin-top:8px">
+              <div class="linearControl"><label>預備拍</label><input id="countInBeats" type="range" min="0" max="8" step="1" value="4"><input id="countInBeatsNum" type="number" min="0" max="8" step="1" value="4"></div>
+              <p class="settingHint">預備拍會影響開始測驗前的倒數 click。建議先用 4 拍，熟悉後改成 2 拍或 0 拍。</p>
+            </div>
+            <div class="toggleLine"><label>休止符</label><input id="allowRest" type="checkbox" checked></div>
+            <div class="toggleLine"><label>三連音</label><input id="allowTriplet" type="checkbox" checked></div>
+            <div class="toggleLine"><label>即時回饋</label><input id="allowLiveFeedback" type="checkbox" checked></div>
+            <details class="fold">
+              <summary>結果</summary>
+              <div class="resultGrid">
+                <div class="metric"><b id="avgErr">--</b><span>平均誤差</span></div>
+                <div class="metric"><b id="maxErr">--</b><span>最大誤差</span></div>
+                <div class="metric"><b id="stability">--</b><span>穩定度</span></div>
+                <div class="metric"><b id="bias">--</b><span>偏早／偏晚</span></div>
+              </div>
+              <div class="box"><p class="label">分析</p><div class="small" id="sightFeedback">結果折疊，主畫面留給譜例與點擊。</div></div>
+            </details>
+          </section>
+
+          <div class="scoreCard" id="scoreCard">
+            <div id="vexScore" class="vexScore" role="img" aria-label="VexFlow 標準譜例"></div>
+            <svg id="scoreSvg" class="scoreSvg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet" role="img" aria-label="SVG fallback 譜例"></svg>
+            <div id="scoreFeedbackLayer" class="scoreFeedbackLayer" aria-live="polite"></div>
+          </div>
+
+          <button id="tapPad" class="tapPad">依譜點擊</button>
+
+          <div class="scoreButtons">
+            <button id="makeSight">產生題</button>
+            <button id="startSight" class="primary">開始點擊</button>
+            <button id="playSight">聽示範</button>
+          </div>
+
+          <div class="beatBar" id="sightBeatBar"></div>
+        </div>
+      </section>
+
+      <section id="metro" class="page">
+        <div class="card"><p class="label">分層節拍</p><div class="metroDisplay"><span id="bpmReadout">72</span> BPM</div>
+          <div class="badges" style="justify-content:center"><span class="badge" id="meterReadout">4/4</span><span class="badge" id="beatCycleReadout">每小節 4 拍</span></div>
+          <div class="box">
+            <div class="linearControl"><label>BPM</label><input id="bpmSlider" type="range" min="30" max="300" step="1" value="72"><input id="bpmInput" type="number" min="30" max="300" step="1" value="72"></div>
+            <div class="linearControl"><label>拍號分子</label><input id="beatsSlider" type="range" min="1" max="16" step="1" value="4"><input id="beatsInput" type="number" min="1" max="16" step="1" value="4"></div>
+            <div class="linearControl"><label>拍號分母</label><input id="unitSlider" type="range" min="1" max="6" step="1" value="3"><input id="unitInput" type="number" min="1" max="32" step="1" value="4"></div>
+            <p class="paramNote">拍號可自訂，例如 3/4、5/4、6/8、7/8、12/8。分母會自動校正為 1、2、4、8、16、32。</p>
+          </div>
+          <div class="actions"><button id="metroStart" class="primary">開始</button><button id="metroStop">停止</button></div>
+          <div id="subdivisionBox"></div>
+        </div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="card"><p class="label">應用設定</p><h2>顯示與操作</h2>
+          <div class="box">
+            <div class="linearControl"><label>譜例高度</label><input id="scoreHeight" type="range" min="320" max="700" step="10" value="560"><input id="scoreHeightNum" type="number" min="320" max="700" step="10" value="560"></div>
+            <p class="settingHint">手機畫面太擠時可降低譜例高度；平板或橫向螢幕可提高。</p>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>預設進入頁</label><select id="defaultPage"><option value="home" selected>五度圈音階</option><option value="sight">讀譜測驗</option><option value="metro">自訂節拍器</option></select></div>
+            <div class="field"><label>資料顯示</label><select id="dataDensity"><option value="comfortable" selected>舒適</option><option value="compact">緊湊</option></select></div>
+          </div>
+          <div class="box">
+            <p class="label">同步狀態</p>
+            <div class="small" id="settingsStatus">設定變更會立即套用，儲存後下次開啟仍會保留。</div>
+          </div>
+          <button id="saveSettingsBtn" class="full gold" style="margin-top:10px">儲存設定</button>
+
+        </div>
+      </section>
+
+      <section id="sound" class="page">
+        <div class="card"><p class="label">聲音校準</p><h2>試聽與微調</h2>
+          <div class="field">
+            <label>波形範本</label>
+            <select id="tonePreset">
+              <option value="electro" selected>Electro Click｜電子穿透</option>
+              <option value="pure">Sine｜純音</option>
+              <option value="soft">Triangle｜柔音</option>
+              <option value="bright">Sawtooth｜亮音</option>
+              <option value="square">Square｜方波</option>
+              <option value="brass">Sawtooth Brass｜銅管感</option>
+              <option value="mallet">Triangle Mallet｜短音</option>
+            </select>
+            <p class="settingHint">選擇範本會同步更新下方參數；之後仍可手動微調泛音、起音、收音、濾波與頻率。</p>
+          </div>
+          <div class="linearControl"><label>總響度</label><input id="masterVol" type="range" min="0" max="400" step="1" value="280"><input id="masterVolNum" type="number" min="0" max="400" step="1" value="280"></div>
+          <div class="linearControl"><label>音符響度</label><input id="noteVol" type="range" min="0" max="250" step="1" value="115"><input id="noteVolNum" type="number" min="0" max="250" step="1" value="115"></div>
+          <div class="linearControl"><label>節拍響度</label><input id="metroVol" type="range" min="0" max="300" step="1" value="220"><input id="metroVolNum" type="number" min="0" max="300" step="1" value="220"></div>
+          <div class="linearControl"><label>亮度</label><input id="brightness" type="range" min="0" max="100" step="1" value="88"><input id="brightnessNum" type="number" min="0" max="100" step="1" value="88"></div>
+          <div class="linearControl"><label>穿透度</label><input id="clickNoise" type="range" min="0" max="100" step="1" value="92"><input id="clickNoiseNum" type="number" min="0" max="100" step="1" value="92"></div>
+
+          <div class="freqPanel">
+            <p class="label">頻率音色｜Tone Engine</p>
+            <div class="linearControl"><label>A4 Hz</label><input id="a4Hz" type="range" min="415" max="466" step="1" value="440"><input id="a4HzNum" type="number" min="415" max="466" step="1" value="440"></div>
+            <div class="linearControl"><label>音高微調</label><input id="detuneCent" type="range" min="-50" max="50" step="1" value="0"><input id="detuneCentNum" type="number" min="-50" max="50" step="1" value="0"></div>
+            <div class="linearControl"><label>測試 MIDI</label><input id="manualMidi" type="range" min="21" max="108" step="1" value="69"><input id="manualMidiNum" type="number" min="21" max="108" step="1" value="69"></div>
+            <div class="linearControl"><label>泛音量</label><input id="harmonicMix" type="range" min="0" max="100" step="1" value="28"><input id="harmonicMixNum" type="number" min="0" max="100" step="1" value="28"></div>
+            <div class="linearControl"><label>起音 ms</label><input id="attackMs" type="range" min="0" max="300" step="1" value="2"><input id="attackMsNum" type="number" min="0" max="300" step="1" value="2"></div>
+            <div class="linearControl"><label>收音 ms</label><input id="releaseMs" type="range" min="20" max="1200" step="10" value="90"><input id="releaseMsNum" type="number" min="20" max="1200" step="10" value="90"></div>
+            <div class="linearControl"><label>濾波 Hz</label><input id="filterHz" type="range" min="20" max="20000" step="10" value="7800"><input id="filterHzNum" type="number" min="20" max="20000" step="10" value="7800"></div>
+            <div class="linearControl"><label>強拍 MIDI</label><input id="accentClickMidi" type="range" min="21" max="108" step="1" value="108"><input id="accentClickMidiNum" type="number" min="21" max="108" step="1" value="108"></div>
+            <div class="linearControl"><label>弱拍 MIDI</label><input id="weakClickMidi" type="range" min="21" max="108" step="1" value="96"><input id="weakClickMidiNum" type="number" min="21" max="108" step="1" value="96"></div>
+            <p class="settingHint">所有聲音以 MIDI 音高為主，再由 A4 與十二平均率公式換算為頻率；節拍器預設為高穿透電子音，MIDI 參數可線性調整，也可輸入數字。</p>
+          </div>
+
+          <div class="actions"><button id="testNoteBtn">試聽音階</button><button id="testClickBtn" class="primary">試聽節拍</button></div>
+          <div class="actions"><button id="testFreqBtn">試聽 A4</button><button id="testRootBtn">試聽主音</button></div>
+          <div class="actions"><button id="testManualFreqBtn">試聽 MIDI</button><button id="applyPresetBtn" class="primary">套用預設</button></div>
+          <button id="testMixBtn" class="full gold" style="margin-top:8px">混合試聽</button>
+        </div>
+      </section>
+
+      <section id="guide" class="page">
+        <div class="card"><p class="label">指引</p><h2>三分鐘上手</h2>
+          <ol>
+            <li><b>五度調性：</b>用五度圈選今天要練的調，同頁看音階圖與和弦線；資料會自動換行，不需要橫向拖拉。</li>
+            <li><b>音階與和弦：</b>同頁先聽一次，再吹。</li>
+            <li><b>節奏讀譜：</b>按「產生題」，看兩小節，按「開始點擊」，依譜點擊。</li>
+            <li><b>分層節拍：</b>先設定拍號，例如 3/4、5/4、6/8，再只開四分音符；穩了再加八分、十六分。</li>
+            <li><b>聲音校準：</b>先試聽，再依情境調整頻率合成、響度與節拍穿透度。</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="changelog" class="page">
+        <div class="card">
+          <p class="label">更新日誌</p>
+          <h2>BrassGrid 版本紀錄</h2>
+          <div class="plainLog">v31.2
+更新日誌改為純文字完整版本紀錄；移除檢查標籤與摘要式排版，確保可讀性與低介面干擾。
+
+v31.1
+合併更新日誌與版本檢查；移除獨立版本檢查頁；改為單一資訊入口，並保留核心功能不變。
+
+v31
+節拍器改為高穿透電子音預設；提高總響度、節拍響度與 click noise 穿透度；各細分層加入 MIDI 音高設定；強化手機喇叭、排練室與吵雜環境下的拍點辨識。
+
+v30
+譜面回饋改為只顯示符號；取消毫秒文字顯示；回饋符號定位在對應小節的目標音符下方；VexFlow 與 SVG fallback 皆會記錄音符座標。
+
+v29
+讀譜測驗加入譜面即時回饋；點擊後會在譜面上顯示準、偏早、偏晚符號；預備拍改為 0–8 拍自訂，並同步影響測驗開始倒數與示範播放。
+
+v28
+整理手機本地化使用方案；輸出 Android WebView 專案包與 PWA Local Web 起始包；提供本地 App 化方向，但未在目前環境直接編譯 APK。
+
+v27
+修正 VexFlow 譜例音符格式；調內升降由調號處理，不再對每個音符重複加臨時記號；示範播放仍使用同一題目 MIDI 音高。
+
+v26
+譜例大小改為依視窗與容器自適應重排；加入 ResizeObserver 與 orientationchange 監聽；旋轉螢幕或調整譜例高度時會自動重畫。
+
+v25
+讀譜測驗改用 VexFlow 優先渲染標準譜例；指定調性選單改為條件顯示；目錄重整為練習、聲音、偏好與說明。
+
+v24
+商標改為直接使用二的十二次方根符號 ¹²√2；讀譜測驗可指定全部 12 大調；聲音系統改為 MIDI 音高為主，再由十二平均率換算頻率。
+
+v23
+商標改以十二平均率核心比例設計；整體品牌主色調調整為深石墨黑、骨白與銅金，維持簡約深色工具風。
+
+v22
+波形預設與基礎波形合併為單一波形範本；譜例測驗升降記號與示範播放再次強化同步；移除軟體內的封裝評估顯示。
+
+v21
+譜例顯示升降記號並與聲音 MIDI 同步；波形預設與參數同步；設定頁即時套用；目錄文字優化；商標改為十二平均率概念設計。
+
+v20
+題目資料結構正式內含調性、拍號、BPM、音符與播放資料；音色統一改為頻率合成；加入標準波形預設與 20–20000 Hz 參數控制。
+
+v19
+節奏讀譜加入調性模式；可使用目前調性或隨機調性；題目調號、音符、提示與示範聲音同步。
+
+v18
+加入頻率音色引擎；可調 A4、泛音量、起音、收音與濾波頻率；校正低音譜號調號位置；修正譜例小節溢出；新增設定頁與完整更新日誌。
+
+v17
+分層節拍加入自訂拍號；支援 3/4、5/4、6/8、7/8、12/8 等拍號；節拍器重音循環依拍號分子運作。
+
+v16
+重寫譜例比例系統；固定五線間距、譜號區、調號區、拍號區與小節區比例；上下兩小節採相同系統寬度與每拍等距配置。
+
+v15
+各項連續參數改為滑桿與數字輸入同步控制；提升操作精準度與手機調整便利性。
+
+v14
+優化目錄結構、五度圈比例與資料防溢出顯示；改善調性、音階與和弦資料在小螢幕上的可讀性。
+
+v13
+修正五度圈圓周定位；優化功能命名，使各頁功能更直覺、更接近實際練習用途。
+
+v12
+整合調性、音階與和弦為調性中心；加入五度圈全 12 大調設計。
+
+v11
+修正節拍器 BPM 輸入與譜例自訂速度顯示問題。
+
+v10
+「下一調」按鈕只在需要換調的頁面顯示，避免不必要操作干擾。
+
+v9
+譜例讀譜加入自訂 BPM，速度範圍為 30–300。
+
+v8
+和弦記憶方法改為更簡單的口語邏輯；節拍器 BPM 顯示即時同步。
+
+v7
+譜例恢復低音譜號、調號與拍號；加入譜例設定面板與更精準的功能命名。
+
+v6
+修正錯位圓形按鈕；譜例頁隱藏非必要標題；示範加入節拍同步。
+
+v5
+恢復首頁選調；重畫商標；譜例改為上下兩小節；加入快速指引。
+
+v4
+修正側邊欄定位；加入聲音試聽；讀譜測驗改為兩小節譜例與更簡潔的測驗畫面。
+
+v3
+加入全幅譜例視譜節奏測驗、即時點擊回饋與節拍器概念。
+
+v2
+數字音階改為隨調性動態顯示，明確標示 1 = 當前主音。
+
+v1
+建立 BrassGrid 原型；包含七調音階、和弦線與基本播放功能。</div>
+        </div>
+      </section>
+
+    </main>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.3/build/cjs/vexflow.js"></script>
+<script>
+const scales=[
+ {key:"C",display:"C",pos:"0",fifths:0,sig:"無升降",baseMidi:48,degrees:["C","D","E","F","G","A","B","C"],acc:[]},
+ {key:"G",display:"G",pos:"+1",fifths:1,sig:"F♯",baseMidi:43,degrees:["G","A","B","C","D","E","F♯","G"],acc:["♯"]},
+ {key:"D",display:"D",pos:"+2",fifths:2,sig:"F♯、C♯",baseMidi:50,degrees:["D","E","F♯","G","A","B","C♯","D"],acc:["♯","♯"]},
+ {key:"A",display:"A",pos:"+3",fifths:3,sig:"F♯、C♯、G♯",baseMidi:45,degrees:["A","B","C♯","D","E","F♯","G♯","A"],acc:["♯","♯","♯"]},
+ {key:"E",display:"E",pos:"+4",fifths:4,sig:"F♯、C♯、G♯、D♯",baseMidi:40,degrees:["E","F♯","G♯","A","B","C♯","D♯","E"],acc:["♯","♯","♯","♯"]},
+ {key:"B",display:"B",pos:"+5",fifths:5,sig:"F♯、C♯、G♯、D♯、A♯",baseMidi:47,degrees:["B","C♯","D♯","E","F♯","G♯","A♯","B"],acc:["♯","♯","♯","♯","♯"]},
+ {key:"F♯",display:"F♯/G♭",pos:"+6/-6",fifths:6,sig:"F♯、C♯、G♯、D♯、A♯、E♯",baseMidi:42,degrees:["F♯","G♯","A♯","B","C♯","D♯","E♯","F♯"],acc:["♯","♯","♯","♯","♯","♯"]},
+ {key:"D♭",display:"D♭",pos:"−5",fifths:-5,sig:"B♭、E♭、A♭、D♭、G♭",baseMidi:49,degrees:["D♭","E♭","F","G♭","A♭","B♭","C","D♭"],acc:["♭","♭","♭","♭","♭"]},
+ {key:"A♭",display:"A♭",pos:"−4",fifths:-4,sig:"B♭、E♭、A♭、D♭",baseMidi:44,degrees:["A♭","B♭","C","D♭","E♭","F","G","A♭"],acc:["♭","♭","♭","♭"]},
+ {key:"E♭",display:"E♭",pos:"−3",fifths:-3,sig:"B♭、E♭、A♭",baseMidi:39,degrees:["E♭","F","G","A♭","B♭","C","D","E♭"],acc:["♭","♭","♭"]},
+ {key:"B♭",display:"B♭",pos:"−2",fifths:-2,sig:"B♭、E♭",baseMidi:46,degrees:["B♭","C","D","E♭","F","G","A","B♭"],acc:["♭","♭"]},
+ {key:"F",display:"F",pos:"−1",fifths:-1,sig:"B♭",baseMidi:41,degrees:["F","G","A","B♭","C","D","E","F"],acc:["♭"]}
+];
+
+const centerOrder=["C","G","D","A","E","B","F♯","D♭","A♭","E♭","B♭","F"];
+const scaleIntervals=[0,2,4,5,7,9,11,12], chordIntervals=[0,4,7,12,11,7,5,2,0];
+let currentIndex=0, centerStep=0, currentPage="home";
+let audioCtx=null, masterGain=null, compressor=null, playing=false;
+let sound={master:2.8,noteVol:1.15,metroVol:2.2,brightness:.88,clickNoise:.92,waveform:"square",a4Hz:440,detuneCent:0,manualMidi:69,harmonicMix:.28,attackMs:2,releaseMs:90,filterHz:7800,accentClickMidi:108,weakClickMidi:96};
+let metro={on:false,timer:null,next:0,step:0};
+let sight={question:null,events:[],targets:[],targetMeta:[],notePositions:{},taps:[],feedback:[],bpm:84,keyIndex:0,startPerf:0,timer:null,count:0,active:false};
+const subdivisions={
+ q:{label:"♩",name:"四分",on:true,vol:.95,midi:101,dur:.045,steps:4,offset:0},
+ e:{label:"♪",name:"八分",on:false,vol:.55,midi:92,dur:.032,steps:2,offset:5},
+ s:{label:"𝅘𝅥𝅯",name:"十六",on:false,vol:.38,midi:84,dur:.024,steps:1,offset:9},
+ tr:{label:"3",name:"三連",on:false,vol:.45,midi:88,dur:.030,steps:"tri",offset:3},
+ off:{label:"&",name:"後半",on:false,vol:.62,midi:96,dur:.035,steps:"off",offset:5}
+};
+
+function $(id){return document.getElementById(id)}
+function sc(){return scales[currentIndex]}
+function sightSc(){return scales[(sight && Number.isInteger(sight.keyIndex))?sight.keyIndex:currentIndex]}
+function pickSightKey(){
+ if(!$("sightKeyMode") || $("sightKeyMode").value==="current")return currentIndex;
+ if($("sightKeyMode").value==="fixed")return parseInt($("sightFixedKey").value,10)||0;
+ return Math.floor(Math.random()*scales.length);
+}
+function populateSightKeyOptions(){
+ if(!$("sightFixedKey"))return;
+ $("sightFixedKey").innerHTML=scales.map((s,i)=>`<option value="${i}">${s.display || s.key} 大調｜${s.sig}</option>`).join("");
+ $("sightFixedKey").value=currentIndex;
+}
+function updateSightKeyReadout(){
+ if(!$("sightKeyReadout"))return;
+ const s=sightSc();
+ $("sightKeyReadout").textContent=`${s.display || s.key} 大調`;
+}
+function updateSightKeyModeUI(){
+ if(!$("sightKeyMode")||!$("sightFixedKeyField"))return;
+ const fixed=$("sightKeyMode").value==="fixed";
+ $("sightFixedKeyField").classList.toggle("hiddenField",!fixed);
+}
+function clamp(n,min,max){n=parseInt(n,10);if(isNaN(n))n=min;return Math.max(min,Math.min(max,n))}
+function join(a){return a.join(" – ")}
+function axisName(x){return x.pos==="0"?"中心原點":x.pos.includes("+")?"升號側":"降號側"}
+function midiFreq(midi){return sound.a4Hz*Math.pow(2,(midi-69+sound.detuneCent/100)/12)}
+function accentClickFreq(){return midiFreq(sound.accentClickMidi)}
+function weakClickFreq(){return midiFreq(sound.weakClickMidi)}
+function manualMidiFreq(){return midiFreq(sound.manualMidi)}
+function chordPlain(x){return [x.degrees[0],x.degrees[2],x.degrees[4],x.degrees[7]+"′",x.degrees[6],x.degrees[4],x.degrees[3],x.degrees[1],x.degrees[0]]}
+
+function ensureAudio(){
+ if(!audioCtx){
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  masterGain=audioCtx.createGain();
+  compressor=audioCtx.createDynamicsCompressor();
+  compressor.threshold.value=-8;compressor.ratio.value=8;compressor.attack.value=.003;compressor.release.value=.18;
+  masterGain.connect(compressor);compressor.connect(audioCtx.destination);
+ }
+ if(audioCtx.state==="suspended")audioCtx.resume();
+ masterGain.gain.value=sound.master;
+}
+
+function playFrequencyTone(freq,time,dur,vol=.2){
+ ensureAudio();
+ const output=audioCtx.createGain();
+ const filter=audioCtx.createBiquadFilter();
+ filter.type="lowpass";
+ filter.frequency.setValueAtTime(sound.filterHz,time);
+ output.gain.setValueAtTime(.0001,time);
+ const attack=Math.max(.001,sound.attackMs/1000);
+ const release=Math.max(.02,sound.releaseMs/1000);
+ const sustainTime=Math.max(time+attack+.03,time+dur-release);
+ output.gain.exponentialRampToValueAtTime(vol*sound.noteVol,time+attack);
+ output.gain.setValueAtTime(vol*sound.noteVol,sustainTime);
+ output.gain.exponentialRampToValueAtTime(.0001,time+dur+release*.25);
+
+ const mix=Math.max(0,Math.min(1,sound.harmonicMix));
+ const baseOsc=audioCtx.createOscillator();
+ baseOsc.type=sound.waveform;
+ baseOsc.frequency.setValueAtTime(freq,time);
+ const baseGain=audioCtx.createGain();
+ baseGain.gain.setValueAtTime(vol*sound.noteVol*.55,time);
+ baseOsc.connect(baseGain);baseGain.connect(filter);
+ baseOsc.start(time);baseOsc.stop(time+dur+release+.03);
+
+ if(mix>0){
+   const harmonicWeights=[.38,.24,.15,.09,.055];
+   harmonicWeights.forEach((w,i)=>{
+     const osc=audioCtx.createOscillator();
+     osc.type="sine";
+     osc.frequency.setValueAtTime(freq*(i+2),time);
+     const g=audioCtx.createGain();
+     g.gain.setValueAtTime(vol*sound.noteVol*w*mix,time);
+     osc.connect(g);g.connect(filter);
+     osc.start(time);osc.stop(time+dur+release+.03);
+   });
+ }
+ filter.connect(output);output.connect(masterGain);
+}
+
+function playTone(freq,time,dur,mode="note",vol=.2){
+ ensureAudio();
+ if(mode==="metro"){
+  const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(), filter=audioCtx.createBiquadFilter();
+  osc.type="square";
+  filter.type="highpass";
+  filter.frequency.setValueAtTime(Math.max(20,Math.min(20000,freq+sound.clickNoise*1800)),time);
+  osc.frequency.setValueAtTime(freq,time);
+  gain.gain.setValueAtTime(.0001,time);
+  gain.gain.exponentialRampToValueAtTime(Math.min(3.2,vol*sound.metroVol),time+.0015);
+  gain.gain.exponentialRampToValueAtTime(.0001,time+dur);
+  osc.connect(filter);filter.connect(gain);gain.connect(masterGain);
+
+  const len=Math.max(1,Math.floor(audioCtx.sampleRate*dur));
+  const buf=audioCtx.createBuffer(1,len,audioCtx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+  const noise=audioCtx.createBufferSource(), ng=audioCtx.createGain(), hp=audioCtx.createBiquadFilter();
+  hp.type="highpass";hp.frequency.setValueAtTime(2200,time);
+  ng.gain.setValueAtTime(vol*sound.metroVol*sound.clickNoise*.22,time);
+  ng.gain.exponentialRampToValueAtTime(.0001,time+dur);
+  noise.buffer=buf;noise.connect(hp);hp.connect(ng);ng.connect(masterGain);
+
+  osc.start(time);osc.stop(time+dur+.02);
+  noise.start(time);noise.stop(time+dur+.02);
+  return;
+ }
+ playFrequencyTone(freq,time,dur,vol);
+ return;
+}
+
+function playMidiSeq(midis){
+ ensureAudio();
+ if(playing)return;
+ playing=true;
+ let d=.5,st=audioCtx.currentTime+.05;
+ midis.forEach((m,i)=>playTone(midiFreq(m),st+i*d,d*.82,"note",.22));
+ setTimeout(()=>playing=false,(midis.length*d+.2)*1000);
+}
+
+function playCurrent(type){
+ let x=sc();
+ if(type==="up")playMidiSeq(scaleIntervals.map(i=>x.baseMidi+i));
+ if(type==="down")playMidiSeq(scaleIntervals.slice().reverse().map(i=>x.baseMidi+i));
+ if(type==="chord")playMidiSeq(chordIntervals.map(i=>x.baseMidi+i));
+}
+
+function renderFifthsWheel(){
+ const wheel=$("fifthsWheel");
+ if(!wheel)return;
+ const order=["C","G","D","A","E","B","F♯","D♭","A♭","E♭","B♭","F"];
+ const radius=42.8;
+ const buttons=order.map((key,idx)=>{
+   const i=scales.findIndex(s=>s.key===key);
+   const s=scales[i];
+   const angle=(-90+idx*30)*Math.PI/180;
+   const x=50+radius*Math.cos(angle);
+   const y=50+radius*Math.sin(angle);
+   return `<button class="wheelBtn ${i===currentIndex?"keySelected":""}" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;" onclick="setKey(${i})" aria-label="選擇 ${s.display || s.key} 大調">${s.display || s.key}<small>${s.pos}</small></button>`;
+ }).join("");
+ const x=sc();
+ wheel.innerHTML=`<div class="wheelCenter"><b>${x.display || x.key}</b><small>${x.pos}</small><small>${x.sig}</small><small>1=${x.degrees[0]}</small></div>${buttons}`;
+}
+
+function tokenHTML(items){
+ return `<div class="tokenWrap">${items.map(x=>`<span class="token">${x}</span>`).join("")}</div>`;
+}
+function degreeTokenHTML(nums, notes){
+ return tokenHTML(nums.map((d,i)=>`${d}=${notes[i]}${d==="1′"?"′":""}`));
+}
+
+function render(){
+ let x=sc();
+ $("homeTitle").textContent=`${x.display || x.key} 大調`;
+ $("homeBadges").innerHTML=`<div class="infoTile"><b>五度位置</b><span>${x.pos}</span></div><div class="infoTile"><b>調號</b><span>${x.sig}</span></div><div class="infoTile"><b>主音</b><span>1=${x.degrees[0]}</span></div>`;
+ renderFifthsWheel();
+ $("keyGrid").innerHTML=scales.map((s,i)=>`<button class="keyBtn ${i===currentIndex?"keySelected":""} ${s.key==="C"?"centerKey":""}" onclick="setKey(${i})"><b>${s.display || s.key}</b><span>${s.pos}</span><span>${s.sig}</span></button>`).join("");
+ $("upNum").innerHTML=degreeTokenHTML(["1","2","3","4","5","6","7","1′"],x.degrees);
+ $("upNotes").innerHTML=tokenHTML(x.degrees);
+ $("downNum").innerHTML=degreeTokenHTML(["1′","7","6","5","4","3","2","1"],[...x.degrees].reverse());
+ $("downNotes").innerHTML=tokenHTML([...x.degrees].reverse());
+ $("chordNum").innerHTML=tokenHTML(["1","3","5","1′","7","5","4","2","1"].map((d,i)=>`${d}=${chordPlain(x)[i]}`));
+ $("chordNotes").innerHTML=tokenHTML(chordPlain(x));
+ $("degreeMap").innerHTML=x.degrees.slice(0,7).map((n,i)=>`<div class="degree"><b>${i+1}</b><span>${n}</span></div>`).join("")+`<div class="degree"><b>1′</b><span>${x.degrees[7]}</span></div>`;
+ renderSubRows();
+ drawScore();
+}
+
+function setKey(i){
+ currentIndex=i;
+ if($("sightFixedKey") && $("sightKeyMode") && $("sightKeyMode").value==="current")$("sightFixedKey").value=i;
+ makeSight();
+ render();
+}
+
+function updateNextButtonVisibility(id){
+ const needsNextKey=["home"];
+ $("centerNextBtn").classList.toggle("isHidden", !needsNextKey.includes(id));
+}
+function showPage(id){
+ if(id==="check")id="changelog";
+ currentPage=id;
+ document.body.classList.toggle("sightMode", id==="sight");
+ updateNextButtonVisibility(id);
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("visible",p.id===id));
+ document.querySelectorAll(".navItem").forEach(b=>b.classList.toggle("navSelected",b.dataset.page===id));
+ const m={
+  home:["五度圈音階","調性、音階圖、和弦線"],
+  sight:["讀譜測驗","調性同步譜例＋點擊回饋"],
+  metro:["自訂節拍器","拍號、細分、重音循環"],
+  settings:["顯示與操作","譜例高度、資料密度、預設頁"],
+  sound:["頻率音色","波形、頻率、響度、濾波"],
+  guide:["快速上手","三分鐘操作流程"],
+  changelog:["更新日誌","v31.2 分支"]
+ };
+ $("topTitle").textContent=m[id][0];
+ $("topSub").textContent=m[id][1];
+ closeSide();
+}
+document.querySelectorAll(".navItem").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+function openSide(){$("sidebar").classList.add("open");$("overlay").classList.add("show")}
+function closeSide(){$("sidebar").classList.remove("open");$("overlay").classList.remove("show")}
+$("openSidebar").onclick=openSide;$("openSidebarFromSight").onclick=openSide;$("closeSidebar").onclick=closeSide;$("overlay").onclick=closeSide;
+$("centerNextBtn").onclick=()=>{let k=centerOrder[centerStep++%centerOrder.length];setKey(scales.findIndex(s=>s.key===k))}
+
+function applyAppSettings(){
+ const h=syncPair("scoreHeight","scoreHeightNum",320,700,$("scoreHeightNum").value);
+ document.documentElement.style.setProperty("--score-height-px",h+"px");
+ document.body.classList.toggle("compactData",$("dataDensity").value==="compact");
+ if($("settingsStatus"))$("settingsStatus").textContent=`已套用：譜例高度 ${h}px，資料顯示 ${$("dataDensity").value==="compact"?"緊湊":"舒適"}，預設頁 ${$("defaultPage").selectedOptions[0].textContent}`;
+ scheduleScoreRedraw();
+}
+
+function getCustomSightBpm(){
+ const raw=parseInt($("customSightBpm").value,10);
+ if(!Number.isFinite(raw))return 84;
+ return Math.max(30,Math.min(300,raw));
+}
+function syncCustomSightBpm(value,commit=false){
+ const v=syncPair("customSightBpmSlider","customSightBpm",30,300,value);
+ if(commit && $("tempoRange").value==="custom")makeSight();
+ return v;
+}
+function updateCustomBpmVisibility(){
+ const isCustom=$("tempoRange").value==="custom";
+ $("customBpmField").classList.toggle("show",isCustom);
+ if(isCustom){
+   syncCustomSightBpm(getCustomSightBpm(),false);
+ }
+}
+function randomBpm(){
+ let r=$("tempoRange").value;
+ if(r==="custom")return getCustomSightBpm();
+ if(r==="slow")return 48+Math.floor(Math.random()*33);
+ if(r==="fast")return 120+Math.floor(Math.random()*57);
+ return 66+Math.floor(Math.random()*67);
+}
+function degreeBaseOctave(){
+ const mode=$("rangeMode").value;
+ if(mode==="low")return -1;
+ if(mode==="mixed")return Math.random()>.5?0:-1;
+ return 0;
+}
+function noteNameForDegree(d){
+ const name=sightSc().degrees[(d-1)%7] || "C";
+ const letter=name[0];
+ const accidental=name.includes("♯")?"♯":(name.includes("♭")?"♭":"");
+ return {name,letter,accidental};
+}
+function midiForDegree(d){
+ let ints=[0,2,4,5,7,9,11];
+ return sightSc().baseMidi+ints[(d-1)%7]+degreeBaseOctave()*12;
+}
+function degMidi(d){
+ return midiForDegree(d);
+}
+function makeSight(){
+ stopSight();
+ updateSightKeyModeUI();
+ sight.keyIndex=pickSightKey();
+ sight.bpm=randomBpm();
+ sight.events=[];sight.targets=[];sight.targetMeta=[];sight.notePositions={};sight.taps=[];sight.feedback=[];sight.startPerf=0;sight.active=false;
+ updateSightKeyReadout();
+ const lvl=parseInt($("sightLevel").value||2);
+ const degrees=lvl<3?[1,2,3,5]:[1,2,3,4,5,6,7];
+ const allowRest=$("allowRest").checked;
+ const allowTriplet=$("allowTriplet").checked;
+ for(let m=0;m<2;m++){
+  let b=0;
+  while(b<4){
+   let opts=[{t:"q",d:1,n:1},{t:"e",d:1,n:2}];
+   if(lvl>=2)opts.push({t:"s",d:1,n:4});
+   if(lvl>=2&&allowRest)opts.push({t:"rest",d:1,n:0});
+   if(lvl>=3&&allowTriplet)opts.push({t:"tri",d:1,n:3});
+   let pat=opts[Math.floor(Math.random()*opts.length)];
+   if(b+pat.d>4)pat={t:"q",d:1,n:1};
+   let notes=[];
+   for(let i=0;i<pat.n;i++){
+    let off=pat.t==="tri"?i/3:i*(pat.d/pat.n);
+    let deg=degrees[Math.floor(Math.random()*degrees.length)];
+    const spelling=noteNameForDegree(deg);
+    const midi=degMidi(deg);
+    const targetIndex=sight.targets.length;
+    notes.push({deg,off,midi,name:spelling.name,letter:spelling.letter,accidental:spelling.accidental,displayAccidental:"",showAccidental:false,targetIndex});
+    sight.targets.push((m*4+b+off)*60/sight.bpm);
+    sight.targetMeta.push({targetIndex,m,b,off,deg,midi});
+   }
+   sight.events.push({m,b,d:pat.d,t:pat.t,notes});
+   b+=pat.d;
+  }
+ }
+ sight.question=createSightQuestion();
+ syncSightFromQuestion();
+ $("sightInfo").textContent=`${sightSc().display || sightSc().key} 大調｜2 小節｜4/4｜♩=${sight.bpm}`;
+ $("liveFeedback").textContent="等待作答";
+ $("liveFeedback").className="live";
+ resetStats();
+ clearScoreFeedback();
+ drawScore();
+}
+let scoreParts=[];
+
+const scoreLayout={
+ W:1000,
+ H:540,
+ staffGap:16,
+ systems:[112,352],
+ leftMargin:34,
+ rightMargin:960,
+ clefX:48,
+ keyX:118,
+ beatPad:34
+};
+
+// Bass clef key-signature vertical placements.
+// These are arranged by standard order of accidentals and positioned for bass-clef readability.
+// Bass clef key-signature positions as staff-step units.
+// 0 = top line (A3), 8 = bottom line (G2). Accidentals are centered on these positions.
+const keySignaturePositions={
+ sharpSteps:[2,5,1,4,0,3,6],   // F C G D A E B in bass clef
+ flatSteps:[6,3,0,4,8,5,2]     // B E A D G C F in bass clef
+};
+
+function keyAccidentals(){
+ const s=sightSc();
+ const count=(s.acc||[]).length;
+ if(count===0)return [];
+ const symbol=s.acc[0]||"";
+ const order=symbol==="♯"?["F","C","G","D","A","E","B"]:["B","E","A","D","G","C","F"];
+ return Array.from({length:count},(_,i)=>({symbol,letter:order[i]}));
+}
+
+function drawStaffLines(y){
+ const g=scoreLayout.staffGap;
+ for(let i=0;i<5;i++){
+  scoreParts.push(`<line x1="${scoreLayout.leftMargin}" y1="${y+i*g}" x2="${scoreLayout.rightMargin}" y2="${y+i*g}" stroke="#171b20" stroke-width="1.45"/>`);
+ }
+}
+
+function drawKeySignature(y,startX){
+ const acc=keyAccidentals();
+ const g=scoreLayout.staffGap;
+ acc.forEach((a,i)=>{
+  const x=startX+i*16;
+  const step=a.symbol==="♯"?keySignaturePositions.sharpSteps[i]:keySignaturePositions.flatSteps[i];
+  const yy=y+step*(g/2);
+  scoreParts.push(`<text x="${x}" y="${yy}" font-size="26" font-weight="900" text-anchor="middle" dominant-baseline="middle" fill="#171b20">${a.symbol}</text>`);
+ });
+ return startX + acc.length*16 + (acc.length?18:0);
+}
+
+function drawTimeSignature(y,x,top="4",bottom="4"){
+ scoreParts.push(`<text x="${x}" y="${y+24}" font-size="29" font-weight="900" text-anchor="middle" fill="#171b20">${top}</text>`);
+ scoreParts.push(`<text x="${x}" y="${y+56}" font-size="29" font-weight="900" text-anchor="middle" fill="#171b20">${bottom}</text>`);
+}
+
+function drawLedgerLines(x,y,staffY){
+ const g=scoreLayout.staffGap;
+ const top=staffY;
+ const bottom=staffY+4*g;
+ if(y<top-2){
+  for(let ly=top-g; ly>=y-2; ly-=g){
+   scoreParts.push(`<line x1="${x-16}" y1="${ly}" x2="${x+16}" y2="${ly}" stroke="#171b20" stroke-width="1.15"/>`);
+  }
+ }
+ if(y>bottom+2){
+  for(let ly=bottom+g; ly<=y+2; ly+=g){
+   scoreParts.push(`<line x1="${x-16}" y1="${ly}" x2="${x+16}" y2="${ly}" stroke="#171b20" stroke-width="1.15"/>`);
+  }
+ }
+}
+
+const letterIndex={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+
+function degreeLetter(deg,explicitLetter=null){
+ if(explicitLetter)return explicitLetter;
+ const raw=sightSc().degrees[(deg-1)%7] || "C";
+ return raw[0];
+}
+
+function octaveForMidiAndLetter(midi,letter){
+ // Choose the octave that best matches the actual MIDI pitch for the notated letter.
+ const pcMap={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+ const targetPc=pcMap[letter];
+ let bestOct=3;
+ let bestDiff=999;
+ for(let oct=0;oct<=6;oct++){
+   const candidate=(oct+1)*12+targetPc;
+   const diff=Math.abs(candidate-midi);
+   if(diff<bestDiff){bestDiff=diff;bestOct=oct;}
+ }
+ return bestOct;
+}
+
+function noteYFromMidiAndDegree(midi,deg,staffY,explicitLetter=null){
+ const g=scoreLayout.staffGap;
+ const letter=degreeLetter(deg,explicitLetter);
+ const octave=octaveForMidiAndLetter(midi,letter);
+ const bottomLineIndex=2*7+letterIndex.G; // G2, bottom line of bass clef
+ const noteIndex=octave*7+letterIndex[letter];
+ const bottomY=staffY+4*g;
+ return bottomY-(noteIndex-bottomLineIndex)*(g/2);
+}
+
+function drawNoteHead(x,y,filled=true){
+ scoreParts.push(`<ellipse cx="${x}" cy="${y}" rx="9.4" ry="6.4" transform="rotate(-18 ${x} ${y})" fill="${filled?"#171b20":"#fffdf8"}" stroke="#171b20" stroke-width="1.8"/>`);
+}
+
+function drawStem(x,y,dir){
+ if(dir==="up"){
+   scoreParts.push(`<line x1="${x+7}" y1="${y-2}" x2="${x+7}" y2="${y-52}" stroke="#171b20" stroke-width="1.55"/>`);
+   return {x:x+7,y:y-52};
+ }
+ scoreParts.push(`<line x1="${x-7}" y1="${y+2}" x2="${x-7}" y2="${y+52}" stroke="#171b20" stroke-width="1.55"/>`);
+ return {x:x-7,y:y+52};
+}
+
+function drawBeam(stems,dir,levels=1){
+ if(stems.length<2)return;
+ const first=stems[0], last=stems[stems.length-1];
+ const sign=dir==="up"?1:-1;
+ for(let l=0;l<levels;l++){
+   const offset=l*8*sign;
+   scoreParts.push(`<line x1="${first.x}" y1="${first.y+offset}" x2="${last.x}" y2="${last.y+offset}" stroke="#171b20" stroke-width="5" stroke-linecap="butt"/>`);
+ }
+}
+
+function drawTupletBracket(x1,x2,y){
+ scoreParts.push(`<path d="M${x1} ${y} L${x1} ${y-8} L${x2} ${y-8} L${x2} ${y}" fill="none" stroke="#171b20" stroke-width="1.2"/>`);
+ scoreParts.push(`<text x="${(x1+x2)/2}" y="${y-13}" font-size="15" font-weight="900" text-anchor="middle" fill="#171b20">3</text>`);
+}
+
+function drawQuarterRest(x,y){
+ // Stylized quarter-rest fallback; keeps standard rest location and avoids oversized unicode drift.
+ scoreParts.push(`<path d="M${x} ${y-28} C${x+10} ${y-18}, ${x-8} ${y-12}, ${x+4} ${y-2} C${x+14} ${y+8}, ${x-8} ${y+12}, ${x+2} ${y+24}" fill="none" stroke="#171b20" stroke-width="4" stroke-linecap="round"/>`);
+}
+
+function drawMeasureSystem(staffY,measureIndex){
+ drawStaffLines(staffY);
+ scoreParts.push(`<text x="${scoreLayout.clefX}" y="${staffY+60}" font-size="62" fill="#171b20">𝄢</text>`);
+ const afterKey=drawKeySignature(staffY,scoreLayout.keyX);
+ const timeX=afterKey+22;
+ drawTimeSignature(staffY,timeX);
+ const noteStart=Math.max(240,timeX+46);
+ const measureEnd=scoreLayout.rightMargin;
+ scoreParts.push(`<line x1="${noteStart}" y1="${staffY}" x2="${noteStart}" y2="${staffY+4*scoreLayout.staffGap}" stroke="#171b20" stroke-width="1.45"/>`);
+ scoreParts.push(`<line x1="${measureEnd}" y1="${staffY}" x2="${measureEnd}" y2="${staffY+4*scoreLayout.staffGap}" stroke="#171b20" stroke-width="2.8"/>`);
+ scoreParts.push(`<text class="scoreGuide" x="${noteStart+4}" y="${staffY-14}">第 ${measureIndex+1} 小節</text>`);
+ return {start:noteStart,end:measureEnd,unit:(measureEnd-noteStart)/4};
+}
+
+function createSightQuestion(){
+ const key=sightSc();
+ const meter={beats:4,denom:4};
+ return {
+   id:"Q"+Date.now(),
+   keyIndex:sight.keyIndex,
+   key:key.key,
+   displayKey:key.display || key.key,
+   scale:key.degrees.slice(),
+   clef:"bass",
+   meter,
+   bpm:sight.bpm,
+   measures:2,
+   events:sight.events.map(ev=>({m:ev.m,b:ev.b,d:ev.d,t:ev.t,notes:ev.notes.map(nt=>({...nt}))})),
+   targets:sight.targets.slice(),
+   targetMeta:sight.targetMeta.map(x=>({...x})),
+   playback:sight.events.flatMap(ev=>ev.notes.map(nt=>({midi:nt.midi,time:(ev.m*4+ev.b+nt.off)*60/sight.bpm,degree:nt.deg,name:nt.name,accidental:nt.accidental,displayAccidental:nt.displayAccidental,showAccidental:nt.showAccidental,targetIndex:nt.targetIndex})))
+ };
+}
+function syncSightFromQuestion(){
+ if(!sight.question)return;
+ sight.keyIndex=sight.question.keyIndex;
+ sight.bpm=sight.question.bpm;
+ sight.events=sight.question.events.map(ev=>({m:ev.m,b:ev.b,d:ev.d,t:ev.t,notes:ev.notes.map(nt=>({...nt}))}));
+ sight.targets=sight.question.targets.slice();
+ sight.targetMeta=(sight.question.targetMeta||[]).map(x=>({...x}));
+}
+
+
+function vexKeySignature(){
+ const k=sightSc().key || "C";
+ return k.replace("♯","#").replace("♭","b");
+}
+function vexPitch(nt){
+ const letter=(nt.letter || degreeLetter(nt.deg)).toLowerCase();
+ const acc=(nt.accidental==="♯")?"#":(nt.accidental==="♭"?"b":"");
+ const oct=octaveForMidiAndLetter(nt.midi,(nt.letter || degreeLetter(nt.deg)));
+ return `${letter}${acc}/${oct}`;
+}
+function addVexAccidental(note,acc){
+ if(!acc)return;
+ const symbol=acc==="♯"?"#":(acc==="♭"?"b":acc);
+ try{ note.addModifier(new Vex.Flow.Accidental(symbol),0); }
+ catch(e1){ try{ note.addModifier(0,new Vex.Flow.Accidental(symbol)); } catch(e2){} }
+}
+function eventToVexNotes(ev){
+ const VF=Vex.Flow;
+ if(ev.t==="rest"){
+   return {notes:[new VF.StaveNote({clef:"bass",keys:["b/3"],duration:"qr"})], tuplets:[]};
+ }
+ const dur=ev.t==="q"?"q":ev.t==="e"?"8":ev.t==="s"?"16":ev.t==="tri"?"8":"q";
+ const notes=ev.notes.map(nt=>{
+   const n=new VF.StaveNote({clef:"bass",keys:[vexPitch(nt)],duration:dur});
+   n.__targetIndex=nt.targetIndex;
+   if(nt.showAccidental) addVexAccidental(n,nt.displayAccidental || nt.accidental);
+   return n;
+ });
+ const tuplets=ev.t==="tri"?[new VF.Tuplet(notes,{num_notes:3,notes_occupied:2})]:[];
+ return {notes,tuplets};
+}
+function resetNotePositions(){
+ sight.notePositions={};
+}
+function recordVexNotePositions(notes,W,H){
+ notes.forEach(n=>{
+   if(n.__targetIndex===undefined||n.__targetIndex===null)return;
+   try{
+     const x=typeof n.getAbsoluteX==="function"?n.getAbsoluteX():null;
+     let y=null;
+     if(typeof n.getYs==="function"){
+       const ys=n.getYs();
+       y=Array.isArray(ys)&&ys.length?ys[0]:null;
+     }
+     if(!Number.isFinite(x))return;
+     const yBelow=Number.isFinite(y)?y+36:0;
+     sight.notePositions[n.__targetIndex]={xPct:(x/W)*100,yPct:(yBelow/H)*100,source:"vex"};
+   }catch(e){}
+ });
+}
+
+function drawVexScore(){
+ if(!(window.Vex&&Vex.Flow)||!$("vexScore"))return false;
+ resetNotePositions();
+ const mount=$("vexScore");
+ const fallback=$("scoreSvg");
+ try{
+   mount.innerHTML="";
+   mount.style.display="block";
+   if(fallback)fallback.style.display="none";
+   const VF=Vex.Flow;
+
+   const rect=mount.getBoundingClientRect();
+   const W=Math.max(620,Math.round(rect.width||900));
+   const H=Math.max(300,Math.round(rect.height||480));
+   const isNarrow=W<760;
+   const staffW=Math.max(420,W-72);
+   const left=36;
+   const topA=isNarrow?42:56;
+   const gap=Math.max(150,Math.min(230,(H-130)/1.15));
+   const topB=Math.min(H-120,topA+gap);
+
+   const renderer=new VF.Renderer(mount,VF.Renderer.Backends.SVG);
+   renderer.resize(W,H);
+   const ctx=renderer.getContext();
+   ctx.setFont("Arial",10,"900");
+
+   const systems=[{y:topA,m:0},{y:topB,m:1}];
+   systems.forEach(sys=>{
+     const stave=new VF.Stave(left,sys.y,staffW);
+     stave.addClef("bass").addKeySignature(vexKeySignature()).addTimeSignature("4/4");
+     stave.setContext(ctx).draw();
+
+     let allNotes=[],tuplets=[];
+     sight.events.filter(ev=>ev.m===sys.m).forEach(ev=>{
+       const converted=eventToVexNotes(ev);
+       allNotes=allNotes.concat(converted.notes);
+       tuplets=tuplets.concat(converted.tuplets);
+     });
+
+     const voice=new VF.Voice({num_beats:4,beat_value:4}).setStrict(false);
+     voice.addTickables(allNotes);
+
+     const formatWidth=Math.max(260,staffW-(isNarrow?190:210));
+     new VF.Formatter().joinVoices([voice]).format([voice],formatWidth);
+     voice.draw(ctx,stave);
+     recordVexNotePositions(allNotes,W,H);
+
+     VF.Beam.generateBeams(allNotes.filter(n=>!String(n.getDuration()).includes("r"))).forEach(b=>b.setContext(ctx).draw());
+     tuplets.forEach(t=>t.setContext(ctx).draw());
+
+     ctx.fillText(`第 ${sys.m+1} 小節`, left+4, sys.y-10);
+   });
+   return true;
+ }catch(e){
+   console.warn("VexFlow fallback:",e);
+   mount.style.display="none";
+   if(fallback)fallback.style.display="block";
+   return false;
+ }
+}
+
+function drawScore(){
+ if(drawVexScore())return;
+ drawFallbackScore();
+}
+function scheduleScoreRedraw(){
+ clearTimeout(window.__brassScoreResizeTimer);
+ window.__brassScoreResizeTimer=setTimeout(()=>{try{drawScore()}catch(e){}},120);
+}
+function initScoreResizeObserver(){
+ if(!$("vexScore") || window.__brassScoreObserver)return;
+ if("ResizeObserver" in window){
+   window.__brassScoreObserver=new ResizeObserver(scheduleScoreRedraw);
+   window.__brassScoreObserver.observe($("vexScore"));
+ }else{
+   window.addEventListener("resize",scheduleScoreRedraw);
+ }
+ window.addEventListener("orientationchange",scheduleScoreRedraw);
+}
+
+
+function drawFallbackScore(){
+ resetNotePositions();
+ if($("vexScore"))$("vexScore").style.display="none";
+ const svg=$("scoreSvg"); if(!svg)return;
+ svg.style.display="block";
+ const W=scoreLayout.W,H=scoreLayout.H;
+ scoreParts=[];
+ scoreParts.push(`<rect width="${W}" height="${H}" fill="#fffdf8"/>`);
+ const systems=[drawMeasureSystem(scoreLayout.systems[0],0),drawMeasureSystem(scoreLayout.systems[1],1)];
+ const hint=$("hintMode").value;
+ sight.events.forEach(ev=>{
+  const staffY=scoreLayout.systems[ev.m];
+  const sys=systems[ev.m];
+  const yMid=staffY+2*scoreLayout.staffGap;
+  if(ev.t==="rest"){
+    const x=sys.start+ev.b*sys.unit+sys.unit*0.5;
+    drawQuarterRest(x,yMid);
+    return;
+  }
+  const positions=ev.notes.map(nt=>{
+    const localX=ev.notes.length===1 ? ev.d*0.5 : 0.18+(nt.off/Math.max(ev.d,0.001))*0.64;
+    const x=sys.start+(ev.b+localX)*sys.unit;
+    const y=noteYFromMidiAndDegree(nt.midi,nt.deg,staffY,nt.letter);
+    const targetIndex=nt.targetIndex;
+    if(targetIndex!==undefined){
+      sight.notePositions[targetIndex]={xPct:(x/W)*100,yPct:((y+34)/H)*100,source:"svg"};
+    }
+    return {...nt,x,y};
+  });
+  const avgY=positions.reduce((a,p)=>a+p.y,0)/Math.max(1,positions.length);
+  const stemDir=avgY < yMid ? "down":"up";
+  const stems=[];
+  positions.forEach(p=>{
+    drawLedgerLines(p.x,p.y,staffY);
+    if(p.showAccidental && (p.displayAccidental || p.accidental)){
+      scoreParts.push(`<text class="accidental" x="${p.x-30}" y="${p.y}">${p.displayAccidental || p.accidental}</text>`);
+    }
+    drawNoteHead(p.x,p.y,true);
+    stems.push(drawStem(p.x,p.y,stemDir));
+    if(hint!=="none"){
+      const txt=hint==="degree"?p.deg:(p.name || sightSc().degrees[p.deg-1]);
+      scoreParts.push(`<text x="${p.x}" y="${staffY+100}" font-size="14" font-weight="900" text-anchor="middle" fill="#6f756f">${txt}</text>`);
+    }
+  });
+  if(ev.t==="e")drawBeam(stems,stemDir,1);
+  if(ev.t==="s")drawBeam(stems,stemDir,2);
+  if(ev.t==="tri"){
+    drawBeam(stems,stemDir,1);
+    const x1=positions[0].x-14;
+    const x2=positions[positions.length-1].x+14;
+    const bracketY=stemDir==="up"?Math.min(...stems.map(s=>s.y))-10:Math.max(...stems.map(s=>s.y))+24;
+    drawTupletBracket(x1,x2,bracketY);
+  }
+ });
+ svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+ svg.innerHTML=scoreParts.join("");
+}
+
+function scheduleSightNotes(startTime, includeClick){
+ const beat=60/sight.bpm;
+ const clickMode=$("sightClickMode").value;
+ const countIn=getCountInBeats();
+ const noteStart=startTime+countIn*beat;
+ if(includeClick && clickMode!=="none"){
+   for(let b=0;b<countIn+8;b++){
+     const inCountIn=b<countIn;
+     if(clickMode==="all" || inCountIn)playTone(b%4===0?accentClickFreq():weakClickFreq(),startTime+b*beat,.05,"metro",b%4===0?.85:.6);
+   }
+ }
+ const playback=(sight.question&&sight.question.playback)?sight.question.playback:null;
+ if(playback){
+   playback.forEach(p=>playTone(midiFreq(p.midi),noteStart+p.time,.22,"note",.2));
+ }else{
+   sight.events.forEach(ev=>ev.notes.forEach(nt=>{
+     playTone(midiFreq(nt.midi),noteStart+(ev.m*4+ev.b+nt.off)*beat,.22,"note",.2);
+   }));
+ }
+}
+function playSight(){
+ ensureAudio();
+ if(!sight.events.length)makeSight();
+ const start=audioCtx.currentTime+.1;
+ scheduleSightNotes(start, true);
+}
+function startSight(){
+ ensureAudio();
+ stopSight();
+ sight.taps=[];sight.feedback=[];resetStats();clearScoreFeedback();sight.active=false;
+ const beat=60/sight.bpm;
+ const countIn=getCountInBeats();
+ let count=0,total=countIn+8;
+ sight.startPerf=performance.now()+countIn*beat*1000;
+ $("liveFeedback").textContent=countIn>0?`預備 ${countIn} 拍`:"開始";
+ $("liveFeedback").className=countIn>0?"live":"live good";
+ function tick(){
+  const clickMode=$("sightClickMode").value;
+  const inCountIn=count<countIn;
+  const playClick=clickMode!=="none" && (clickMode==="all" || inCountIn);
+  if(playClick)playTone(count%4===0?accentClickFreq():weakClickFreq(),audioCtx.currentTime+.01,.05,"metro",count%4===0?.85:.62);
+  highlight(count%4);
+  if(count===countIn){
+    sight.active=true;
+    $("liveFeedback").textContent="開始";
+    $("liveFeedback").className="live good";
+  }
+  count++;
+  if(count>total){
+    stopSight();
+    sight.active=false;
+    $("liveFeedback").textContent="結束";
+    analyze();
+  }
+ }
+ tick();
+ sight.timer=setInterval(tick,beat*1000);
+}
+function stopSight(){
+ if(sight.timer){clearInterval(sight.timer);sight.timer=null}
+}
+function highlight(i){
+ $("sightBeatBar").innerHTML=[0,1,2,3].map(x=>`<div class="beat ${x===i?"on":""}"></div>`).join("");
+}
+function targetToScorePosition(targetSeconds,targetIndex=null){
+ if(targetIndex!==null && sight.notePositions && sight.notePositions[targetIndex]){
+   return sight.notePositions[targetIndex];
+ }
+ const beat=60/sight.bpm;
+ const absoluteBeat=targetSeconds/beat;
+ const measure=Math.floor(absoluteBeat/4);
+ const beatInMeasure=absoluteBeat-measure*4;
+ const xPct=18+(beatInMeasure/4)*72;
+ const yPct=measure===0?42:80;
+ return {xPct,yPct,source:"beat"};
+}
+function feedbackSymbol(errMs){
+ const abs=Math.abs(errMs);
+ if(abs<45)return {symbol:"✓",label:"準",cls:"fbGood"};
+ if(errMs<0)return {symbol:"◀",label:"早",cls:"fbEarly"};
+ return {symbol:"▶",label:"晚",cls:"fbLate"};
+}
+function clearScoreFeedback(){
+ sight.feedback=[];
+ if($("scoreFeedbackLayer"))$("scoreFeedbackLayer").innerHTML="";
+}
+function addScoreFeedback(targetIndex,errMs){
+ const layer=$("scoreFeedbackLayer");
+ if(!layer || !sight.targets[targetIndex])return;
+ const pos=targetToScorePosition(sight.targets[targetIndex],targetIndex);
+ const f=feedbackSymbol(errMs);
+ const mark=document.createElement("div");
+ mark.className=`fbMark ${f.cls}`;
+ mark.style.left=pos.xPct+"%";
+ mark.style.top=pos.yPct+"%";
+ mark.textContent=f.symbol;
+ layer.appendChild(mark);
+ sight.feedback.push({targetIndex,errMs,kind:f.label});
+ if(layer.children.length>32)layer.removeChild(layer.firstElementChild);
+}
+
+function tapSight(){
+ if(!sight.startPerf || !sight.active)return;
+ let t=(performance.now()-sight.startPerf)/1000;
+ if(t<-.15)return;
+ sight.taps.push(t);
+ let nearest=sight.targets.reduce((best,tar,i)=>Math.abs(t-tar)<Math.abs(t-sight.targets[best])?i:best,0);
+ let err=(t-sight.targets[nearest])*1000, abs=Math.abs(err);
+ addScoreFeedback(nearest,err);
+ if($("allowLiveFeedback").checked){
+   $("liveFeedback").textContent=abs<45?`準 ${Math.round(err)}ms`:err>0?`晚 ${Math.round(err)}ms`:`早 ${Math.abs(Math.round(err))}ms`;
+   $("liveFeedback").className=`live ${abs<45?"good":abs<90?"warn":"bad"}`;
+ }
+ analyze();
+}
+function analyze(){
+ let targets=sight.targets,taps=sight.taps;
+ if(!targets.length||!taps.length)return;
+ let errs=[],used=new Set();
+ taps.forEach(t=>{
+  let best=0,bd=999;
+  targets.forEach((tar,i)=>{if(!used.has(i)&&Math.abs(t-tar)<bd){bd=Math.abs(t-tar);best=i}});
+  used.add(best);
+  errs.push((t-targets[best])*1000);
+ });
+ let abs=errs.map(Math.abs),avg=abs.reduce((a,b)=>a+b,0)/abs.length,max=Math.max(...abs),signed=errs.reduce((a,b)=>a+b,0)/errs.length;
+ let sd=Math.sqrt(errs.map(e=>(e-signed)**2).reduce((a,b)=>a+b,0)/errs.length);
+ $("avgErr").textContent=Math.round(avg)+" ms";
+ $("maxErr").textContent=Math.round(max)+" ms";
+ $("stability").textContent=Math.max(0,Math.round(100-sd))+"%";
+ $("bias").textContent=signed>0?`晚 ${Math.round(signed)}ms`:`早 ${Math.abs(Math.round(signed))}ms`;
+ $("sightFeedback").textContent=avg<45?"穩定。":avg<85?"可用，但要再修後半拍。":"誤差偏大，先降速或開提示。";
+}
+function resetStats(){
+ ["avgErr","maxErr","stability","bias"].forEach(id=>$(id).textContent="--");
+ $("sightFeedback").textContent="結果折疊，主畫面留給譜例與點擊。";
+ highlight(-1);
+}
+
+function renderSubRows(){
+ $("subdivisionBox").innerHTML=Object.entries(subdivisions).map(([k,s])=>`
+  <div class="subRow">
+    <div class="noteName">${s.label}<small>${s.name}</small></div>
+    <button class="toggleBtn ${s.on?"on":""}" onclick="toggleSub('${k}')">${s.on?"開":"關"}</button>
+    <input type="range" min="0" max="100" step="1" value="${Math.round(s.vol*100)}" oninput="setSubVolPercent('${k}',this.value)">
+    <input class="subNum" type="number" min="0" max="100" step="1" value="${Math.round(s.vol*100)}" onchange="setSubVolPercent('${k}',this.value)">
+    <input title="MIDI 音高" class="subNum" type="number" min="21" max="108" step="1" value="${s.midi}" onchange="setSubMidi('${k}',this.value)">
+  </div>`).join("");
+}
+function toggleSub(k){subdivisions[k].on=!subdivisions[k].on;renderSubRows()}
+function setSubVolPercent(k,v){
+ const pct=Math.max(0,Math.min(100,parseInt(v,10)||0));
+ subdivisions[k].vol=pct/100;
+ renderSubRows();
+}
+function setSubVol(k,v){setSubVolPercent(k,Math.round(parseFloat(v)*100))}
+function setSubMidi(k,v){
+ const midi=Math.max(21,Math.min(108,parseInt(v,10)||subdivisions[k].midi||84));
+ subdivisions[k].midi=midi;
+ renderSubRows();
+}
+function subFreq(k){return midiFreq(subdivisions[k].midi||84)}
+function subDur(k){return subdivisions[k].dur||.035}
+function clampNumber(value,min,max,fallback){
+ const raw=parseInt(value,10);
+ if(!Number.isFinite(raw))return fallback;
+ return Math.max(min,Math.min(max,raw));
+}
+function syncPair(sliderId,inputId,min,max,value){
+ const v=Math.max(min,Math.min(max,parseInt(value,10)||min));
+ $(sliderId).value=v;
+ $(inputId).value=v;
+ return v;
+}
+const allowedDenominators=[1,2,4,8,16,32];
+
+function nearestDenominator(value){
+ const raw=parseInt(value,10);
+ if(!Number.isFinite(raw))return 4;
+ return allowedDenominators.reduce((best,d)=>Math.abs(d-raw)<Math.abs(best-raw)?d:best,allowedDenominators[0]);
+}
+function denominatorToSliderValue(den){
+ const idx=allowedDenominators.indexOf(den);
+ return idx>=0?idx+1:3;
+}
+function sliderValueToDenominator(v){
+ const idx=Math.max(0,Math.min(allowedDenominators.length-1,(parseInt(v,10)||3)-1));
+ return allowedDenominators[idx];
+}
+function getCountInBeats(){
+ const raw=parseInt($("countInBeatsNum")?.value ?? $("countInBeats")?.value ?? 4,10);
+ return Math.max(0,Math.min(8,Number.isFinite(raw)?raw:4));
+}
+function syncCountIn(value){
+ const v=Math.max(0,Math.min(8,parseInt(value,10)||0));
+ if($("countInBeats"))$("countInBeats").value=v;
+ if($("countInBeatsNum"))$("countInBeatsNum").value=v;
+ return v;
+}
+
+function getMeter(){
+ const beats=clampNumber($("beatsInput").value,1,16,4);
+ const denom=nearestDenominator($("unitInput").value);
+ return {beats,denom};
+}
+function syncMeterDisplay(){
+ const {beats,denom}=getMeter();
+ $("beatsInput").value=beats;
+ $("beatsSlider").value=beats;
+ $("unitInput").value=denom;
+ $("unitSlider").value=denominatorToSliderValue(denom);
+ $("meterReadout").textContent=`${beats}/${denom}`;
+ $("beatCycleReadout").textContent=`每小節 ${beats} 拍`;
+ return {beats,denom};
+}
+function getMetroBpm(){
+ const raw=parseInt($("bpmInput").value,10);
+ if(!Number.isFinite(raw))return null;
+ return Math.max(30,Math.min(300,raw));
+}
+function updateMetroReadout(options={}){
+ const bpm=getMetroBpm();
+ if(bpm===null){
+   $("bpmReadout").textContent="--";
+   return null;
+ }
+ $("bpmReadout").textContent=bpm;
+ if(options.commit || options.sync)$("bpmInput").value=bpm;
+ if($("bpmSlider"))$("bpmSlider").value=bpm;
+ syncMeterDisplay();
+ if(options.resync && metro.on && audioCtx){
+   metro.step=0;
+   metro.next=audioCtx.currentTime+.05;
+ }
+ return bpm;
+}
+function updateBeatsPair(value,commit=false){
+ const beats=syncPair("beatsSlider","beatsInput",1,16,value);
+ syncMeterDisplay();
+ if(metro.on && commit){ stopMetro(); startMetro(); }
+ return beats;
+}
+function updateDenominatorPair(value,fromSlider=false,commit=false){
+ const denom=fromSlider?sliderValueToDenominator(value):nearestDenominator(value);
+ $("unitInput").value=denom;
+ $("unitSlider").value=denominatorToSliderValue(denom);
+ syncMeterDisplay();
+ if(metro.on && commit){ stopMetro(); startMetro(); }
+ return denom;
+}
+function startMetro(){
+ ensureAudio();
+ stopMetro();
+ const bpm=updateMetroReadout({commit:true});
+ if(bpm===null)return;
+ metro.on=true;
+ metro.step=0;
+ metro.next=audioCtx.currentTime+.05;
+ metro.timer=setInterval(scheduleMetro,25);
+}
+function stopMetro(){
+ metro.on=false;
+ if(metro.timer){clearInterval(metro.timer);metro.timer=null}
+}
+function scheduleMetro(){
+ if(!metro.on)return;
+ const bpm=updateMetroReadout();
+ if(bpm===null)return;
+ const {beats}=getMeter();
+ const stepsPerBeat=4;
+ const stepsPerBar=beats*stepsPerBeat;
+ const beatDur=60/bpm;
+ const gridDur=beatDur/stepsPerBeat;
+ while(metro.next<audioCtx.currentTime+.12){
+  const step=metro.step;
+  const stepInBeat=step%stepsPerBeat;
+  const beatStart=stepInBeat===0;
+  const barStart=step%stepsPerBar===0;
+  if(subdivisions.q.on&&beatStart)playTone(barStart?accentClickFreq():subFreq("q"),metro.next,subDur("q"),"metro",subdivisions.q.vol);
+  if(subdivisions.e.on&&step%2===0)playTone(subFreq("e"),metro.next,subDur("e"),"metro",subdivisions.e.vol);
+  if(subdivisions.s.on)playTone(subFreq("s"),metro.next,subDur("s"),"metro",subdivisions.s.vol);
+  if(subdivisions.off.on&&stepInBeat===2)playTone(subFreq("off"),metro.next,subDur("off"),"metro",subdivisions.off.vol);
+  if(subdivisions.tr.on&&beatStart){
+    for(let i=0;i<3;i++)playTone(subFreq("tr"),metro.next+i*beatDur/3,subDur("tr"),"metro",subdivisions.tr.vol);
+  }
+  metro.step++;
+  metro.next+=gridDur;
+ }
+}
+
+$("metroStart").onclick=startMetro;
+$("metroStop").onclick=stopMetro;
+$("bpmSlider").addEventListener("input",e=>{syncPair("bpmSlider","bpmInput",30,300,e.target.value);updateMetroReadout({resync:true});});
+$("bpmInput").addEventListener("input",()=>updateMetroReadout({resync:true}));
+$("bpmInput").addEventListener("change",()=>updateMetroReadout({commit:true,resync:true}));
+$("beatsSlider").addEventListener("input",e=>updateBeatsPair(e.target.value,false));
+$("beatsSlider").addEventListener("change",e=>updateBeatsPair(e.target.value,true));
+$("beatsInput").addEventListener("input",e=>updateBeatsPair(e.target.value,false));
+$("beatsInput").addEventListener("change",e=>updateBeatsPair(e.target.value,true));
+$("unitSlider").addEventListener("input",e=>updateDenominatorPair(e.target.value,true,false));
+$("unitSlider").addEventListener("change",e=>updateDenominatorPair(e.target.value,true,true));
+$("unitInput").addEventListener("input",e=>updateDenominatorPair(e.target.value,false,false));
+$("unitInput").addEventListener("change",e=>updateDenominatorPair(e.target.value,false,true));
+
+function setSoundParam(key,pct){
+ const limits={master:[0,400],noteVol:[0,250],metroVol:[0,300],brightness:[0,100],clickNoise:[0,100]};
+ const [min,max]=limits[key];
+ const v=Math.max(min,Math.min(max,parseInt(pct,10)||0));
+ sound[key]=v/100;
+ const ids={master:["masterVol","masterVolNum"],noteVol:["noteVol","noteVolNum"],metroVol:["metroVol","metroVolNum"],brightness:["brightness","brightnessNum"],clickNoise:["clickNoise","clickNoiseNum"]}[key];
+ $(ids[0]).value=v;
+ $(ids[1]).value=v;
+ if(key==="master" && masterGain)masterGain.gain.value=sound.master;
+}
+function setFreqParam(key,value){
+ const limits={a4Hz:[415,466],detuneCent:[-50,50],manualMidi:[21,108],harmonicMix:[0,100],attackMs:[0,300],releaseMs:[20,1200],filterHz:[20,20000],accentClickMidi:[21,108],weakClickMidi:[21,108]};
+ const [min,max]=limits[key];
+ const raw=parseInt(value,10);
+ const v=Math.max(min,Math.min(max,Number.isFinite(raw)?raw:min));
+ const ids={a4Hz:["a4Hz","a4HzNum"],detuneCent:["detuneCent","detuneCentNum"],manualMidi:["manualMidi","manualMidiNum"],harmonicMix:["harmonicMix","harmonicMixNum"],attackMs:["attackMs","attackMsNum"],releaseMs:["releaseMs","releaseMsNum"],filterHz:["filterHz","filterHzNum"],accentClickMidi:["accentClickMidi","accentClickMidiNum"],weakClickMidi:["weakClickMidi","weakClickMidiNum"]}[key];
+ $(ids[0]).value=v;
+ $(ids[1]).value=v;
+ if(key==="harmonicMix")sound[key]=v/100;
+ else sound[key]=v;
+}
+function updateSoundText(){
+ setSoundParam("master",Math.round(sound.master*100));
+ setSoundParam("noteVol",Math.round(sound.noteVol*100));
+ setSoundParam("metroVol",Math.round(sound.metroVol*100));
+ setSoundParam("brightness",Math.round(sound.brightness*100));
+ setSoundParam("clickNoise",Math.round(sound.clickNoise*100));
+ setFreqParam("a4Hz",sound.a4Hz);
+ setFreqParam("detuneCent",sound.detuneCent);
+ setFreqParam("manualMidi",sound.manualMidi);
+ setFreqParam("harmonicMix",Math.round(sound.harmonicMix*100));
+ setFreqParam("attackMs",sound.attackMs);
+ setFreqParam("releaseMs",sound.releaseMs);
+ setFreqParam("filterHz",sound.filterHz);
+ setFreqParam("accentClickMidi",sound.accentClickMidi);
+ setFreqParam("weakClickMidi",sound.weakClickMidi);
+}
+[
+ ["masterVol","masterVolNum","master"],
+ ["noteVol","noteVolNum","noteVol"],
+ ["metroVol","metroVolNum","metroVol"],
+ ["brightness","brightnessNum","brightness"],
+ ["clickNoise","clickNoiseNum","clickNoise"]
+].forEach(([slider,input,key])=>{
+ $(slider).addEventListener("input",e=>setSoundParam(key,e.target.value));
+ $(input).addEventListener("input",e=>setSoundParam(key,e.target.value));
+ $(input).addEventListener("change",e=>setSoundParam(key,e.target.value));
+});
+[
+ ["a4Hz","a4HzNum","a4Hz"],
+ ["detuneCent","detuneCentNum","detuneCent"],
+ ["manualMidi","manualMidiNum","manualMidi"],
+ ["harmonicMix","harmonicMixNum","harmonicMix"],
+ ["attackMs","attackMsNum","attackMs"],
+ ["releaseMs","releaseMsNum","releaseMs"],
+ ["filterHz","filterHzNum","filterHz"],
+ ["accentClickMidi","accentClickMidiNum","accentClickMidi"],
+ ["weakClickMidi","weakClickMidiNum","weakClickMidi"]
+].forEach(([slider,input,key])=>{
+ $(slider).addEventListener("input",e=>setFreqParam(key,e.target.value));
+ $(input).addEventListener("input",e=>setFreqParam(key,e.target.value));
+ $(input).addEventListener("change",e=>setFreqParam(key,e.target.value));
+});
+function applyTonePreset(name){
+ const presets={
+  electro:{waveform:"square",harmonicMix:28,attackMs:2,releaseMs:90,filterHz:7800},
+  pure:{waveform:"sine",harmonicMix:0,attackMs:8,releaseMs:240,filterHz:4200},
+  soft:{waveform:"triangle",harmonicMix:12,attackMs:45,releaseMs:420,filterHz:2600},
+  bright:{waveform:"sawtooth",harmonicMix:35,attackMs:8,releaseMs:220,filterHz:6200},
+  square:{waveform:"square",harmonicMix:20,attackMs:6,releaseMs:180,filterHz:5200},
+  brass:{waveform:"sawtooth",harmonicMix:48,attackMs:18,releaseMs:260,filterHz:3600},
+  mallet:{waveform:"triangle",harmonicMix:22,attackMs:2,releaseMs:90,filterHz:4800}
+ };
+ const p=presets[name]||presets.brass;
+ if($("tonePreset"))$("tonePreset").value=name;
+ sound.waveform=p.waveform;
+ setFreqParam("harmonicMix",p.harmonicMix);
+ setFreqParam("attackMs",p.attackMs);
+ setFreqParam("releaseMs",p.releaseMs);
+ setFreqParam("filterHz",p.filterHz);
+}
+$("tonePreset").addEventListener("change",e=>applyTonePreset(e.target.value));
+$("applyPresetBtn").onclick=()=>applyTonePreset($("tonePreset").value);
+$("testNoteBtn").onclick=()=>playMidiSeq([48,52,55,60]);
+$("testClickBtn").onclick=()=>{ensureAudio();let t=audioCtx.currentTime+.05;playTone(accentClickFreq(),t,.06,"metro",.9);playTone(weakClickFreq(),t+.35,.045,"metro",.6)};
+$("testFreqBtn").onclick=()=>{ensureAudio();playTone(sound.a4Hz,audioCtx.currentTime+.05,.8,"note",.22)};
+$("testRootBtn").onclick=()=>{ensureAudio();playTone(midiFreq(sc().baseMidi),audioCtx.currentTime+.05,.8,"note",.22)};
+$("testManualFreqBtn").onclick=()=>{ensureAudio();playTone(manualMidiFreq(),audioCtx.currentTime+.05,.8,"note",.22)};
+$("testMixBtn").onclick=()=>{ensureAudio();let t=audioCtx.currentTime+.05;[48,52,55,60].forEach((m,i)=>playTone(midiFreq(m),t+i*.45,.32,"note",.18));[0,.5,1,1.5,2].forEach((b,i)=>playTone(i===0?accentClickFreq():weakClickFreq(),t+b,.045,"metro",i===0?.8:.45))};
+
+$("toggleSightPanel").onclick=()=>$("sightPanel").classList.toggle("open");
+$("makeSight").onclick=makeSight;
+$("startSight").onclick=startSight;
+$("playSight").onclick=playSight;
+$("tapPad").onclick=tapSight;
+["sightLevel","hintMode","rangeMode","sightKeyMode","sightFixedKey","sightClickMode","allowRest","allowTriplet","allowLiveFeedback"].forEach(id=>{
+ $(id).addEventListener("change",()=>{if(["hintMode"].includes(id))drawScore();else makeSight();});
+});
+$("tempoRange").addEventListener("change",()=>{updateCustomBpmVisibility();makeSight();});
+$("customSightBpmSlider").addEventListener("input",e=>syncCustomSightBpm(e.target.value,true));
+$("customSightBpm").addEventListener("input",e=>{
+ const raw=parseInt(e.target.value,10);
+ if(Number.isFinite(raw) && raw>=30 && raw<=300)syncCustomSightBpm(raw,true);
+});
+$("customSightBpm").addEventListener("change",e=>syncCustomSightBpm(e.target.value,true));
+$("countInBeats").addEventListener("input",e=>syncCountIn(e.target.value));
+$("countInBeatsNum").addEventListener("input",e=>syncCountIn(e.target.value));
+$("countInBeatsNum").addEventListener("change",e=>syncCountIn(e.target.value));
+
+$("scoreHeight").addEventListener("input",e=>{syncPair("scoreHeight","scoreHeightNum",320,700,e.target.value);applyAppSettings();});
+$("scoreHeightNum").addEventListener("input",e=>{syncPair("scoreHeight","scoreHeightNum",320,700,e.target.value);applyAppSettings();});
+$("dataDensity").addEventListener("change",applyAppSettings);
+$("defaultPage").addEventListener("change",applyAppSettings);
+$("saveSettingsBtn").addEventListener("click",()=>{
+ localStorage.setItem("brassgridSettings",JSON.stringify({scoreHeight:$("scoreHeightNum").value,dataDensity:$("dataDensity").value,defaultPage:$("defaultPage").value}));
+ if($("settingsStatus"))$("settingsStatus").textContent="設定已儲存到本機。";
+});
+(function loadSettings(){
+ try{
+   const s=JSON.parse(localStorage.getItem("brassgridSettings")||"{}");
+   if(s.scoreHeight)syncPair("scoreHeight","scoreHeightNum",320,700,s.scoreHeight);
+   if(s.dataDensity)$("dataDensity").value=s.dataDensity;
+   if(s.defaultPage)$("defaultPage").value=s.defaultPage;
+ }catch(e){}
+})();
+
+populateSightKeyOptions();
+updateSightKeyModeUI();
+initScoreResizeObserver();
+render();
+updateMetroReadout({sync:true});
+updateBeatsPair($("beatsInput").value,false);
+updateSoundText();
+applyAppSettings();
+updateCustomBpmVisibility();
+updateNextButtonVisibility(currentPage);
+makeSight();
+(function openDefaultPage(){
+ try{
+   const s=JSON.parse(localStorage.getItem("brassgridSettings")||"{}");
+   if(s.defaultPage && s.defaultPage!==currentPage)showPage(s.defaultPage);
+ }catch(e){}
+})();
+</script>
+</body>
+</html>
