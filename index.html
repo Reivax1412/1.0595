@@ -4,264 +4,388 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="application-name" content="¹²√2" />
-<title>¹²√2｜多軌節拍器</title>
+<meta name="theme-color" content="#050608" />
+<title>¹²√2｜Metronome</title>
 <style>
 :root{
-  --bg:#05070a;
-  --panel:#0b1016;
-  --card:#0f1620;
-  --card2:#121b27;
-  --line:#243140;
-  --line2:#334456;
-  --text:#eef3f8;
-  --muted:#8f9aaa;
-  --accent:#8bd3ff;
-  --ok:#b7f7d3;
-  --danger:#ff9b85;
-  --warn:#ffd36e;
-  --radius:22px;
+  --bg:#050608;
+  --panel:#0b0d12;
+  --card:#11141b;
+  --card2:#151922;
+  --text:#f3f4f6;
+  --muted:#8b93a3;
+  --line:#242a36;
+  --soft:#1a202b;
+  --accent:#e5e7eb;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --danger:#ef4444;
+  --radius:18px;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{min-height:100%}
 body{
   margin:0;
-  background:radial-gradient(circle at top,#111927 0,#05070a 44%,#030407 100%);
+  background:radial-gradient(circle at top,#111827 0,#050608 46%,#030405 100%);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",Arial,sans-serif;
-  line-height:1.45;
 }
-button,input,select{
-  font:inherit;
+button,input,select,textarea{font:inherit;color:var(--text)}
+button{
   border:1px solid var(--line);
+  background:var(--soft);
+  border-radius:999px;
+  padding:11px 14px;
+  font-weight:900;
+  cursor:pointer;
+}
+button.primary{background:var(--accent);color:#08090c;border-color:var(--accent)}
+button.ghost{background:transparent}
+button.danger{background:#2a1113;color:#fecaca;border-color:#5b1c22}
+button.on{background:#15331f;color:#bbf7d0;border-color:#2f6d41}
+input,select,textarea{
+  width:100%;
+  border:1px solid var(--line);
+  background:#080a0f;
   border-radius:14px;
-  background:#080d13;
-  color:var(--text);
-  font-weight:850;
+  padding:11px 12px;
   outline:none;
+  font-weight:850;
 }
-button{cursor:pointer;padding:11px 13px;transition:.08s ease;min-height:42px}
-button:active{transform:scale(.985)}
-button.primary{background:var(--accent);border-color:var(--accent);color:#041018}
-button.stop{background:#1e1115;border-color:#4a2830;color:#ffd8d0}
-button.ghost{background:#101925}
-button.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(139,211,255,.12)}
-input,select{width:100%;padding:10px 10px;text-align:center}
-input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,211,255,.1)}
-input[type=checkbox]{width:18px;height:18px;accent-color:#8bd3ff}
-.app{max-width:1160px;margin:0 auto;padding:18px 14px 80px}
-.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:6px 0 16px}
-.brand b{font-size:2.15rem;line-height:1;font-weight:950;letter-spacing:-.06em}.brand{display:flex;align-items:center;min-height:42px}
-.state{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem;font-weight:950}.dot{width:9px;height:9px;border-radius:999px;background:#3b4654}.dot.on{background:var(--ok);box-shadow:0 0 0 6px rgba(183,247,211,.08)}
-.layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:14px;align-items:start}
-.panel{background:rgba(11,16,22,.88);border:1px solid var(--line);border-radius:26px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);backdrop-filter:blur(10px)}
-.panel h2{font-size:.95rem;margin:0 0 10px}.label{margin:0 0 5px;color:var(--muted);font-size:.7rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
-.bpmBox{text-align:center}.bpmNum{font-size:4rem;line-height:.95;font-weight:950;letter-spacing:-.07em;margin:6px 0 10px}.bpmNum small{font-size:1rem;color:var(--muted);letter-spacing:0;margin-left:6px}
-.mainActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.mainActions button{min-height:52px;font-size:1rem}.mainActions button:first-child{grid-column:auto}
-.compactGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{background:#080d13;border:1px solid var(--line);border-radius:18px;padding:10px}.field input{font-size:1.02rem}.miniStatus{min-height:1.1em;text-align:center;font-size:.78rem;color:var(--muted);font-weight:850;margin-top:10px}
-.preset{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}.preset button{padding:9px 7px;min-height:38px;font-size:1.18rem;line-height:1}
-.visual{display:grid;grid-template-columns:repeat(16,1fr);gap:5px;margin-top:13px}.led{height:9px;border-radius:999px;background:#172332;border:1px solid #1e2a39}.led.on{background:var(--accent);box-shadow:0 0 16px rgba(139,211,255,.42)}
-.tracks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.track{background:linear-gradient(180deg,#121b27,#0d141d);border:1px solid var(--line);border-radius:22px;padding:13px;transition:.06s ease}.track.flash{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,211,255,.12)}.track.play{outline:2px solid rgba(183,247,211,.20)}
-.trackTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.trackName{font-size:.96rem;font-weight:950}.switch{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.72rem;font-weight:950}
-.split{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:left!important;font-size:.9rem!important}.params{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.param label{display:block;color:var(--muted);font-size:.68rem;font-weight:950;margin-bottom:4px}.param input,.param select{padding:8px;border-radius:12px;background:#080d13;font-size:.88rem}
-.trackBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.trackBtns button{font-size:.8rem;padding:8px;min-height:36px}.trackDetails{margin-top:9px;padding:9px;border-radius:15px;background:#0a1018}.paramToggle{width:100%;padding:9px 10px;background:#0d1520;border-color:var(--line);font-size:.8rem;text-align:left;display:flex;justify-content:space-between;align-items:center}.paramToggle::after{content:"＋";color:var(--muted)}.paramToggle.open::after{content:"－"}.trackDetails .params{margin-top:8px}.trackDetails .params.hidden{display:none}
-details{margin-top:14px;background:rgba(11,16,22,.70);border:1px solid var(--line);border-radius:20px;padding:12px}summary{cursor:pointer;list-style:none;font-weight:950;font-size:.92rem}summary::-webkit-details-marker{display:none}summary::after{content:"＋";float:right;color:var(--muted)}details[open] summary::after{content:"－"}.help{color:var(--muted);font-size:.84rem;margin:.65rem 0 0;padding-left:1.1rem}.help li{margin:.35rem 0}.hint{font-size:.78rem;color:var(--muted);font-weight:850;margin:.5rem 0 0}
+textarea{resize:vertical;min-height:44px}
+input:focus,select:focus,textarea:focus{border-color:#64748b;box-shadow:0 0 0 3px rgba(100,116,139,.18)}
+.app{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) 390px}
+.main{display:flex;align-items:center;justify-content:center;padding:24px}
+.core{width:min(620px,100%)}
+.topLine{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.logo{font-size:4.2rem;font-weight:1000;letter-spacing:-.08em;line-height:1}
+.menuBtn{display:none;width:46px;height:46px;padding:0;border-radius:14px}
+.card{
+  background:rgba(17,20,27,.86);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:0 18px 50px rgba(0,0,0,.25);
+}
+.bpmGrid{display:grid;grid-template-columns:1fr 130px;gap:10px;align-items:end}
+.bpmDisplay{font-size:5.2rem;font-weight:1000;letter-spacing:-.06em;line-height:.95;text-align:center;margin:14px 0 18px}
+.bpmDisplay span{font-size:1.2rem;color:var(--muted);letter-spacing:0;margin-left:8px}
+.actions{display:grid;grid-template-columns:1.2fr .8fr;gap:10px}
+.actions button{font-size:1.04rem;padding:15px 14px;border-radius:16px}
+.presets{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+.presets button{border-radius:15px;font-size:1.2rem;padding:13px 8px}
+.status{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pill{background:#080a0f;border:1px solid var(--line);border-radius:999px;padding:9px 12px;color:var(--muted);font-size:.82rem;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.leds{display:grid;grid-template-columns:repeat(16,1fr);gap:5px;margin-top:16px}
+.led{height:9px;border-radius:999px;background:#202633;transition:.05s ease}
+.led.on{background:#f8fafc;box-shadow:0 0 12px rgba(248,250,252,.35)}
+.sidebar{
+  background:rgba(11,13,18,.96);
+  border-left:1px solid var(--line);
+  height:100vh;
+  overflow:auto;
+  padding:16px;
+}
+.sideHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:linear-gradient(var(--panel) 72%,rgba(11,13,18,.85));z-index:5;padding-bottom:12px;margin-bottom:8px}
+.sideTitle{font-size:1.04rem;font-weight:1000}.sideSub{font-size:.78rem;color:var(--muted);margin-top:2px}.closeBtn{display:none;width:42px;height:42px;padding:0;border-radius:14px}
+.section{border:1px solid var(--line);background:var(--card);border-radius:18px;margin:10px 0;overflow:hidden}
+.secBtn{width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:0;border-radius:0;padding:14px 15px;text-align:left}.secBtn b{font-size:.94rem}.secBtn span{color:var(--muted)}
+.secBody{display:none;padding:0 15px 15px}.section.open .secBody{display:block}.section.open .secBtn span{transform:rotate(45deg)}
+.track{background:#0b0e14;border:1px solid var(--line);border-radius:16px;padding:13px;margin:10px 0}.track.flash{outline:2px solid rgba(248,250,252,.32)}
+.trackTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.trackTop b{font-size:.95rem}.miniBtns{display:flex;gap:6px}.miniBtns button{padding:8px 10px;border-radius:12px;font-size:.78rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.field{margin:8px 0}.field label{display:block;font-size:.68rem;color:var(--muted);font-weight:1000;letter-spacing:.08em;margin:0 0 5px}.tiny{font-size:.78rem;color:var(--muted);line-height:1.55}.helpTable{width:100%;border-collapse:collapse;font-size:.78rem}.helpTable th,.helpTable td{border-top:1px solid var(--line);padding:8px 4px;text-align:left;vertical-align:top}.helpTable th{color:var(--muted);font-weight:1000;width:72px}.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:20}.copyNote{font-size:.76rem;color:var(--muted);margin-top:8px}
 @media(max-width:900px){
-  .app{padding:14px 10px 76px}.top{margin-top:2px}.layout{grid-template-columns:1fr}.panel{padding:14px;border-radius:22px}.bpmNum{font-size:3.35rem}.tracks{grid-template-columns:1fr}.preset{grid-template-columns:repeat(5,minmax(54px,1fr));overflow-x:auto}.visual{grid-template-columns:repeat(8,1fr)}.controlPanel{position:sticky;top:0;z-index:5;background:linear-gradient(rgba(5,7,10,.96),rgba(5,7,10,.88));backdrop-filter:blur(10px)}
+  .app{display:block}.main{min-height:100vh;padding:18px 12px}.logo{font-size:3.8rem}.menuBtn{display:block}.bpmDisplay{font-size:4.5rem}.sidebar{position:fixed;top:0;right:0;width:min(92vw,390px);z-index:30;transform:translateX(105%);transition:.2s ease;box-shadow:-24px 0 70px rgba(0,0,0,.45)}.sidebar.open{transform:translateX(0)}.overlay.show{display:block}.closeBtn{display:block}.status{grid-template-columns:1fr}.presets{grid-template-columns:repeat(5,1fr)}.bpmGrid{grid-template-columns:1fr}.actions{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}.logo{letter-spacing:-.09em}
 }
-@media(min-width:901px){.controlPanel{position:sticky;top:14px}}
-@media(max-width:430px){.brand b{font-size:1.85rem}.mainActions{grid-template-columns:1fr}.compactGrid,.params{grid-template-columns:1fr}.bpmNum{font-size:3rem}.preset{grid-template-columns:repeat(5,64px)}}
+@media(max-width:430px){.logo{font-size:3.35rem}.bpmDisplay{font-size:3.9rem}.presets button{font-size:1rem;padding:12px 4px}.card{padding:15px}.main{align-items:flex-start;padding-top:24px}}
 </style>
 </head>
 <body>
+<div class="overlay" id="overlay"></div>
 <div class="app">
-  <header class="top">
-    <div class="brand"><b>¹²√2</b></div>
-    <div class="state"><i class="dot" id="dot"></i><span id="state">停止</span></div>
-  </header>
-
-  <main class="layout">
-    <section class="panel controlPanel">
-      <div class="compactGrid">
-        <div class="field"><p class="label">BPM</p><input id="bpm" type="number" min="10" max="1000" value="120" inputmode="numeric"></div>
-        <div class="field"><p class="label">Gain</p><input id="gain" type="number" min="1" max="5" step="0.1" value="3.2" inputmode="decimal"></div>
+  <main class="main">
+    <section class="core">
+      <div class="topLine">
+        <div class="logo">¹²√2</div>
+        <button class="menuBtn" id="openSide" aria-label="Open settings">☰</button>
       </div>
-      <div class="mainActions">
-        <button id="toggle" class="primary">Start</button>
-        <button id="tap" class="ghost">Tap</button>
-      </div>
-      <div class="visual" id="visual"></div>
-      <div class="miniStatus" id="mediaState">通知欄：自動</div>
-
-      <details open>
-        <summary>常用</summary>
-        <div class="preset">
-          <button data-set="quarter">♩</button>
-          <button data-set="eighth">♪</button>
-          <button data-set="triplet" title="三連音">♩³</button>
-          <button data-set="sixteenth">𝅘𝅥𝅯</button>
-          <button data-set="mute" title="靜音">𝄽</button>
+      <div class="card">
+        <div class="bpmGrid">
+          <input id="bpm" type="number" min="10" max="1000" step="1" value="120" inputmode="numeric" aria-label="BPM" />
+          <input id="gain" type="number" min="1" max="4" step="0.1" value="2.5" aria-label="Gain" />
         </div>
-      </details>
-
-      <details>
-        <summary>說明｜Help</summary>
-        <ul class="help">
-          <li><b>BPM</b>：速度。輸入 10–1000。｜Tempo. Enter 10–1000.</li>
-          <li><b>Start / Stop</b>：同一鍵切換播放與停止。｜One button toggles play and stop.</li>
-          <li><b>Tap</b>：連點抓速度。｜Tap repeatedly to set BPM.</li>
-          <li><b>Gain</b>：總響度。太刺耳就降低。｜Master loudness. Lower it if harsh.</li>
-          <li><b>Track</b>：四軌同步疊加，不是四拍循環。｜Four tracks play stacked, not as four beats.</li>
-          <li><b>Split</b>：輸入 0–1 的拍內位置。空白＝不播放。｜Enter positions from 0–1. Blank = silent.</li>
-          <li><b>例</b>：0＝主拍；0,0.5＝兩下；0,0.25,0.5,0.75＝四下。｜Examples: 0 = downbeat; 0,0.5 = two hits; 0,0.25,0.5,0.75 = four hits.</li>
-          <li><b>ON</b>：開關該軌。｜Enable or mute the track.</li>
-          <li><b>Vol</b>：該軌音量。｜Track volume.</li>
-          <li><b>MIDI / Hz</b>：音高。改 MIDI 會換算 Hz；改 Hz 會回推 MIDI。｜Pitch. MIDI and Hz update each other.</li>
-          <li><b>Len</b>：聲音長度，ms。｜Click length in milliseconds.</li>
-          <li><b>Wave</b>：波形音色。｜Waveform tone color.</li>
-          <li><b>Param</b>：展開軌道音量、音高、長度與波形。｜Open track volume, pitch, length, and waveform.</li>
-          <li><b>Play</b>：試聽該軌；改參數會立即回饋。｜Preview the track; edits give instant feedback.</li>
-          <li><b>通知欄</b>：預設啟用，可播放、暫停、停止。｜Media controls are on by default: play, pause, stop.</li>
-        </ul>
-        <p class="hint">手機建議用 Chrome / Safari；通知欄顯示依瀏覽器支援而定。｜Use Chrome / Safari on mobile; notification controls depend on browser support.</p>
-      </details>
-    </section>
-
-    <section>
-      <div class="tracks" id="tracks"></div>
+        <div class="bpmDisplay"><b id="bpmText">120</b><span>BPM</span></div>
+        <div class="actions">
+          <button id="toggle" class="primary">Start</button>
+          <button id="tap">Tap</button>
+        </div>
+        <div class="presets" aria-label="Presets">
+          <button data-preset="quarter">♩</button>
+          <button data-preset="eighth">♪</button>
+          <button data-preset="triplet">♩³</button>
+          <button data-preset="sixteenth">𝅘𝅥𝅯</button>
+          <button data-preset="mute">𝄽</button>
+        </div>
+        <div class="leds" id="leds"></div>
+        <div class="status">
+          <div class="pill" id="playStatus">Stopped</div>
+          <div class="pill" id="mediaStatus">Media: ready</div>
+        </div>
+      </div>
     </section>
   </main>
-</div>
 
-<script>
-'use strict';
-const $ = id => document.getElementById(id);
-let audioCtx=null, master=null, limiter=null;
-let running=false, timer=null, nextTime=0, taps=[], previewStamp=0;
-const tracks = [
-  {on:true,  split:'0',                   vol:2.0, midi:84, hz:0, len:45, wave:'square'},
-  {on:false, split:'0.5',                 vol:1.4, midi:76, hz:0, len:34, wave:'square'},
-  {on:false, split:'0.333333,0.666667',   vol:1.1, midi:79, hz:0, len:30, wave:'triangle'},
-  {on:false, split:'0.25,0.5,0.75',       vol:0.9, midi:91, hz:0, len:22, wave:'square'}
-];
-function midiToHz(m){return +(440*Math.pow(2,(Number(m)-69)/12)).toFixed(3)}
-function hzToMidi(h){return Math.max(0,Math.min(127,Math.round(69+12*Math.log2(Number(h)/440))))}
-const paramOpen=[false,false,false,false];
-tracks.forEach(t=>t.hz=midiToHz(t.midi));
-function bpm(){return Math.max(10,Math.min(1000,parseInt($('bpm').value,10)||120))}
-function beat(){return 60/bpm()}
-function gain(){return Math.max(1,Math.min(5,parseFloat($('gain').value)||3.2))}
-function ensureAudio(){
-  if(!audioCtx){
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    master=audioCtx.createGain();
-    limiter=audioCtx.createDynamicsCompressor();
-    limiter.threshold.value=-8; limiter.knee.value=4; limiter.ratio.value=18; limiter.attack.value=.002; limiter.release.value=.05;
-    master.connect(limiter); limiter.connect(audioCtx.destination);
-  }
-  if(audioCtx.state==='suspended') audioCtx.resume();
-  master.gain.setValueAtTime(gain(), audioCtx.currentTime);
-}
-function parseSplit(s){
-  const raw=(s||'').trim(); if(!raw) return [];
-  return raw.split(/[，,\s]+/).map(Number).filter(n=>Number.isFinite(n)&&n>=0&&n<1).sort((a,b)=>a-b);
-}
-function playTone(t, when){
-  ensureAudio();
-  const dur=Math.max(5,Math.min(250,Number(t.len)||30))/1000;
-  const osc=audioCtx.createOscillator(), g=audioCtx.createGain(), hp=audioCtx.createBiquadFilter();
-  osc.type=t.wave||'square'; osc.frequency.setValueAtTime(Math.max(8,Number(t.hz)||440),when);
-  hp.type='highpass'; hp.frequency.setValueAtTime(360,when);
-  const amp=Math.max(.0001,Math.min(4,Number(t.vol)||0)*.18);
-  g.gain.setValueAtTime(.0001,when); g.gain.exponentialRampToValueAtTime(amp,when+.003); g.gain.exponentialRampToValueAtTime(.0001,when+dur);
-  osc.connect(hp); hp.connect(g); g.connect(master); osc.start(when); osc.stop(when+dur+.02);
-  const nd=Math.min(.016,dur);
-  if(nd>.006){
-    const buf=audioCtx.createBuffer(1,Math.max(1,Math.floor(audioCtx.sampleRate*nd)),audioCtx.sampleRate), data=buf.getChannelData(0);
-    for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,2);
-    const n=audioCtx.createBufferSource(), ng=audioCtx.createGain(), nf=audioCtx.createBiquadFilter();
-    nf.type='highpass'; nf.frequency.setValueAtTime(1800,when); ng.gain.setValueAtTime(amp*.15,when); ng.gain.exponentialRampToValueAtTime(.0001,when+nd);
-    n.buffer=buf; n.connect(nf); nf.connect(ng); ng.connect(master); n.start(when); n.stop(when+nd);
-  }
-}
-function pulse(){const d=$('dot'); d.classList.add('on'); clearTimeout(d._t); d._t=setTimeout(()=>d.classList.remove('on'),90)}
-function flash(i){const e=$('track'+i); if(!e)return; e.classList.add('flash'); clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove('flash'),105)}
-function preview(i,force=false){
-  const now=performance.now(); if(!force && now-previewStamp<35)return; previewStamp=now;
-  if(!tracks[i].on) return flash(i);
-  ensureAudio(); playTone(tracks[i],audioCtx.currentTime+.01); flash(i); pulse();
-}
-function scheduleBeat(base){
-  const b=beat();
-  tracks.forEach((t,i)=>{ if(!t.on)return; parseSplit(t.split).forEach(p=>{
-    const at=base+p*b; playTone(t,at);
-    setTimeout(()=>{setLed(Math.round(p*16)%16); flash(i); pulse()}, Math.max(0,(at-audioCtx.currentTime)*1000));
-  })});
-}
-function loop(){while(nextTime<audioCtx.currentTime+.085){scheduleBeat(nextTime); nextTime+=beat()}}
-function updateToggle(){ const b=$('toggle'); if(!b)return; b.textContent=running?'Stop':'Start'; b.classList.toggle('stop',running); b.classList.toggle('primary',!running); }
-function start(){ensureAudio(); stop(false); running=true; $('state').textContent='播放中'; nextTime=audioCtx.currentTime+.025; timer=setInterval(loop,8); updateToggle(); updateMedia()}
-function stop(clear=true){running=false; if(timer){clearInterval(timer); timer=null} $('state').textContent='停止'; if(clear)setLed(-1); updateToggle(); updateMedia()}
-function renderLeds(){$('visual').innerHTML=Array.from({length:16},(_,i)=>`<div class="led" id="led${i}"></div>`).join('')}
-function setLed(i){document.querySelectorAll('.led').forEach((e,idx)=>e.classList.toggle('on',idx===i))}
-function toggleParam(i){ paramOpen[i]=!paramOpen[i]; renderTracks(); }
-function renderTracks(){
-  $('tracks').innerHTML=tracks.map((t,i)=>`<article class="track" id="track${i}">
-    <div class="trackTop"><div class="trackName">Track ${i+1}</div><label class="switch"><input type="checkbox" ${t.on?'checked':''} onchange="setTrack(${i},'on',this.checked,false)">ON</label></div>
-    <div class="param"><label>Split</label><input class="split" value="${t.split}" placeholder="0,0.5" oninput="setTrack(${i},'split',this.value,true)"></div>
-    <div class="trackDetails">
-      <button class="paramToggle ${paramOpen[i]?'open':''}" type="button" aria-expanded="${paramOpen[i]?'true':'false'}" onclick="toggleParam(${i})">Param</button>
-      <div class="params ${paramOpen[i]?'':'hidden'}" id="params${i}">
-        <div class="param"><label>Vol</label><input type="number" min="0" max="4" step="0.05" value="${t.vol}" inputmode="decimal" oninput="setTrack(${i},'vol',this.value,true)"></div>
-        <div class="param"><label>Len</label><input type="number" min="5" max="250" step="1" value="${t.len}" inputmode="numeric" oninput="setTrack(${i},'len',this.value,true)"></div>
-        <div class="param"><label>MIDI</label><input id="midi${i}" type="number" min="0" max="127" step="1" value="${t.midi}" inputmode="numeric" oninput="setMidi(${i},this.value)"></div>
-        <div class="param"><label>Hz</label><input id="hz${i}" type="number" min="8" max="12544" step="0.01" value="${t.hz}" inputmode="decimal" oninput="setHz(${i},this.value)"></div>
-        <div class="param"><label>Wave</label><select onchange="setTrack(${i},'wave',this.value,true)"><option ${t.wave==='square'?'selected':''}>square</option><option ${t.wave==='triangle'?'selected':''}>triangle</option><option ${t.wave==='sine'?'selected':''}>sine</option><option ${t.wave==='sawtooth'?'selected':''}>sawtooth</option></select></div>
-        <div class="param"><label>Test</label><button onclick="preview(${i},true)">Play</button></div>
-      </div>
+  <aside class="sidebar" id="side">
+    <div class="sideHeader">
+      <div><div class="sideTitle">Panel</div><div class="sideSub">Tracks · Help</div></div>
+      <button class="closeBtn" id="closeSide" aria-label="Close settings">×</button>
     </div>
-    <div class="trackBtns"><button onclick="clearSplit(${i})">Clear</button><button onclick="duplicate(${i})">Copy →</button></div>
-  </article>`).join('')
+
+    <section class="section open">
+      <button class="secBtn" data-fold="tracks"><b>Tracks</b><span>＋</span></button>
+      <div class="secBody" id="tracks"></div>
+    </section>
+
+    <section class="section">
+      <button class="secBtn" data-fold="help"><b>說明｜Help</b><span>＋</span></button>
+      <div class="secBody">
+        <p class="tiny"><b>概念：</b>四軌同步疊加。每軌輸入 0–1 的拍內位置；空白不播放。</p>
+        <p class="tiny"><b>Concept:</b> Four stacked tracks. Enter beat positions from 0 to 1. Blank means silent.</p>
+        <table class="helpTable">
+          <tr><th>BPM</th><td>速度。範圍 10–1000。<br>Tempo. Range 10–1000.</td></tr>
+          <tr><th>Gain</th><td>總響度增益。太刺耳就降低。<br>Master loudness gain. Lower it if harsh.</td></tr>
+          <tr><th>Start</th><td>開始 / 停止播放。<br>Start or stop playback.</td></tr>
+          <tr><th>Tap</th><td>連點 2 次以上估算 BPM。<br>Tap twice or more to estimate BPM.</td></tr>
+          <tr><th>♩ ♪ ♩³ 𝅘𝅥𝅯 𝄽</th><td>常用設定：四分、八分、三連、十六、靜音。<br>Presets: quarter, eighth, triplet, sixteenth, mute.</td></tr>
+          <tr><th>ON</th><td>開關該軌。<br>Enable or mute the track.</td></tr>
+          <tr><th>Split</th><td>輸入拍內位置，例如 0,0.5。<br>Enter positions, e.g. 0,0.5.</td></tr>
+          <tr><th>Vol</th><td>該軌音量。<br>Track volume.</td></tr>
+          <tr><th>MIDI</th><td>音高。改 MIDI 會更新 Hz。<br>Pitch. MIDI updates Hz.</td></tr>
+          <tr><th>Hz</th><td>頻率。可直接微調。<br>Frequency. Direct fine tuning.</td></tr>
+          <tr><th>Len</th><td>聲音長度，單位 ms。<br>Click duration in ms.</td></tr>
+          <tr><th>Wave</th><td>波形。square 最清楚。<br>Waveform. Square is clearest.</td></tr>
+          <tr><th>Play</th><td>立即試聽該軌。<br>Preview the track instantly.</td></tr>
+          <tr><th>Media</th><td>通知欄預設啟用；可播放、暫停、停止。<br>Media controls are enabled by default.</td></tr>
+        </table>
+      </div>
+    </section>
+  </aside>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+let ctx, masterGain, compressor;
+let playing = false;
+let timer = null;
+let nextBeatTime = 0;
+let ledTimer = null;
+let tapTimes = [];
+let previewLock = 0;
+const tracks = [
+  {on:true,  split:'0',      vol:2.0, midi:84, hz:1046.50, len:42, wave:'square'},
+  {on:false, split:'0.5',    vol:1.3, midi:76, hz:659.26,  len:34, wave:'square'},
+  {on:false, split:'0.333,0.667', vol:1.1, midi:79, hz:783.99, len:30, wave:'triangle'},
+  {on:false, split:'0.25,0.5,0.75', vol:0.9, midi:88, hz:1318.51, len:24, wave:'square'}
+];
+function clamp(v,min,max,fb=min){ v = Number(v); return Number.isFinite(v) ? Math.max(min, Math.min(max, v)) : fb; }
+function midiToHz(m){ return 440 * Math.pow(2,(m-69)/12); }
+function hzToMidi(hz){ return Math.round(69 + 12 * Math.log2(hz/440)); }
+function ensureAudio(){
+  if(!ctx){
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = ctx.createGain();
+    compressor = ctx.createDynamicsCompressor();
+    compressor.threshold.value = -8;
+    compressor.knee.value = 10;
+    compressor.ratio.value = 16;
+    compressor.attack.value = .002;
+    compressor.release.value = .08;
+    masterGain.connect(compressor);
+    compressor.connect(ctx.destination);
+  }
+  if(ctx.state === 'suspended') ctx.resume();
 }
-function setTrack(i,k,v,hear){
-  if(k==='on') tracks[i][k]=!!v; else if(['vol','len'].includes(k)) tracks[i][k]=Number(v); else tracks[i][k]=v;
-  if(hear) preview(i); updateMedia();
+function setMasterGain(){ if(masterGain) masterGain.gain.value = clamp($('gain').value,1,4,2.5) * .42; }
+function playClick(track, time){
+  ensureAudio(); setMasterGain();
+  if(!track.on || track.vol <= 0) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const hp = ctx.createBiquadFilter();
+  osc.type = track.wave || 'square';
+  osc.frequency.setValueAtTime(clamp(track.hz,20,20000,1000), time);
+  hp.type = 'highpass'; hp.frequency.setValueAtTime(220, time);
+  const dur = clamp(track.len,5,500,35) / 1000;
+  const vol = clamp(track.vol,0,4,1);
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), time + .002);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+  osc.connect(hp); hp.connect(gain); gain.connect(masterGain);
+  osc.start(time); osc.stop(time + dur + .02);
+  const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * Math.min(.028,dur)));
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * Math.pow(1 - i/bufferSize, 3);
+  const noise = ctx.createBufferSource();
+  const ng = ctx.createGain();
+  const nhp = ctx.createBiquadFilter();
+  noise.buffer = buffer; nhp.type = 'highpass'; nhp.frequency.value = 1800;
+  ng.gain.setValueAtTime(vol*.18, time); ng.gain.exponentialRampToValueAtTime(.0001, time + Math.min(.028,dur));
+  noise.connect(nhp); nhp.connect(ng); ng.connect(masterGain); noise.start(time); noise.stop(time + Math.min(.035,dur+.01));
 }
-function setMidi(i,v){const m=Math.max(0,Math.min(127,parseInt(v,10)||0)); tracks[i].midi=m; tracks[i].hz=midiToHz(m); $('hz'+i).value=tracks[i].hz; preview(i); updateMedia()}
-function setHz(i,v){const h=Math.max(8,Math.min(12544,parseFloat(v)||440)); tracks[i].hz=+h.toFixed(3); tracks[i].midi=hzToMidi(h); $('midi'+i).value=tracks[i].midi; preview(i); updateMedia()}
-function clearSplit(i){tracks[i].split=''; renderTracks(); updateMedia()}
-function duplicate(i){const n=(i+1)%4; tracks[n]={...tracks[i]}; renderTracks(); preview(n,true); updateMedia()}
-function applySet(name){
-  const sets={
-    quarter:[['0',true,2.2,84,45,'square'],['',false,1.4,76,34,'square'],['',false,1.1,79,30,'triangle'],['',false,.9,91,22,'square']],
-    eighth:[['0',true,2.0,84,45,'square'],['0.5',true,1.4,76,34,'square'],['',false,1.1,79,30,'triangle'],['',false,.9,91,22,'square']],
-    triplet:[['0',true,2.0,84,45,'square'],['0.333333',true,1.15,79,30,'triangle'],['0.666667',true,1.15,79,30,'triangle'],['',false,.9,91,22,'square']],
-    sixteenth:[['0',true,2.0,84,45,'square'],['0.25',true,1.0,91,22,'square'],['0.5',true,1.15,76,30,'square'],['0.75',true,1.0,91,22,'square']],
-    mute:[['',false,2,84,45,'square'],['',false,1.4,76,34,'square'],['',false,1.1,79,30,'triangle'],['',false,.9,91,22,'square']]
-  };
-  (sets[name]||sets.quarter).forEach((a,i)=>{tracks[i]={split:a[0],on:a[1],vol:a[2],midi:a[3],hz:midiToHz(a[3]),len:a[4],wave:a[5]}});
-  renderTracks(); document.querySelectorAll('.preset button').forEach(b=>b.classList.toggle('active',b.dataset.set===name)); if(name!=='mute') preview(0,true); updateMedia();
+function parseSplit(text){
+  if(!String(text||'').trim()) return [];
+  return String(text).split(/[，,\s]+/).map(x=>Number(x.trim())).filter(x=>Number.isFinite(x) && x >= 0 && x < 1).sort((a,b)=>a-b);
 }
-function tap(){const now=performance.now(); taps.push(now); taps=taps.filter(t=>now-t<3500).slice(-6); if(taps.length>=2){const ints=[]; for(let i=1;i<taps.length;i++)ints.push(taps[i]-taps[i-1]); $('bpm').value=Math.max(10,Math.min(1000,Math.round(60000/(ints.reduce((a,b)=>a+b,0)/ints.length)))); updateBpm()}}
-function updateBpm(){ updateMedia() }
-function mediaText(){return tracks.map((t,i)=>t.on&&parseSplit(t.split).length?`T${i+1}:${t.split}`:'').filter(Boolean).join(' | ')||'Mute'}
-function initMedia(){
-  if(!('mediaSession' in navigator)){ $('mediaState').textContent='通知欄：不支援'; return; }
-  navigator.mediaSession.setActionHandler('play',start);
-  navigator.mediaSession.setActionHandler('pause',()=>stop(true));
-  navigator.mediaSession.setActionHandler('stop',()=>stop(true));
-  try{ navigator.mediaSession.setActionHandler('previoustrack',()=>{ $('bpm').value=Math.max(10,bpm()-1); updateBpm(); }); }catch(e){}
-  try{ navigator.mediaSession.setActionHandler('nexttrack',()=>{ $('bpm').value=Math.min(1000,bpm()+1); updateBpm(); }); }catch(e){}
-  $('mediaState').textContent='通知欄：自動'; updateMedia();
+function beatSec(){ return 60 / clamp($('bpm').value,10,1000,120); }
+function scheduleBeat(start){
+  const dur = beatSec();
+  tracks.forEach((tr,ti)=>{
+    if(!tr.on) return;
+    parseSplit(tr.split).forEach(pos=>{
+      const t = start + pos * dur;
+      playClick(tr,t);
+      const delay = Math.max(0,(t - ctx.currentTime)*1000);
+      setTimeout(()=>flashLed(pos,ti), delay);
+    });
+  });
 }
+function scheduler(){
+  while(nextBeatTime < ctx.currentTime + .15){
+    scheduleBeat(nextBeatTime);
+    nextBeatTime += beatSec();
+  }
+}
+function start(){
+  ensureAudio();
+  if(playing) return;
+  playing = true;
+  nextBeatTime = ctx.currentTime + .05;
+  timer = setInterval(scheduler, 18);
+  updatePlayUI(); updateMedia();
+}
+function stop(){
+  playing = false;
+  clearInterval(timer); timer = null;
+  clearTimeout(ledTimer);
+  document.querySelectorAll('.led').forEach(x=>x.classList.remove('on'));
+  updatePlayUI(); updateMedia();
+}
+function togglePlay(){ playing ? stop() : start(); }
+function updatePlayUI(){
+  $('toggle').textContent = playing ? 'Stop' : 'Start';
+  $('toggle').classList.toggle('danger', playing);
+  $('toggle').classList.toggle('primary', !playing);
+  $('playStatus').textContent = playing ? 'Playing' : 'Stopped';
+}
+function flashLed(pos, trackIndex){
+  const idx = Math.min(15, Math.max(0, Math.round(pos * 16)));
+  const leds = document.querySelectorAll('.led');
+  leds.forEach(x=>x.classList.remove('on'));
+  if(leds[idx]) leds[idx].classList.add('on');
+  const card = $('track'+trackIndex);
+  if(card){ card.classList.add('flash'); clearTimeout(card._t); card._t=setTimeout(()=>card.classList.remove('flash'),80); }
+}
+function preview(i, force=false){
+  const now = performance.now();
+  if(!force && now - previewLock < 70) return;
+  previewLock = now;
+  ensureAudio(); playClick(tracks[i], ctx.currentTime + .015);
+}
+function renderLeds(){ $('leds').innerHTML = Array.from({length:16},(_,i)=>'<div class="led"></div>').join(''); }
+function renderTracks(){
+  $('tracks').innerHTML = tracks.map((tr,i)=>`
+    <div class="track" id="track${i}">
+      <div class="trackTop">
+        <b>Track ${i+1}</b>
+        <div class="miniBtns">
+          <button class="${tr.on?'on':''}" onclick="setTrack(${i},'on',${!tr.on})">${tr.on?'ON':'OFF'}</button>
+          <button onclick="preview(${i},true)">Play</button>
+        </div>
+      </div>
+      <div class="field"><label>Split</label><textarea rows="1" oninput="setTrack(${i},'split',this.value,false)">${tr.split}</textarea></div>
+      <div class="grid2">
+        <div class="field"><label>Vol</label><input type="number" min="0" max="4" step="0.1" value="${tr.vol}" oninput="setTrack(${i},'vol',this.value)"></div>
+        <div class="field"><label>Len</label><input type="number" min="5" max="500" step="1" value="${tr.len}" oninput="setTrack(${i},'len',this.value)"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>MIDI</label><input type="number" min="0" max="127" step="1" value="${tr.midi}" oninput="setTrack(${i},'midi',this.value)"></div>
+        <div class="field"><label>Hz</label><input type="number" min="20" max="20000" step="0.01" value="${Number(tr.hz).toFixed(2)}" oninput="setTrack(${i},'hz',this.value)"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Wave</label><select onchange="setTrack(${i},'wave',this.value)">
+          ${['square','triangle','sine','sawtooth'].map(w=>`<option value="${w}" ${tr.wave===w?'selected':''}>${w}</option>`).join('')}
+        </select></div>
+        <div class="field"><label>Tools</label><button onclick="clearTrack(${i})" style="width:100%">Clear</button></div>
+      </div>
+      <div class="copyNote">Copy → copies this track to the next track.</div>
+      <button onclick="copyNext(${i})" style="width:100%;margin-top:8px;border-radius:14px">Copy →</button>
+    </div>`).join('');
+}
+function setTrack(i,key,value,doPreview=true){
+  if(key==='on') tracks[i].on = value;
+  else if(key==='split') tracks[i].split = value;
+  else if(key==='vol') tracks[i].vol = clamp(value,0,4,1);
+  else if(key==='len') tracks[i].len = clamp(value,5,500,35);
+  else if(key==='midi') { tracks[i].midi = clamp(value,0,127,84); tracks[i].hz = midiToHz(tracks[i].midi); renderTracks(); }
+  else if(key==='hz') { tracks[i].hz = clamp(value,20,20000,1000); tracks[i].midi = clamp(hzToMidi(tracks[i].hz),0,127,84); }
+  else if(key==='wave') tracks[i].wave = value;
+  if(key==='on') renderTracks();
+  if(doPreview && key!=='split') preview(i);
+  updateMedia();
+}
+function clearTrack(i){ tracks[i].split=''; tracks[i].on=false; renderTracks(); updateMedia(); }
+function copyNext(i){ if(i>=tracks.length-1) return; tracks[i+1] = {...tracks[i]}; renderTracks(); updateMedia(); }
+function applyPreset(p){
+  tracks.forEach(t=>{t.on=false;t.split='';});
+  if(p==='quarter'){ tracks[0].on=true; tracks[0].split='0'; }
+  if(p==='eighth'){ tracks[0].on=true; tracks[0].split='0'; tracks[1].on=true; tracks[1].split='0.5'; }
+  if(p==='triplet'){ tracks[0].on=true; tracks[0].split='0'; tracks[1].on=true; tracks[1].split='0.333'; tracks[2].on=true; tracks[2].split='0.667'; }
+  if(p==='sixteenth'){ tracks[0].on=true; tracks[0].split='0'; tracks[1].on=true; tracks[1].split='0.25'; tracks[2].on=true; tracks[2].split='0.5'; tracks[3].on=true; tracks[3].split='0.75'; }
+  renderTracks(); updateMedia();
+}
+function tap(){
+  const now = performance.now();
+  tapTimes.push(now);
+  tapTimes = tapTimes.filter(t=>now-t<4000).slice(-6);
+  if(tapTimes.length>=2){
+    const intervals=[]; for(let i=1;i<tapTimes.length;i++) intervals.push(tapTimes[i]-tapTimes[i-1]);
+    const avg = intervals.reduce((a,b)=>a+b,0)/intervals.length;
+    $('bpm').value = clamp(Math.round(60000/avg),10,1000,120);
+    syncBpm();
+  }
+}
+function syncBpm(){ $('bpmText').textContent = clamp($('bpm').value,10,1000,120); updateMedia(); }
 function updateMedia(){
-  if(!('mediaSession' in navigator)) return;
-  navigator.mediaSession.metadata=new MediaMetadata({title:`${bpm()} BPM`,artist:mediaText(),album:'¹²√2'});
-  navigator.mediaSession.playbackState=running?'playing':'paused';
+  try{
+    if(!('mediaSession' in navigator)){ $('mediaStatus').textContent = 'Media: unsupported'; return; }
+    const active = tracks.map((t,i)=>t.on && t.split.trim()?`T${i+1}:${t.split}`:null).filter(Boolean).join('  ') || 'silent';
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:'¹²√2',
+      artist:`${$('bpm').value} BPM`,
+      album:active
+    });
+    navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
+    $('mediaStatus').textContent = 'Media: ready';
+  }catch(e){ $('mediaStatus').textContent = 'Media: blocked'; }
 }
-$('toggle').onclick=()=>running?stop(true):start(); $('tap').onclick=tap;
-$('bpm').addEventListener('input',updateBpm); $('gain').addEventListener('input',()=>{if(audioCtx)master.gain.setValueAtTime(gain(),audioCtx.currentTime)});
-document.querySelectorAll('.preset button').forEach(b=>b.onclick=()=>applySet(b.dataset.set));
-renderLeds(); renderTracks(); updateBpm(); updateToggle(); initMedia();
+function bindMedia(){
+  if(!('mediaSession' in navigator)) return;
+  try{
+    navigator.mediaSession.setActionHandler('play', start);
+    navigator.mediaSession.setActionHandler('pause', stop);
+    navigator.mediaSession.setActionHandler('stop', stop);
+    navigator.mediaSession.setActionHandler('previoustrack', ()=>{ $('bpm').value = clamp(Number($('bpm').value)-1,10,1000,120); syncBpm(); });
+    navigator.mediaSession.setActionHandler('nexttrack', ()=>{ $('bpm').value = clamp(Number($('bpm').value)+1,10,1000,120); syncBpm(); });
+  }catch(e){}
+}
+function openSide(){ $('side').classList.add('open'); $('overlay').classList.add('show'); }
+function closeSide(){ $('side').classList.remove('open'); $('overlay').classList.remove('show'); }
+document.querySelectorAll('.secBtn').forEach(btn=>btn.addEventListener('click',()=>btn.closest('.section').classList.toggle('open')));
+$('openSide').onclick=openSide; $('closeSide').onclick=closeSide; $('overlay').onclick=closeSide;
+$('toggle').onclick=togglePlay; $('tap').onclick=tap; $('bpm').oninput=syncBpm; $('gain').oninput=()=>{setMasterGain();};
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>applyPreset(b.dataset.preset));
+renderLeds(); renderTracks(); syncBpm(); bindMedia(); updateMedia();
+window.addEventListener('beforeunload', stop);
 </script>
 </body>
 </html>
