@@ -1,0 +1,31 @@
+{
+  "name": "1.0595 Rhythm Sequencer",
+  "short_name": "1.0595",
+  "description": "A compact 4×4 rhythm sequencer with per-Track sound and Event Split timing.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#051321",
+  "theme_color": "#07182A",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

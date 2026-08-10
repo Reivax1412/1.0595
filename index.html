@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="application-name" content="1.0595">
+<meta name="theme-color" content="#07182A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="1.0595">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<title>1.0595 | Rhythm Sequencer v3.0.0-beta.3</title>
+<style>
+:root{
+  color-scheme:dark;
+  --brand-navy:#07182a;--brand-navy-2:#0d2239;--brand-signal:#7ca9c4;--brand-signal-2:#a9d2e7;
+  --bg-app:#051321;--bg-surface:#081a2d;--bg-elevated:#0d2239;--bg-interactive:#14304a;--bg-hover:#193b58;
+  --text-primary:#f2f4f5;--text-secondary:#b7c0c8;--text-muted:#84919c;--text-disabled:#5e6b76;
+  --border:#293e51;--border-strong:#40596d;--success:#73ad98;--warning:#c4a56a;--error:#d46c75;
+  --focus-ring:rgba(111,159,188,.28);--flash:#f8fcff;--flash-shadow:rgba(143,196,226,.72);
+  --shadow:0 18px 50px rgba(0,0,0,.34);
+  --radius-input:6px;--radius-button:8px;--radius-track:10px;--radius-window:12px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{width:100%;min-height:100%;margin:0;background:var(--bg-app)}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--text-primary);background:var(--bg-app);-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{border:1px solid var(--border);background:var(--bg-elevated);cursor:pointer;touch-action:manipulation}
+button:hover:not(:disabled){background:var(--bg-hover)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+button:disabled,input:disabled,select:disabled,textarea:disabled{opacity:.38;cursor:not-allowed}
+input,select,textarea{width:100%;min-width:0;border:1px solid var(--border);background:var(--bg-app);border-radius:var(--radius-input);padding:8px 9px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brand-signal);box-shadow:0 0 0 3px var(--focus-ring)}
+input[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:var(--error);box-shadow:0 0 0 3px rgba(212,108,117,.14)}
+input.live-pending{border-color:var(--warning)}
+input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173,152,.12)}
+.app-shell{height:100vh;height:100dvh;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);padding:12px clamp(10px,1.6vw,22px) 12px;overflow:hidden}
+.app-header{width:min(1180px,100%);margin:0 auto 9px;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px}
+.brand-lockup{display:inline-flex;align-items:baseline;gap:.55rem}.brand-name{font-size:1.5rem;font-weight:750;line-height:1;letter-spacing:.02em}.brand-version{color:var(--text-muted);font-size:.59rem;font-weight:650;line-height:1;letter-spacing:.07em}
+.status-row{display:flex;justify-content:center;gap:6px;min-width:0;overflow:auto;scrollbar-width:none}.status-row::-webkit-scrollbar{display:none}
+.status-chip{display:flex;align-items:center;gap:5px;height:31px;padding:0 9px;border:1px solid var(--border);border-radius:var(--radius-button);background:#07192b;color:var(--text-muted);font-size:.66rem;white-space:nowrap}.status-chip b{color:var(--text-primary);font-size:.7rem}
+.header-tempo{display:flex;align-items:center;gap:4px}.tempo-mark{font-size:.78rem;color:var(--text-muted)}
+.header-tempo .mini{width:31px;height:34px;padding:0;border-radius:var(--radius-button);font-size:1rem;font-weight:700}
+.tempo-input{width:63px;height:34px;padding:0 5px;text-align:center;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-weight:750;font-size:.95rem}
+.icon-button{width:36px;height:36px;border-radius:var(--radius-button);display:grid;place-items:center;padding:0;font-size:1rem;font-weight:800}
+.main-layout{width:min(1180px,100%);height:100%;min-height:0;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:12px}
+.panel{min-width:0;min-height:0;border:1px solid var(--border);background:var(--bg-surface);border-radius:var(--radius-window)}
+.sequencer-panel{padding:10px 12px;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;min-height:0;overflow:hidden}
+.mode-bar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:5px}
+.mode-button{min-height:34px;border-radius:var(--radius-button);padding:4px 6px;color:var(--text-secondary);font-size:.68rem;font-weight:700}
+.mode-button[aria-pressed="true"]{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
+.pad-stage{min-height:0;display:grid;place-items:center;overflow:hidden}
+.pad-grid{
+  width:min(100%,620px);
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;
+}
+.pad{
+  position:relative;min-width:0;aspect-ratio:1.48/1;border-radius:10px;padding:0;
+  background:linear-gradient(180deg,var(--bg-interactive),var(--bg-elevated));overflow:hidden;
+  display:grid;place-items:center;user-select:none;transition:background .07s,border-color .07s,box-shadow .07s,transform .07s,filter .07s;
+}
+.pad.event-pad.active{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
+.pad.event-pad.selected{box-shadow:inset 0 0 0 3px var(--border-strong)}
+.pad.event-pad.active.selected{box-shadow:inset 0 0 0 3px rgba(10,25,43,.48)}
+.pad.choice.current{border-color:var(--brand-signal-2);box-shadow:inset 0 0 0 2px var(--brand-signal)}
+.pad.choice.queued{outline:2px dashed var(--brand-signal-2);outline-offset:-5px}
+.pad.choice.muted{opacity:.44}
+.choice-main{font-size:1rem;font-weight:750}.choice-sub{position:absolute;bottom:5px;font-size:.58rem;color:var(--text-muted)}
+.pad.active .choice-sub{color:var(--brand-navy)}
+.event-glyph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;pointer-events:none}
+.event-glyph .art{font-size:clamp(2rem,3vw,2.8rem);font-weight:900}.event-glyph .retrig{font-size:clamp(1rem,1.6vw,1.35rem);font-weight:850;letter-spacing:-.04em}
+.timing-badge{position:absolute;top:6px;left:7px;color:var(--text-muted);font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-size:.56rem;font-weight:750}
+.pad.active .timing-badge{color:rgba(10,25,43,.72)}
+.pad.art-accent{box-shadow:inset 0 -6px 0 rgba(10,25,43,.34)}
+.pad.art-marcato{box-shadow:inset 0 0 0 3px rgba(10,25,43,.58)}
+.pad.art-staccato .art{font-size:clamp(2.7rem,4.2vw,3.6rem);transform:translateY(-4px)}
+.pad.art-tenuto{box-shadow:inset 0 6px 0 rgba(10,25,43,.26)}
+@keyframes eventFlash{
+  0%{transform:scale(1);filter:brightness(1)}
+  28%{transform:scale(1.065);filter:brightness(2.15) saturate(1.08)}
+  100%{transform:scale(1.01);filter:brightness(1.12)}
+}
+.pad.event-pad.playing{
+  z-index:3;background:var(--flash)!important;color:var(--brand-navy)!important;
+  border-color:var(--flash)!important;outline:7px solid var(--brand-signal-2);outline-offset:-5px;
+  box-shadow:0 0 0 4px rgba(248,252,255,.52),0 0 42px rgba(169,210,231,.72)!important;
+  animation:eventFlash .22s ease-out;
+}
+.pad.event-pad.playing .timing-badge{color:var(--brand-navy)}
+.mode-guide{margin-top:5px;min-height:29px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-button);background:#07192b;color:var(--text-secondary);font-size:.65rem;line-height:1.35}.mode-guide b{color:var(--text-primary);margin-right:5px}
+.transport-row{display:grid;grid-template-columns:minmax(85px,1fr) minmax(120px,2fr);gap:7px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.transport-row button{min-height:40px;border-radius:var(--radius-button);font-weight:750;letter-spacing:.04em}.primary{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}.primary:hover:not(:disabled){background:#87acc2}.danger{background:var(--error);border-color:var(--error);color:#24090d}.tap.flash{border-color:var(--flash);box-shadow:0 0 0 3px var(--focus-ring);color:var(--flash)}
+.inspector-panel{padding:9px;display:flex;flex-direction:column;gap:7px;overflow:hidden}
+.inspector-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:1px 1px 6px;border-bottom:1px solid var(--border)}
+.inspector-head h2{margin:0;font-size:.82rem}.inspector-meta{color:var(--text-muted);font-size:.61rem;text-align:right;line-height:1.45}
+.track-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.track-tabs button{height:31px;border-radius:var(--radius-button);font-size:.68rem;font-weight:750}.track-tabs button[aria-selected="true"]{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}.track-tabs button.muted{opacity:.43}
+
+.inspector-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.inspector-tabs button{height:31px;border-radius:var(--radius-button);font-size:.65rem;font-weight:800;letter-spacing:.08em;color:var(--text-muted)}
+.inspector-tabs button[aria-selected="true"]{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
+.inspector-pane{min-height:0;display:grid;align-content:start;gap:7px}
+.inspector-note{padding:7px 8px;border:1px solid var(--border);border-radius:var(--radius-button);background:var(--bg-app);color:var(--text-muted);font-size:.58rem;line-height:1.45}
+
+.compact-section{border:1px solid var(--border);border-radius:var(--radius-track);padding:7px 8px;background:#07192b}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}.section-head h3{margin:0;font-size:.69rem}.section-head span{color:var(--text-muted);font-size:.57rem}
+.event-state{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px}.event-state button{height:27px;border-radius:6px;font-size:.61rem;font-weight:700}.event-state button.on{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
+.control-label{margin:5px 0 3px;color:var(--text-muted);font-size:.57rem;font-weight:700}
+.choice-row{display:grid;grid-template-columns:repeat(var(--count,4),minmax(0,1fr));gap:4px}.choice-row button{height:25px;border-radius:6px;padding:0;font-size:.61rem;font-weight:750}.choice-row button.on{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
+.position-summary{margin-top:5px;padding:5px 6px;border-radius:6px;background:var(--bg-app);color:var(--text-secondary);font-size:.59rem;line-height:1.35}.position-summary b{color:var(--text-primary)}.collision{color:var(--warning)}
+.sound-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 7px}.inspector-pane .sound-grid{grid-template-columns:1fr 1fr}.inspector-pane .sound-grid .field.full{grid-column:1/-1}.field{min-width:0}.field.full{grid-column:1/-1}.field label{display:flex;justify-content:space-between;gap:5px;margin-bottom:3px;color:var(--text-secondary);font-size:.57rem;font-weight:650}.field label span,.field .meta{color:var(--text-muted);font-size:.53rem}.field .meta{margin-top:2px;text-align:right;min-height:.62rem}
+.sound-grid input,.sound-grid select{height:29px;padding:4px 7px;font-size:.65rem}.suffix-wrap{position:relative}.suffix-wrap input{padding-right:37px;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace}.suffix{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.55rem;pointer-events:none}
+.segmented{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}.segmented button{height:27px;border-radius:6px;padding:0;font-size:.6rem}.segmented button[aria-pressed="true"]{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy);font-weight:700}
+.action-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.action-row button{min-height:29px;padding:0 9px;border-radius:6px;font-size:.6rem;font-weight:700}.muted-action{color:var(--success);border-color:#355b4b}
+.art-legend{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:auto}.art-item{text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px 1px;background:var(--bg-elevated)}.art-item b{display:block;font-size:.95rem;line-height:1}.art-item span{display:block;margin-top:1px;color:var(--text-muted);font-size:.49rem;white-space:nowrap}
+
+/* Settings architecture preserved from v2.4.2 */
+.modal-backdrop{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:24px;background:rgba(2,13,24,.82);backdrop-filter:blur(3px)}
+.settings-window{width:min(80vw,980px);height:min(84dvh,780px);min-width:680px;min-height:520px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;border:1px solid var(--border-strong);border-radius:var(--radius-window);background:var(--bg-surface);box-shadow:var(--shadow);overflow:hidden}
+.settings-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border-bottom:1px solid var(--border);background:var(--brand-navy)}
+.settings-heading{display:flex;align-items:center;gap:12px}.settings-title{font-size:.95rem;font-weight:700}.play-status{color:var(--text-muted);font-size:.68rem}.play-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;background:var(--text-disabled)}.play-status.playing .play-dot{background:var(--brand-signal)}
+.settings-header-actions{display:flex;align-items:center;gap:8px}.compact-transport{min-width:70px;padding:7px 10px;border-radius:var(--radius-button);font-size:.68rem;font-weight:700}.close-button{width:38px;height:38px;border-radius:var(--radius-button);font-size:1.2rem}
+.settings-main{min-height:0;display:grid;grid-template-columns:clamp(150px,20%,190px) minmax(0,1fr)}
+.settings-nav{padding:12px;border-right:1px solid var(--border);background:#081d32;display:flex;flex-direction:column;gap:5px}.settings-nav button{width:100%;padding:9px 10px;border:0;border-left:2px solid transparent;border-radius:6px;background:transparent;text-align:left;color:var(--text-secondary);font-size:.75rem;font-weight:600}.settings-nav button[aria-selected="true"]{border-left-color:var(--brand-signal);background:var(--bg-elevated);color:var(--text-primary)}
+.mobile-tabs{display:none}
+.settings-content{min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;padding:17px}.settings-view{max-width:720px;margin:0 auto}.view-title{margin:0 0 5px;font-size:1.1rem}.view-intro{margin:0 0 16px;color:var(--text-muted);font-size:.74rem;line-height:1.5}
+.settings-footer{display:flex;justify-content:flex-end;padding:10px 15px;border-top:1px solid var(--border);background:var(--brand-navy)}.done-button{min-width:96px;padding:9px 14px;border-radius:var(--radius-button);font-weight:700}
+.form-section{padding:13px 0;border-top:1px solid var(--border)}.form-section:first-of-type{border-top:0;padding-top:0}.form-section-title{margin:0 0 11px;color:var(--text-muted);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.form-grid input,.form-grid select{height:38px}
+.settings-track-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}.settings-track-tabs button{padding:9px;border-radius:var(--radius-button);font-size:.72rem;font-weight:700}.settings-track-tabs button[aria-selected="true"]{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
+.track-settings-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}.track-settings-heading h3{margin:0;font-size:.88rem}.sound-status{color:var(--text-muted);font-size:.66rem}
+.log-form{display:grid;gap:8px}.log-form textarea{min-height:82px;max-height:170px;resize:none}.log-form-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.check-label{display:flex;align-items:center;gap:7px;color:var(--text-muted);font-size:.7rem}.check-label input{width:auto;accent-color:var(--brand-signal)}.commit-button{min-width:104px;padding:9px 14px;border-radius:var(--radius-button);font-weight:700}.log-tools{display:flex;gap:7px}.log-tools button{padding:8px 11px;border-radius:var(--radius-button);font-size:.68rem}.log-status{min-height:1em;color:var(--text-muted);font-size:.68rem}.log-list{display:grid;gap:2px;margin-top:16px;border-top:1px solid var(--border)}.log-empty{padding:16px 0;color:var(--text-muted);font-size:.75rem}.log-entry{border-bottom:1px solid var(--border)}.log-entry.deleted{opacity:.56}.log-entry summary{list-style:none;display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;padding:10px 2px;cursor:pointer}.log-entry summary::-webkit-details-marker{display:none}.log-time{color:var(--text-muted);font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-size:.64rem}.log-preview{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.76rem}.log-entry[open] .log-preview{white-space:pre-wrap;overflow:visible}.log-detail{padding:0 2px 11px 144px;color:var(--text-secondary);font-size:.72rem}.log-snapshot{margin-top:7px}.log-snapshot summary{display:block;padding:0;color:var(--text-muted);font-size:.67rem}.log-snapshot pre{margin:7px 0 0;padding:9px;border-radius:6px;background:var(--bg-app);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text-muted);font-size:.62rem;line-height:1.5}.log-delete{margin-top:9px;padding:7px 9px;border-color:#71424a;color:#ff9aa3;border-radius:var(--radius-button);font-size:.66rem}.deleted-label{color:#ff9aa3;font-size:.66rem}.hidden-file{display:none}
+.guide-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}.guide-nav a{padding:6px 9px;border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);text-decoration:none;font-size:.68rem}.guide-section{padding:14px 0;border-top:1px solid var(--border);scroll-margin-top:10px}.guide-section:first-of-type{border-top:0}.guide-section h3{margin:0 0 8px;font-size:.86rem}.guide-section p,.guide-section li{color:var(--text-secondary);font-size:.74rem;line-height:1.65}.guide-lead{padding:14px;border:1px solid var(--border);border-radius:var(--radius-track);background:var(--bg-elevated)}.guide-license{color:var(--text-muted);font-size:.7rem}.guide-license a{color:var(--brand-signal)}.guide-section ul{margin:7px 0;padding-left:20px}.data-table{width:100%;border-collapse:collapse;font-size:.71rem}.data-table th,.data-table td{padding:8px 7px;border-top:1px solid var(--border);text-align:left;vertical-align:top}.data-table th{color:var(--text-primary);font-weight:600}.data-table td{color:var(--text-secondary)}kbd{display:inline-block;padding:2px 6px;border:1px solid var(--border-strong);border-bottom-width:2px;border-radius:5px;background:var(--bg-app);font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-size:.67rem}
+.release{padding:13px 0;border-top:1px solid var(--border)}.release:first-of-type{border-top:0}.release h3{margin:0 0 8px;font-size:.88rem}.release h4{margin:11px 0 5px;color:var(--text-muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em}.release ul{margin:0;padding-left:19px;color:var(--text-secondary);font-size:.73rem;line-height:1.6}
+.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tool-card{border:1px solid var(--border);border-radius:var(--radius-track);padding:11px;background:#07192b}.tool-card h3{margin:0 0 8px;font-size:.76rem}.copy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.copy-grid button{height:36px;border-radius:6px}
+.toast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));z-index:90;transform:translate(-50%,14px);opacity:0;pointer-events:none;padding:9px 14px;border-radius:999px;background:var(--text-primary);color:var(--brand-navy);font-size:.75rem;font-weight:700;transition:.16s}.toast.show{opacity:1;transform:translate(-50%,0)}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+@media(min-width:721px) and (max-height:760px){
+  .app-shell{padding-top:7px;padding-bottom:7px}.app-header{margin-bottom:5px}.sequencer-panel{padding:8px 10px}.mode-button{min-height:31px}
+  .pad-grid{width:min(100%,600px);gap:6px}
+  .mode-guide{min-height:25px;padding:5px 7px}.transport-row{margin-top:4px;padding-top:4px}.transport-row button{min-height:34px}
+  .inspector-panel{padding:7px;gap:5px}.compact-section{padding:6px 7px}.control-label{margin:4px 0 2px}.choice-row button{height:23px}
+  .sound-grid input,.sound-grid select{height:28px}.track-tabs button,.inspector-tabs button{height:28px}.action-row button{min-height:27px}.art-item{padding:2px 1px}
+}
+@media(max-width:900px) and (min-width:721px){.main-layout{grid-template-columns:minmax(0,1fr) 295px}.pad-grid{width:min(100%,570px)}.settings-window{width:94vw;min-width:0}.settings-main{grid-template-columns:165px minmax(0,1fr)}}
+@media(max-width:720px){
+  html,body{height:100%;overflow:hidden}
+  .app-shell{height:100vh;height:100dvh;min-height:0;overflow:hidden;padding:9px 8px 8px}
+  .app-header{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"brand tempo help" "status status status";margin-bottom:7px;gap:6px}
+  .brand-lockup{grid-area:brand}.status-row{grid-area:status;justify-content:flex-start}.header-tempo{grid-area:tempo;justify-content:end}.icon-button{grid-area:help}
+  .main-layout{grid-template-columns:1fr;height:100%;gap:0}.inspector-panel{display:none}
+  .sequencer-panel{padding:8px;grid-template-rows:auto minmax(0,1fr) auto auto}.mode-bar{gap:4px;margin-bottom:4px}.mode-button{min-height:32px;padding:3px;font-size:.61rem}
+  .pad-grid{width:min(100%,520px);gap:5px}.pad{border-radius:8px}.event-glyph .art{font-size:clamp(1.8rem,9vw,2.55rem)}.event-glyph .retrig{font-size:clamp(.95rem,5vw,1.25rem)}
+  .mode-guide{margin-top:4px;min-height:27px;padding:5px 7px;font-size:.6rem}.transport-row{margin-top:4px;padding-top:4px}.transport-row button{min-height:37px}
+  .modal-backdrop{padding:0;background:var(--bg-app);backdrop-filter:none}.settings-window{width:100%;height:100dvh;min-width:0;min-height:0;border:0;border-radius:0}
+  .settings-header{padding:max(9px,env(safe-area-inset-top)) 10px 8px}.settings-main{display:grid;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.settings-nav{display:none}
+  .mobile-tabs{display:flex;overflow-x:auto;gap:3px;padding:7px 8px;border-bottom:1px solid var(--border);background:#081d32;scrollbar-width:none}.mobile-tabs::-webkit-scrollbar{display:none}.mobile-tabs button{flex:0 0 auto;min-width:70px;padding:8px 7px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--text-muted);font-size:.62rem}.mobile-tabs button[aria-selected="true"]{border-bottom-color:var(--brand-signal);color:var(--text-primary)}
+  .settings-content{padding:12px 10px}.settings-footer{padding:8px 10px max(8px,env(safe-area-inset-bottom))}
+  .form-grid,.tool-grid{grid-template-columns:1fr 1fr}.mobile-editor{display:block}
+}
+@media(max-width:420px){
+  .brand-name{font-size:1.32rem}.brand-version{font-size:.52rem}.status-chip{height:27px;padding:0 7px;font-size:.58rem}.status-chip b{font-size:.62rem}.header-tempo .mini{width:28px;height:31px}.tempo-input{width:57px;height:31px}
+  .form-grid,.tool-grid{grid-template-columns:1fr}.log-form-row{align-items:flex-start;flex-direction:column}.commit-button{width:100%}.log-entry summary{grid-template-columns:1fr;gap:4px}.log-detail{padding-left:2px}.play-status{display:none}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app-shell" id="appShell">
+  <header class="app-header">
+    <div class="brand-lockup"><div class="brand-name" id="appTitle">1.0595</div><div class="brand-version">v3.0.0 β3</div></div>
+    <div class="status-row" aria-label="Current status">
+      <div class="status-chip"><span>Pattern</span><b id="patternStatus">1</b></div>
+      <div class="status-chip"><span>Track</span><b id="trackStatus">1</b></div>
+      <div class="status-chip"><span>Event</span><b id="eventStatus">Beat 1 · Split 4 · Point 1</b></div>
+    </div>
+    <div class="header-tempo"><span class="tempo-mark">♩=</span><button class="mini" id="bpmDown" type="button" aria-label="Decrease BPM by 1">−</button><input class="tempo-input" id="bpm" type="text" inputmode="numeric" autocomplete="off" value="120" aria-label="BPM from 10 to 450"><button class="mini" id="bpmUp" type="button" aria-label="Increase BPM by 1">+</button></div>
+    <button class="icon-button" id="openSettings" type="button" aria-label="Settings and Help">?</button>
+  </header>
+
+  <main class="main-layout" aria-labelledby="appTitle">
+    <section class="panel sequencer-panel" aria-label="Rhythm sequencer">
+      <div class="mode-bar" aria-label="Edit mode">
+        <button class="mode-button" data-mode="step" aria-pressed="true">STEP</button>
+        <button class="mode-button" data-mode="pattern" aria-pressed="false">PATTERN</button>
+        <button class="mode-button" data-mode="track" aria-pressed="false">TRACK</button>
+        <button class="mode-button" data-mode="art" aria-pressed="false">ART</button>
+        <button class="mode-button" data-mode="retrig" aria-pressed="false">RETRIG</button>
+      </div>
+      <div class="pad-stage"><div class="pad-grid" id="padGrid" aria-label="16 event pads"></div></div>
+      <div class="mode-guide" id="modeGuide" role="status"></div>
+      <div class="transport-row"><button class="tap" id="tap" type="button">TAP</button><button class="primary" id="toggle" type="button"><span id="transportLabel">START</span></button></div>
+    </section>
+
+    <aside class="panel inspector-panel" id="desktopInspector" aria-label="Event and Track inspector">
+      <div class="inspector-head">
+        <div><h2 id="inspectorTitle">Track 1</h2><div class="inspector-meta" style="text-align:left">Each Track stores independent events and sound settings.</div></div>
+        <div class="inspector-meta"><span id="trackEnabledText">Enabled</span><br>16 event slots</div>
+      </div>
+
+      <div class="track-tabs" id="desktopTrackTabs" role="tablist" aria-label="Select Track"></div>
+
+      <div class="inspector-tabs" role="tablist" aria-label="Inspector view">
+        <button id="inspectorEventTab" type="button" data-inspector-view="event" aria-selected="true">EVENT</button>
+        <button id="inspectorTrackTab" type="button" data-inspector-view="track" aria-selected="false">TRACK</button>
+      </div>
+
+      <div class="inspector-pane" id="inspectorEventPane" data-inspector-pane="event">
+        <section class="compact-section">
+          <div class="section-head"><h3>Event Position</h3><span id="eventEnabledText">ON</span></div>
+          <div class="event-state"><button id="eventOn">ON</button><button id="eventOff">OFF</button></div>
+          <div class="control-label">BEAT</div><div class="choice-row" id="beatChoices" style="--count:4"></div>
+          <div class="control-label">SPLIT</div><div class="choice-row" id="splitChoices" style="--count:6"></div>
+          <div class="control-label">POINT</div><div class="choice-row" id="pointChoices" style="--count:4"></div>
+          <div class="position-summary" id="positionSummary"></div>
+        </section>
+
+        <section class="compact-section">
+          <div class="section-head"><h3>Articulation</h3><span>Pad symbol</span></div>
+          <div class="art-legend">
+            <div class="art-item"><b>●</b><span>Normal</span></div>
+            <div class="art-item"><b>&gt;</b><span>Accent</span></div>
+            <div class="art-item"><b>^</b><span>Marcato</span></div>
+            <div class="art-item"><b>·</b><span>Staccato</span></div>
+            <div class="art-item"><b>−</b><span>Tenuto</span></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="inspector-pane" id="inspectorTrackPane" data-inspector-pane="track" hidden>
+        <section class="compact-section">
+          <div class="section-head"><h3>Track Sound</h3><span id="soundStatus">Click</span></div>
+          <div class="sound-grid">
+            <div class="field full"><label for="deskPreset">Sound</label><select id="deskPreset"></select></div>
+            <div class="field"><label for="deskLevel">Level <span id="deskLevelMeta"></span></label><div class="suffix-wrap"><input id="deskLevel" type="text" inputmode="numeric"><span class="suffix">%</span></div></div>
+            <div class="field"><label for="deskLength">Length <span id="deskLengthMeta"></span></label><div class="suffix-wrap"><input id="deskLength" type="text" inputmode="numeric"><span class="suffix">ms</span></div></div>
+            <div class="field full"><label for="deskPitch">Pitch <span id="deskPitchMeta"></span></label><div class="suffix-wrap"><input id="deskPitch" type="text" inputmode="decimal"><span class="suffix" id="deskPitchSuffix">MIDI</span></div></div>
+          </div>
+          <div class="action-row"><button id="trackMute" type="button">MUTE TRACK</button><button id="openAdvancedSound" type="button">ADVANCED SOUND</button></div>
+        </section>
+        <div class="inspector-note">Brightness, Noise, Pitch Display, and Master Volume are in <b>? → Sound</b>.</div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="settingsBackdrop" hidden>
+  <section class="settings-window" id="settingsWindow" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <header class="settings-header">
+      <div class="settings-heading"><div class="settings-title" id="settingsTitle">1.0595 Settings</div><div class="play-status" id="settingsPlayStatus"><span class="play-dot"></span><span id="settingsPlayText">Stopped · 120 BPM</span></div></div>
+      <div class="settings-header-actions"><button class="compact-transport primary" id="settingsTransport" type="button">PLAY</button><button class="close-button" id="closeSettings" type="button" aria-label="Close">×</button></div>
+    </header>
+    <div class="settings-main">
+      <nav class="settings-nav" aria-label="Settings views">
+        <button data-settings-view="edit" aria-selected="false">Edit</button>
+        <button data-settings-view="sound" aria-selected="true">Sound</button><button data-settings-view="tools" aria-selected="false">Tools</button><button data-settings-view="log" aria-selected="false">Log</button><button data-settings-view="guide" aria-selected="false">Guide</button><button data-settings-view="notes" aria-selected="false">Release Notes</button>
+      </nav>
+      <div class="mobile-tabs" role="tablist" aria-label="Settings views">
+        <button data-settings-view="edit" role="tab" aria-selected="true">Edit</button><button data-settings-view="sound" role="tab" aria-selected="false">Sound</button><button data-settings-view="tools" role="tab" aria-selected="false">Tools</button><button data-settings-view="log" role="tab" aria-selected="false">Log</button><button data-settings-view="guide" role="tab" aria-selected="false">Guide</button><button data-settings-view="notes" role="tab" aria-selected="false">Notes</button>
+      </div>
+      <div class="settings-content" id="settingsContent">
+
+        <section class="settings-view mobile-editor" id="viewEdit" data-view-panel="edit" hidden>
+          <h2 class="view-title">Edit</h2><p class="view-intro">Edit the selected Event position and the current Track. On phones, all editing settings live here so the main screen stays performance-focused.</p>
+          <div id="mobileEditRoot"></div>
+        </section>
+
+        <section class="settings-view" id="viewSound" data-view-panel="sound">
+          <h2 class="view-title">Sound</h2><p class="view-intro">Global output and full per-Track sound parameters from the v2.4.2 architecture. Valid numeric input is committed after 30 ms and all visible summaries are synchronized.</p>
+          <div class="form-section"><h3 class="form-section-title">Master</h3><div class="form-grid">
+            <div class="field"><label for="masterVolumeSettings">Master Volume</label><div class="suffix-wrap"><input id="masterVolumeSettings" type="text" inputmode="numeric"><span class="suffix">%</span></div><div class="meta" id="masterVolumeMeta"></div></div>
+            <div class="field"><label>Pitch Display</label><div class="segmented"><button id="unitMidi" type="button">MIDI</button><button id="unitHz" type="button">Hz</button></div></div>
+          </div></div>
+          <div class="form-section"><h3 class="form-section-title">Track</h3><div class="settings-track-tabs" id="trackTabs" role="tablist"></div><div id="trackSoundForm"></div></div>
+        </section>
+
+        <section class="settings-view" id="viewTools" data-view-panel="tools" hidden>
+          <h2 class="view-title">Tools</h2><p class="view-intro">Pattern-level timing and maintenance actions. Track sound remains independent for all four Tracks.</p>
+          <div class="tool-grid">
+            <div class="tool-card"><h3>Swing</h3><div class="field"><label for="swingInput">Swing <span>50 = straight</span></label><input id="swingInput" type="text" inputmode="numeric"><div class="meta" id="swingMeta"></div></div></div>
+            <div class="tool-card"><h3>Pattern</h3><div class="copy-grid" id="copyPatterns"></div></div>
+            <div class="tool-card"><h3>Track Copy</h3><div class="copy-grid" id="copyTracks"></div></div>
+            <div class="tool-card"><h3>Clear</h3><div class="action-row"><button id="clearTrack" class="danger" type="button">Clear Track</button><button id="clearPattern" class="danger" type="button">Clear Pattern</button></div></div>
+          </div>
+        </section>
+
+        <section class="settings-view" id="viewLog" data-view-panel="log" hidden>
+          <h2 class="view-title">Log</h2><p class="view-intro">Append-only notes. Notes may contain any language; the application interface remains English.</p>
+          <form class="log-form" id="logForm"><textarea id="logMessage" maxlength="2000" rows="3" placeholder="Write a note…" aria-label="Log note" required></textarea><div class="log-form-row"><label class="check-label"><input id="logAttachSnapshot" type="checkbox" checked>Include settings snapshot</label><button class="primary commit-button" type="submit">Commit</button></div><div class="log-tools"><button type="button" id="exportLogs">Export JSON</button><button type="button" id="importLogs">Import JSON</button></div><input class="hidden-file" id="logFile" type="file" accept="application/json,.json"><div class="log-status" id="logStatus" role="status" aria-live="polite"></div></form>
+          <div class="log-list" id="logList"><div class="log-empty">No log entries.</div></div>
+        </section>
+
+        <section class="settings-view" id="viewGuide" data-view-panel="guide" hidden>
+          <h2 class="view-title">Guide</h2><p class="view-intro">English-only product guide, workflow, terminology, shortcuts, and licensing.</p>
+          <nav class="guide-nav" aria-label="Guide sections"><a href="#guideAbout">About</a><a href="#guideBasics">Basics</a><a href="#guideSplit">Split</a><a href="#guideTracks">Tracks</a><a href="#guideSound">Sound</a><a href="#guideLayout">Layout</a><a href="#guideKeys">Shortcuts</a><a href="#guideTerms">Terms</a><a href="#guideCopyright">Copyright</a></nav>
+          <section class="guide-section guide-lead" id="guideAbout"><h3>About 1.0595</h3><p>1.0595 is derived from the approximate frequency ratio of one semitone in twelve-tone equal temperament. The interface uses a deep-navy visual system for stability and control, with muted steel blue reserved for focus, timing, and active states.</p></section>
+          <section class="guide-section" id="guideBasics"><h3>Getting Started</h3><p>Set BPM, choose a Track, and use the 4×4 pads as sixteen independent Event slots. A bright pad plays; a dark pad does not. Select a pad, set its Beat, Split, and Point in the Event inspector, then press START.</p><ol><li>Set BPM.</li><li>Select a Track.</li><li>In STEP mode, turn on one or more pads.</li><li>Open EVENT and choose Beat.</li><li>Choose Split, then Point.</li><li>Press START.</li></ol></section>
+          <section class="guide-section" id="guideSplit"><h3>Event and Split</h3><p>Each pad is an Event, not a fixed sixteenth note. Beat chooses the beat of the 4/4 bar. Split divides that beat into equal parts. Point chooses which part receives the Event.</p><table class="data-table"><thead><tr><th>Split</th><th>Meaning</th></tr></thead><tbody><tr><td>1</td><td>Quarter-note position</td></tr><tr><td>2</td><td>Eighth-note positions</td></tr><tr><td>3</td><td>Triplet positions</td></tr><tr><td>4</td><td>Sixteenth-note positions</td></tr><tr><td>6</td><td>Sixteenth-note triplet positions</td></tr><tr><td>8</td><td>Thirty-second-note positions</td></tr></tbody></table></section>
+          <section class="guide-section" id="guideTracks"><h3>Tracks, Articulation, and Retrig</h3><p>Each of the four Tracks stores its own Events and sound settings. ART changes how an active Event is played: Normal, Accent, Marcato, Staccato, or Tenuto. RETRIG repeats an Event two to four times inside its own Split interval.</p></section>
+          <section class="guide-section" id="guideSound"><h3>Sound Settings</h3><p>Each Track keeps independent Sound, Level, Pitch, Length, Brightness, and Noise. The main TRACK inspector exposes the frequent controls: Sound, Level, Pitch, Length, and Mute. Advanced sound controls—Brightness, Noise, Pitch Display, and Master Volume—are in <b>? → Sound</b>.</p><p>All valid numeric edits are committed after 30 ms and update visible summaries immediately. Master Volume 100% maps to gain 1.00 while the Dynamics Compressor remains active.</p></section>
+          <section class="guide-section" id="guideLayout"><h3>Layout</h3><p><b>Laptop/Desktop:</b> the 4×4 sequencer stays on the left. The compact right inspector uses EVENT and TRACK tabs so the pad grid can remain large without forcing page scrolling. Low-frequency and advanced controls are kept in Settings.</p><p><b>Phone:</b> the main screen shows the rhythm machine only. Open <b>?</b> for Edit, Sound, Tools, Log, Guide, and Release Notes.</p></section>
+          <section class="guide-section" id="guideKeys"><h3>Keyboard Shortcuts</h3><table class="data-table"><thead><tr><th>Shortcut</th><th>Action</th></tr></thead><tbody><tr><td><kbd>Space</kbd></td><td>Start / Stop</td></tr><tr><td><kbd>T</kbd></td><td>Tap Tempo</td></tr><tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Tempo +1 / −1</td></tr><tr><td><kbd>Shift</kbd> + <kbd>↑</kbd> / <kbd>↓</kbd></td><td>Tempo +5 / −5</td></tr><tr><td><kbd>Esc</kbd></td><td>Close Settings</td></tr><tr><td><kbd>↑</kbd> / <kbd>↓</kbd> in a number field</td><td>Adjust the parameter</td></tr><tr><td><kbd>Esc</kbd> in a number field</td><td>Restore the value present when the field received focus</td></tr></tbody></table></section>
+          <section class="guide-section" id="guideTerms"><h3>Terms</h3><table class="data-table"><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td>Pattern</td><td>One complete four-Track rhythm memory.</td></tr><tr><td>Track</td><td>One independent rhythmic voice with its own sound.</td></tr><tr><td>Event</td><td>One of the sixteen editable event slots in a Track.</td></tr><tr><td>Beat</td><td>The beat of the 4/4 bar where an Event begins.</td></tr><tr><td>Split</td><td>How many equal parts divide one beat.</td></tr><tr><td>Point</td><td>Which part of the Split receives the Event.</td></tr><tr><td>Articulation</td><td>How the Event is attacked and sustained.</td></tr><tr><td>Retrig</td><td>How many repeated hits occur inside the Event interval.</td></tr><tr><td>Brightness</td><td>Tonal brightness relative to the selected Sound preset.</td></tr><tr><td>Noise</td><td>Noise component added to the Track sound.</td></tr></tbody></table></section>
+          <section class="guide-section guide-license" id="guideCopyright"><h3>Copyright and Licensing</h3><p>© 2026 WENGJINGDE. Software: PolyForm Noncommercial 1.0.0. Designated documentation: CC BY-NC 4.0. Commercial use requires written permission. The 1.0595 brand identifiers are excluded from CC licensing.</p><p><a href="https://github.com/Reivax1412/1.0595" target="_blank" rel="noopener noreferrer">Official project</a></p></section>
+        </section>
+
+        <section class="settings-view" id="viewNotes" data-view-panel="notes" hidden>
+          <h2 class="view-title">Release Notes</h2><p class="view-intro">Recent application changes.</p>
+          <article class="release"><h3>v3.0.0-beta.3 · 2026-08-10</h3><h4>Improved</h4><ul><li>Unified the entire application interface and Guide in English.</li><li>Re-centered the visual system on the deep-navy 1.0595 CIS with muted steel-blue active states.</li><li>Rebuilt the laptop Inspector as EVENT / TRACK tabs so the 4×4 pad grid can stay larger without hiding information or forcing normal page scrolling.</li><li>Moved Brightness, Noise, Pitch Display, Master Volume, Tools, Log, Guide, and Release Notes into Settings as lower-frequency controls.</li><li>Kept Sound, Level, Pitch, Length, and Mute in the quick TRACK Inspector.</li><li>Increased playback flash contrast with a brighter center, stronger steel-blue outline, and longer pulse.</li><li>Kept all numeric controls on the shared 30 ms live-update path so state, summaries, and duplicate views remain synchronized.</li></ul></article>
+          <article class="release"><h3>v3.0.0-beta.3 · 2026-08-10</h3><h4>Added</h4><ul><li>4×4 Rhythm Sequencer with sixteen independent Event slots per Track.</li><li>Beat + Split + Point timing model supporting mixed binary and triplet positions inside one Track.</li><li>Four Patterns, four independent Tracks, Retrig, Pattern queue, Swing, and mobile Performance View.</li></ul><h4>Improved</h4><ul><li>Built on the v2.4.2 navy CIS, Settings, Log, Guide, Release Notes, Media Session, Wake Lock, and detailed sound engine.</li><li>Laptop workbench fits the sequencer and inspector into one viewport without normal page scrolling.</li><li>Playback Pad flash uses high-contrast white + steel-blue glow.</li><li>All numeric settings use clearable 30 ms live input and immediately update visible state summaries.</li><li>Master Volume 100% maps to gain 1.00 while retaining the Dynamics Compressor.</li></ul></article>
+          <article class="release"><h3>v2.4.2 · 2026-07-29</h3><h4>Improved</h4><ul><li>Settings Transport now switches between PLAY and STOP in real time.</li><li>Main Transport, Settings Transport, keyboard Space, and Media Session share one playback state.</li><li>Licensing notices and project documentation were consolidated and simplified.</li><li>README now includes usage, privacy, deployment, release, and licensing guidance.</li></ul></article>
+          <article class="release"><h3>v2.4.1 · 2026-07-29</h3><h4>Improved</h4><ul><li>Version number moved to the right of the 1.0595 wordmark.</li><li>Low-height desktop layouts use adaptive layout behavior.</li><li>Track Pattern, Articulation, and Sound were presented at one information level.</li><li>Deep navy and muted steel blue replaced the brighter signal palette.</li></ul></article>
+          <article class="release"><h3>v2.4.0 · 2026-07-29</h3><h4>Added</h4><ul><li>New 1.0595 product identity and navy-based CIS.</li><li>Central Settings window with Sound, Log, Guide, and Release Notes views.</li><li>Track sound summaries and direct Track-to-Settings navigation.</li></ul><h4>Improved</h4><ul><li>Single-source state, real-time parameter feedback, responsive layout, and keyboard documentation.</li><li>Sound controls reduced to Sound, Level, Pitch, Length, Brightness, and Noise.</li></ul></article>
+          <article class="release"><h3>v2.3.2 · 2026-07-29</h3><ul><li>Restored per-track synthesis details and improved append-only Log deletion feedback.</li></ul></article>
+          <article class="release"><h3>v2.3.1 · 2026-07-29</h3><ul><li>Restored per-track sound controls and simplified Log entry creation.</li></ul></article>
+        </section>
+
+      </div>
+    </div>
+    <footer class="settings-footer"><button class="done-button" id="doneSettings" type="button">Done</button></footer>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div><div class="sr-only" id="live" aria-live="polite"></div>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const APP_NAME='1.0595',VERSION='3.0.0-beta.3',STORAGE_KEY='1.0595-rhythm-sequencer-v3.0.0-beta.3';
+const LEGACY_STORAGE_KEYS=['1.0595-rhythm-sequencer-v3.0.0-beta.2','1.0595-rhythm-sequencer-v3.0.0-beta.1','1-0595-rhythm-sequencer-v3-revl','1-0595-rhythm-sequencer-v3-revk','1.0595-metronome-v2.4.2','1.0595-metronome-v2.4.1','1.0595-metronome-v2.4.0','sqrt12-metronome-v2.3.2','sqrt12-metronome-v2.3.1'];
+const LOG_DB='sqrt12-metronome-log',LOG_STORE='logs',LOG_DB_VERSION=1,LOG_FALLBACK_KEY='sqrt12-metronome-log-fallback';
+const PPQN=960,BAR_TICKS=3840,EVENT_SLOTS=16,SPLITS=[1,2,3,4,6,8];
+const clamp=(v,min,max,fb=min)=>{v=Number(v);return Number.isFinite(v)?Math.max(min,Math.min(max,v)):fb};
+const midiToHz=m=>440*Math.pow(2,(m-69)/12),hzToMidi=hz=>69+12*Math.log2(hz/440);
+const clone=o=>typeof structuredClone==='function'?structuredClone(o):JSON.parse(JSON.stringify(o));
+
+const presetDefinitions={
+ clear:{label:'Click',brightness:68,noise:22,wave:'square',attackMs:.8,oscFilter:'highpass',oscFilterHz:360,oscQ:.7,noiseFilter:'highpass',noiseFilterHz:2100,noiseQ:.7,durationScale:.9,level:1,pitchStart:1.08,pitchEnd:1},
+ wood:{label:'Wood',brightness:45,noise:7,wave:'triangle',attackMs:1.8,oscFilter:'bandpass',oscFilterHz:980,oscQ:1.1,noiseFilter:'bandpass',noiseFilterHz:1250,noiseQ:.9,durationScale:1.12,level:.98,pitchStart:1.05,pitchEnd:.97},
+ rim:{label:'Rim',brightness:78,noise:34,wave:'square',attackMs:.55,oscFilter:'highpass',oscFilterHz:1100,oscQ:.8,noiseFilter:'highpass',noiseFilterHz:3300,noiseQ:.8,durationScale:.55,level:1.04,pitchStart:1.45,pitchEnd:.92},
+ pulse:{label:'Pulse',brightness:55,noise:0,wave:'sine',attackMs:.7,oscFilter:'lowpass',oscFilterHz:9000,oscQ:.5,noiseFilter:'highpass',noiseFilterHz:1800,noiseQ:.7,durationScale:1.05,level:.96,pitchStart:1,pitchEnd:1},
+ clave:{label:'Clave',brightness:72,noise:12,wave:'triangle',attackMs:.65,oscFilter:'bandpass',oscFilterHz:1850,oscQ:1.35,noiseFilter:'bandpass',noiseFilterHz:2600,noiseQ:1,durationScale:.68,level:1.03,pitchStart:1.22,pitchEnd:.98},
+ soft:{label:'Soft',brightness:32,noise:2,wave:'sine',attackMs:4.2,oscFilter:'lowpass',oscFilterHz:4200,oscQ:.45,noiseFilter:'lowpass',noiseFilterHz:2200,noiseQ:.5,durationScale:1.28,level:.9,pitchStart:1.01,pitchEnd:1}
+};
+const articulationDefs={
+ normal:{symbol:'',label:'Normal',gain:1,duration:1,attack:.95,noise:1,burst:0,sustain:.32,decayPoint:.34},
+ accent:{symbol:'>',label:'Accent',gain:1.58,duration:.92,attack:.46,noise:1.62,burst:.10,sustain:.21,decayPoint:.18},
+ marcato:{symbol:'^',label:'Marcato',gain:1.90,duration:.38,attack:.25,noise:2.25,burst:.24,sustain:.06,decayPoint:.09},
+ staccato:{symbol:'·',label:'Staccato',gain:.72,duration:.14,attack:.55,noise:.58,burst:0,sustain:.03,decayPoint:.06},
+ tenuto:{symbol:'−',label:'Tenuto',gain:1.02,duration:3.20,attack:1.08,noise:.45,burst:0,sustain:.78,decayPoint:.72}
+};
+const articulationOrder=['normal','accent','marcato','staccato','tenuto'];
+const defaultSounds=[
+ {enabled:true,preset:'clear',custom:false,level:100,frequencyHz:1046.5023,lengthMs:34},
+ {enabled:true,preset:'wood',custom:false,level:78,frequencyHz:783.9909,lengthMs:30},
+ {enabled:true,preset:'rim',custom:false,level:68,frequencyHz:880,lengthMs:28},
+ {enabled:true,preset:'clave',custom:false,level:60,frequencyHz:1318.5102,lengthMs:24}
+];
+
+function newEvent(i=0){return{active:false,beat:Math.floor(i/4)+1,split:4,point:i%4,articulation:'normal',retrig:1,velocity:1,microOffsetTicks:0}}
+function newEvents(){return Array.from({length:EVENT_SLOTS},(_,i)=>newEvent(i))}
+function newTrack(i){
+ const d=defaultSounds[i],p=presetDefinitions[d.preset];
+ return{...d,brightness:p.brightness,noise:p.noise,events:newEvents()}
+}
+function newPattern(){return{swing:50,tracks:Array.from({length:4},(_,i)=>newTrack(i))}}
+function seedState(){
+ const patterns=Array.from({length:4},newPattern),p=patterns[0];
+ [0,4,8,12].forEach(i=>p.tracks[0].events[i].active=true);
+ [4,12].forEach(i=>p.tracks[1].events[i].active=true);
+ [2,6,10,14].forEach(i=>p.tracks[2].events[i].active=true);
+ [0,2,4,6,8,10,12,14].forEach(i=>p.tracks[3].events[i].active=true);
+ return{bpm:120,masterVolume:100,pitchDisplay:'midi',currentPattern:0,queuedPattern:null,currentTrack:0,selectedEvent:0,mode:'step',patterns}
+}
+let state=seedState();
+
+function uid(){return`e${Date.now().toString(36)}${Math.random().toString(36).slice(2,7)}`}
+function inferSplitPoint(position){
+ const p=((Number(position)%1)+1)%1,candidates=[];
+ for(const split of SPLITS)for(let point=0;point<split;point++)candidates.push({split,point,d:Math.abs(p-point/split)});
+ candidates.sort((a,b)=>a.d-b.d||a.split-b.split);return candidates[0]
+}
+function normalizeEvent(raw,i){
+ const d=newEvent(i),x={...d,...(raw||{})};
+ if(Number.isFinite(Number(raw?.position))&&!('beat'in(raw||{}))){
+   const inf=inferSplitPoint(Number(raw.position));x.beat=d.beat;x.split=inf.split;x.point=inf.point
+ }
+ x.active=raw?.active!==undefined?!!raw.active:true;
+ x.beat=Math.round(clamp(x.beat,1,4,d.beat));
+ x.split=SPLITS.includes(Number(x.split))?Number(x.split):4;
+ x.point=Math.round(clamp(x.point,0,x.split-1,Math.min(d.point,x.split-1)));
+ x.articulation=articulationDefs[x.articulation]?x.articulation:'normal';
+ x.retrig=Math.round(clamp(x.retrig,1,4,1));
+ x.microOffsetTicks=Math.round(clamp(x.microOffsetTicks,-PPQN,PPQN,0));
+ return x
+}
+function normalizeTrack(raw,index){
+ const base=newTrack(index);if(!raw||typeof raw!=='object')return base;
+ let preset=raw.preset||raw.sourcePreset||raw.timbre||base.preset;if(!presetDefinitions[preset])preset=base.preset;
+ const p=presetDefinitions[preset];
+ const level=raw.level??raw.volume??raw.sound?.levelPercent??base.level;
+ const lengthMs=raw.lengthMs??raw.durationMs??base.lengthMs;
+ const brightness=raw.brightness??p.brightness,noise=raw.noise??(Number.isFinite(Number(raw.sound?.noiseMix))?Number(raw.sound.noiseMix)*100:p.noise);
+ let events;
+ if(Array.isArray(raw.events)&&raw.events.some(e=>'beat'in e||'split'in e)){events=raw.events.slice(0,EVENT_SLOTS).map((e,i)=>normalizeEvent(e,i))}
+ else if(Array.isArray(raw.events)){
+   events=[];
+   for(let beat=1;beat<=4;beat++)for(const oldEvent of raw.events){
+     if(events.length>=EVENT_SLOTS)break;
+     const inf=inferSplitPoint(oldEvent.position??0);
+     events.push(normalizeEvent({active:true,beat,split:inf.split,point:inf.point,articulation:oldEvent.articulation||'normal'},events.length))
+   }
+ }
+ else events=newEvents();
+ while(events.length<EVENT_SLOTS)events.push(newEvent(events.length));
+ return{enabled:raw.enabled!==false,preset,custom:Boolean(raw.custom),level:Math.round(clamp(level,0,100,base.level)),frequencyHz:clamp(raw.frequencyHz,20,20000,base.frequencyHz),lengthMs:Math.round(clamp(lengthMs,5,500,base.lengthMs)),brightness:Math.round(clamp(brightness,0,100,p.brightness)),noise:Math.round(clamp(noise,0,100,p.noise)),events}
+}
+function normalizePattern(raw){
+ const p=newPattern();p.swing=Math.round(clamp(raw?.swing,50,75,50));
+ if(Array.isArray(raw?.tracks)&&raw.tracks.length===4)p.tracks=raw.tracks.map(normalizeTrack);
+ return p
+}
+function migrateSaved(saved){
+ const fresh=seedState();
+ if(!saved||typeof saved!=='object')return fresh;
+ fresh.bpm=Math.round(clamp(saved.bpm??saved.global?.bpm,10,450,120));
+ fresh.masterVolume=Math.round(clamp(saved.masterVolume??saved.global?.masterVolume,0,100,100));
+ fresh.pitchDisplay=(saved.pitchDisplay??saved.pitchUnit??saved.preferences?.pitchDisplay)==='hz'?'hz':'midi';
+ if(Array.isArray(saved.patterns)&&saved.patterns.length){
+   fresh.patterns=Array.from({length:4},(_,i)=>normalizePattern(saved.patterns[i]));
+   fresh.currentPattern=Math.round(clamp(saved.currentPattern,0,3,0));
+   fresh.currentTrack=Math.round(clamp(saved.currentTrack,0,3,0));
+   fresh.selectedEvent=Math.round(clamp(saved.selectedEvent,0,15,0));
+ }else if(Array.isArray(saved.tracks)&&saved.tracks.length===4){
+   fresh.patterns[0].tracks=saved.tracks.map(normalizeTrack)
+ }
+ return fresh
+}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({app:APP_NAME,version:VERSION,...state,queuedPattern:null}))}catch(e){}}
+function load(){
+ try{
+   let raw=localStorage.getItem(STORAGE_KEY);
+   if(!raw)for(const key of LEGACY_STORAGE_KEYS){raw=localStorage.getItem(key);if(raw)break}
+   if(raw){state=migrateSaved(JSON.parse(raw));save()}
+ }catch(e){}
+}
+load();
+
+const currentPattern=()=>state.patterns[state.currentPattern];
+const currentTrack=()=>currentPattern().tracks[state.currentTrack];
+const currentEvent=()=>currentTrack().events[state.selectedEvent];
+function eventTick(e){return(e.beat-1)*PPQN+e.point*(PPQN/e.split)+(e.microOffsetTicks||0)}
+function eventUnitTicks(e){return PPQN/e.split}
+function eventSummary(e){return`Beat ${e.beat} · Split ${e.split} · Point ${e.point+1}`}
+function collisionCount(track,e,index){if(!e.active)return 0;const tick=eventTick(e);return track.events.reduce((n,x,i)=>n+(i!==index&&x.active&&Math.abs(eventTick(x)-tick)<.001?1:0),0)}
+function swingOffsetTicks(e,swing){if(swing<=50||![2,4,8].includes(e.split)||e.point%2===0)return 0;return eventUnitTicks(e)*((swing-50)/50)*.5}
+
+function deriveSound(track){const p=presetDefinitions[track.preset]||presetDefinitions.clear,b=(track.brightness-p.brightness)/35;return{...p,noiseMix:track.noise/100,oscFilterHz:clamp(p.oscFilterHz*Math.pow(2,b),20,20000,p.oscFilterHz)}}
+let ctx=null,masterGain=null,compressor=null,playing=false,schedulerTimer=null,nextBarTime=0,scheduledPattern=0,visualQueue=[],boundaryQueue=[],rafId=null,tapTimes=[],wakeLock=null,sessionStartedAt=null,lastSessionSeconds=0,settingsView='sound',selectedSettingsTrack=0,settingsReturnFocus=null,toastTimer=null,logDbPromise=null,flashTimers=new Map(),soundFormGeneration=0;
+
+function ensureAudio(){
+ if(!ctx){
+   ctx=new(window.AudioContext||window.webkitAudioContext)();masterGain=ctx.createGain();compressor=ctx.createDynamicsCompressor();
+   compressor.threshold.value=-1;compressor.knee.value=.5;compressor.ratio.value=20;compressor.attack.value=.001;compressor.release.value=.065;
+   masterGain.connect(compressor);compressor.connect(ctx.destination)
+ }
+ setMasterGain();return ctx
+}
+function setMasterGain(){if(masterGain&&ctx)masterGain.gain.setTargetAtTime(state.masterVolume/100,ctx.currentTime,.006)}
+function tickSec(){return(60/state.bpm)/PPQN}
+function playEvent(track,event,time,slotSec){
+ ensureAudio();if(!track.enabled||track.level<=0||state.masterVolume<=0)return;
+ const sound=deriveSound(track),art=articulationDefs[event.articulation]||articulationDefs.normal,hits=Math.max(1,Math.min(4,event.retrig||1));
+ for(let h=0;h<hits;h++){
+   const hitTime=time+h*(slotSec/hits),osc=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter(),baseHz=clamp(track.frequencyHz,20,20000,1000);
+   osc.type=sound.wave;
+   const startHz=clamp(baseHz*sound.pitchStart,20,20000,baseHz),endHz=clamp(baseHz*sound.pitchEnd,20,20000,baseHz);
+   osc.frequency.setValueAtTime(startHz,hitTime);if(Math.abs(startHz-endHz)>.01)osc.frequency.exponentialRampToValueAtTime(endHz,hitTime+Math.min(.035,Math.max(.006,track.lengthMs/2500)));
+   filter.type=sound.oscFilter;filter.frequency.setValueAtTime(sound.oscFilterHz,hitTime);filter.Q.setValueAtTime(sound.oscQ,hitTime);
+   const duration=clamp(track.lengthMs*art.duration*sound.durationScale/Math.max(1,hits*.70),5,750,30)/1000,attack=clamp(sound.attackMs*art.attack,.25,24,1.5)/1000,peak=Math.max(.0002,Math.min(.96,(track.level/100)*art.gain*sound.level)),body=Math.max(.00015,peak*art.sustain),decayAt=Math.min(duration*.82,Math.max(attack+.001,duration*art.decayPoint));
+   gain.gain.setValueAtTime(.0001,hitTime);gain.gain.exponentialRampToValueAtTime(peak,hitTime+attack);gain.gain.exponentialRampToValueAtTime(body,hitTime+decayAt);gain.gain.exponentialRampToValueAtTime(.0001,hitTime+duration);
+   osc.connect(filter);filter.connect(gain);gain.connect(masterGain);osc.start(hitTime);osc.stop(hitTime+duration+.02);
+   const noiseLevel=sound.noiseMix*art.noise+art.burst;
+   if(noiseLevel>0){
+     const noiseDur=Math.min(.045,Math.max(.006,duration*(event.articulation==='tenuto'?.22:.58))),size=Math.max(1,Math.floor(ctx.sampleRate*noiseDur)),buffer=ctx.createBuffer(1,size,ctx.sampleRate),data=buffer.getChannelData(0);
+     for(let i=0;i<size;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/size,event.articulation==='marcato'?5:3);
+     const source=ctx.createBufferSource(),ng=ctx.createGain(),nf=ctx.createBiquadFilter();source.buffer=buffer;nf.type=sound.noiseFilter;nf.frequency.value=sound.noiseFilterHz;nf.Q.value=sound.noiseQ;
+     ng.gain.setValueAtTime(Math.max(.0002,Math.min(.9,peak*noiseLevel)),hitTime);ng.gain.exponentialRampToValueAtTime(.0001,hitTime+noiseDur);source.connect(nf);nf.connect(ng);ng.connect(masterGain);source.start(hitTime);source.stop(hitTime+noiseDur+.008)
+   }
+ }
+}
+function scheduleBar(startTime,patternIndex){
+ const p=state.patterns[patternIndex],sec=tickSec();
+ p.tracks.forEach((track,trackIndex)=>{
+   if(!track.enabled)return;
+   track.events.forEach((event,eventIndex)=>{
+     if(!event.active)return;
+     let tick=eventTick(event)+swingOffsetTicks(event,p.swing);tick=Math.max(0,Math.min(BAR_TICKS-.001,tick));
+     const time=startTime+tick*sec;playEvent(track,event,time,eventUnitTicks(event)*sec);visualQueue.push({time,patternIndex,trackIndex,eventIndex})
+   })
+ });
+ boundaryQueue.push({time:startTime,patternIndex});visualQueue.sort((a,b)=>a.time-b.time)
+}
+function scheduler(){
+ if(!playing||!ctx)return;const ahead=.105,barSec=BAR_TICKS*tickSec();
+ while(nextBarTime<ctx.currentTime+ahead){
+   let p=scheduledPattern;
+   if(state.queuedPattern!==null&&nextBarTime>ctx.currentTime+.02){p=state.queuedPattern;scheduledPattern=p;state.queuedPattern=null}
+   scheduleBar(nextBarTime,p);nextBarTime+=barSec
+ }
+}
+function flashPad(index){
+ const pad=document.querySelector(`.event-pad[data-event="${index}"]`);if(!pad)return;
+ pad.classList.remove('playing');void pad.offsetWidth;pad.classList.add('playing');clearTimeout(flashTimers.get(index));
+ flashTimers.set(index,setTimeout(()=>{pad.classList.remove('playing');flashTimers.delete(index)},220))
+}
+function visualLoop(){
+ if(!ctx)return;const now=ctx.currentTime+.012;
+ while(boundaryQueue.length&&boundaryQueue[0].time<=now){
+   const b=boundaryQueue.shift();if(state.currentPattern!==b.patternIndex){state.currentPattern=b.patternIndex;save();renderAll()}
+ }
+ while(visualQueue.length&&visualQueue[0].time<=now){
+   const v=visualQueue.shift();if(v.patternIndex===state.currentPattern&&v.trackIndex===state.currentTrack&&['step','art','retrig'].includes(state.mode))flashPad(v.eventIndex)
+ }
+ if(playing)rafId=requestAnimationFrame(visualLoop)
+}
+async function requestWakeLock(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}
+async function releaseWakeLock(){try{if(wakeLock){await wakeLock.release();wakeLock=null}}catch(e){}}
+async function start(){
+ if(playing)return true;try{const audio=ensureAudio();if(audio.state==='suspended')await audio.resume();playing=true;sessionStartedAt=Date.now();scheduledPattern=state.currentPattern;visualQueue=[];boundaryQueue=[];nextBarTime=audio.currentTime+.04;scheduler();schedulerTimer=setInterval(scheduler,16);rafId=requestAnimationFrame(visualLoop);updateTransport();updateMedia();requestWakeLock();return true}catch(error){playing=false;updateTransport();toast('Unable to start audio');return false}
+}
+function stop(){
+ if(playing&&sessionStartedAt){lastSessionSeconds=Math.max(0,Math.round((Date.now()-sessionStartedAt)/1000));sessionStartedAt=null}
+ playing=false;clearInterval(schedulerTimer);schedulerTimer=null;cancelAnimationFrame(rafId);rafId=null;visualQueue=[];boundaryQueue=[];state.queuedPattern=null;
+ document.querySelectorAll('.event-pad.playing').forEach(x=>x.classList.remove('playing'));flashTimers.forEach(clearTimeout);flashTimers.clear();updateTransport();updateMedia();releaseWakeLock();renderHeader();return true
+}
+function toggleTransport(){return playing?stop():start()}
+function updateTransport(){
+ const main=$('toggle'),settings=$('settingsTransport');main.classList.toggle('primary',!playing);main.classList.toggle('danger',playing);$('transportLabel').textContent=playing?'STOP':'START';
+ settings.classList.toggle('primary',!playing);settings.classList.toggle('danger',playing);settings.textContent=playing?'STOP':'PLAY';
+ $('settingsPlayStatus').classList.toggle('playing',playing);$('settingsPlayText').textContent=`${playing?'Playing':'Stopped'} · ${state.bpm} BPM`
+}
+function tap(at){
+ const now=Number.isFinite(Number(at))?Number(at):performance.now();if(tapTimes.length&&now-tapTimes.at(-1)>2500)tapTimes=[];tapTimes.push(now);tapTimes=tapTimes.slice(-7);$('tap').classList.add('flash');setTimeout(()=>$('tap').classList.remove('flash'),130);if(tapTimes.length<2)return;
+ const gaps=[];for(let i=1;i<tapTimes.length;i++)gaps.push(tapTimes[i]-tapTimes[i-1]);gaps.sort((a,b)=>a-b);const median=gaps[Math.floor(gaps.length/2)],valid=gaps.filter(x=>Math.abs(x-median)<=median*.25),vals=(valid.length?valid:gaps).sort((a,b)=>a-b),selected=vals[Math.floor(vals.length/2)];applyBpm(60000/selected,true)
+}
+function applyBpm(value,announce=false){state.bpm=Math.round(clamp(value,10,450,state.bpm));save();syncHeaderTempo();updateTransport();updateMedia();if(announce)$('live').textContent=`${state.bpm} BPM`}
+function stepBpm(delta){applyBpm(state.bpm+delta,true)}
+function bindHold(button,delta){let timeout,interval;const end=()=>{clearTimeout(timeout);clearInterval(interval)};button.addEventListener('pointerdown',event=>{event.preventDefault();stepBpm(delta);timeout=setTimeout(()=>interval=setInterval(()=>stepBpm(delta),75),420)});button.addEventListener('click',event=>{if(event.detail===0)stepBpm(delta)});['pointerup','pointercancel','pointerleave'].forEach(name=>button.addEventListener(name,end))}
+
+function soundLabel(track){return`${presetDefinitions[track.preset]?.label||'Click'}${track.custom?' · Custom':''}`}
+function noteNameFromMidi(m){const names=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'],n=Math.round(m),c=Math.round((m-n)*100);return`${names[((n%12)+12)%12]}${Math.floor(n/12)-1}${c?` ${c>0?'+':''}${c}¢`:''}`}
+function pitchText(track){const midi=hzToMidi(track.frequencyHz);return state.pitchDisplay==='midi'?`MIDI ${midi.toFixed(2)}`:`${track.frequencyHz.toFixed(1)} Hz`}
+function trackSummaryText(index){const track=currentPattern().tracks[index];return`${soundLabel(track)} · ${track.level}% · ${pitchText(track)} · ${track.lengthMs} ms`}
+
+function padChoice(label,sub='',cls=''){const b=document.createElement('button');b.type='button';b.className='pad choice '+cls;b.innerHTML=`<span class="choice-main">${label}</span>${sub?`<span class="choice-sub">${sub}</span>`:''}`;return b}
+function renderPads(){
+ const root=$('padGrid');root.innerHTML='';
+ if(state.mode==='pattern'){
+   for(let i=0;i<16;i++){if(i<4){const b=padChoice(i+1,'Pattern',(state.currentPattern===i?'current ':'')+(state.queuedPattern===i?'queued':''));b.onclick=()=>selectPattern(i);root.appendChild(b)}else{const b=padChoice('');b.disabled=true;root.appendChild(b)}}return
+ }
+ if(state.mode==='track'){
+   for(let i=0;i<16;i++){if(i<4){const t=currentPattern().tracks[i],b=padChoice(i+1,t.enabled?'Track':'Muted',(state.currentTrack===i?'current ':'')+(!t.enabled?'muted':''));bindTrackHold(b,i);root.appendChild(b)}else{const b=padChoice('');b.disabled=true;root.appendChild(b)}}return
+ }
+ currentTrack().events.forEach((e,i)=>{
+   const b=document.createElement('button');b.type='button';b.dataset.event=i;b.className=`pad event-pad ${e.active?'active ':''}${state.selectedEvent===i?'selected ':''}${e.active&&e.articulation!=='normal'?`art-${e.articulation}`:''}`;
+   b.setAttribute('aria-label',`${e.active?'On':'Off'}；${eventSummary(e)}`);
+   b.innerHTML=`<span class="timing-badge">${e.split===4?'':`÷${e.split}`}</span><span class="event-glyph"><span class="art">${e.active?articulationDefs[e.articulation].symbol:''}</span><span class="retrig">${e.active&&e.retrig>1?`×${e.retrig}`:''}</span></span>`;
+   b.onclick=()=>handleEvent(i);root.appendChild(b)
+ })
+}
+function handleEvent(i){
+ state.selectedEvent=i;const e=currentEvent();
+ if(state.mode==='art'){if(!e.active){renderAll();return toast('Turn the Event on first')}e.articulation=articulationOrder[(articulationOrder.indexOf(e.articulation)+1)%articulationOrder.length]}
+ else if(state.mode==='retrig'){if(!e.active){renderAll();return toast('Turn the Event on first')}e.retrig=e.retrig>=4?1:e.retrig+1}
+ else{e.active=!e.active;if(!e.active){e.articulation='normal';e.retrig=1}}
+ save();renderAll()
+}
+function setMode(mode){state.mode=(state.mode===mode&&mode!=='step')?'step':mode;renderAll()}
+function selectPattern(i){
+ if(playing){if(i===state.currentPattern){state.queuedPattern=null;toast('Pattern queue canceled')}else{state.queuedPattern=i;toast(`Queued Pattern ${i+1} for next bar`)}}
+ else{state.currentPattern=i;state.selectedEvent=0;save()}
+ state.mode='step';renderAll()
+}
+function bindTrackHold(b,i){
+ let timer,held=false;b.addEventListener('pointerdown',()=>{held=false;timer=setTimeout(()=>{held=true;const t=currentPattern().tracks[i];t.enabled=!t.enabled;save();renderAll();toast(t.enabled?`Track ${i+1} enabled`:`Track ${i+1} muted`)},520)});
+ const up=()=>{clearTimeout(timer);if(!held){state.currentTrack=i;state.selectedEvent=0;state.mode='step';save();renderAll()}};b.addEventListener('pointerup',up);b.addEventListener('pointercancel',()=>clearTimeout(timer));b.addEventListener('pointerleave',()=>clearTimeout(timer))
+}
+function renderHeader(){
+ $('patternStatus').textContent=(state.currentPattern+1)+(state.queuedPattern!==null?` → ${state.queuedPattern+1}`:'');
+ $('trackStatus').textContent=(state.currentTrack+1)+(currentTrack().enabled?'':' ×');$('eventStatus').textContent=eventSummary(currentEvent());
+ document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(state.mode===b.dataset.mode)));syncHeaderTempo()
+}
+function syncHeaderTempo(){if(document.activeElement!==$('bpm'))$('bpm').value=state.bpm}
+function renderModeGuide(){
+ const map={
+  step:['STEP','Tap a pad to turn the Event on or off. The last selected Event can be edited in EVENT or Settings.'],
+  pattern:['PATTERN','Choose Pattern 1–4. During playback, the new Pattern starts at the next bar.'],
+  track:['TRACK','Choose Track 1–4. Press and hold a Track pad to mute or enable it.'],
+  art:['ART','Tap an active Event to cycle Accent, Marcato, Staccato, Tenuto, and Normal.'],
+  retrig:['RETRIG','Tap an active Event to cycle ×2, ×3, ×4, and ×1.']
+ };
+ const [title,text]=map[state.mode]||map.step;$('modeGuide').innerHTML=`<b>${title}</b>${text}`
+}
+function renderTrackTabs(rootId='desktopTrackTabs'){
+ const root=$(rootId);if(!root)return;root.innerHTML=currentPattern().tracks.map((t,i)=>`<button type="button" data-track-select="${i}" aria-selected="${state.currentTrack===i}" class="${t.enabled?'':'muted'}">T${i+1}</button>`).join('');
+ root.querySelectorAll('[data-track-select]').forEach(b=>b.onclick=()=>{state.currentTrack=Number(b.dataset.trackSelect);state.selectedEvent=0;state.mode='step';save();renderAll()})
+}
+function renderEventEditor(){
+ const e=currentEvent(),tr=currentTrack();$('eventEnabledText').textContent=e.active?'On':'Off';$('eventOn').classList.toggle('on',e.active);$('eventOff').classList.toggle('on',!e.active);
+ const beat=$('beatChoices');beat.innerHTML='';for(let n=1;n<=4;n++){const b=document.createElement('button');b.textContent=n;b.className=e.beat===n?'on':'';b.onclick=()=>{e.beat=n;save();renderAll()};beat.appendChild(b)}
+ const split=$('splitChoices');split.innerHTML='';SPLITS.forEach(n=>{const b=document.createElement('button');b.textContent=n;b.className=e.split===n?'on':'';b.onclick=()=>{e.split=n;e.point=Math.min(e.point,n-1);save();renderAll()};split.appendChild(b)});
+ const points=$('pointChoices');points.innerHTML='';points.style.setProperty('--count',Math.min(8,e.split));for(let n=0;n<e.split;n++){const b=document.createElement('button');b.textContent=n+1;b.className=e.point===n?'on':'';b.onclick=()=>{e.point=n;save();renderAll()};points.appendChild(b)}
+ const c=collisionCount(tr,e,state.selectedEvent);$('positionSummary').innerHTML=`<b>${eventSummary(e)}</b>${c?`<br><span class="collision">${c} other Event(s) share this time</span>`:''}`
+}
+function soundOptions(selected){return Object.entries(presetDefinitions).map(([id,p])=>`<option value="${id}" ${id===selected?'selected':''}>${p.label}</option>`).join('')}
+function syncDesktopInspector(){
+ const tr=currentTrack(),focused=document.activeElement;
+ $('inspectorTitle').textContent=`Track ${state.currentTrack+1}`;$('trackEnabledText').textContent=tr.enabled?'Enabled':'Muted';$('soundStatus').textContent=soundLabel(tr);renderTrackTabs();renderEventEditor();
+ $('deskPreset').innerHTML=soundOptions(tr.preset);
+ const pitch=state.pitchDisplay==='midi'?hzToMidi(tr.frequencyHz):tr.frequencyHz;
+ if(focused!==$('deskLevel'))$('deskLevel').value=Math.round(tr.level);
+ if(focused!==$('deskLength'))$('deskLength').value=Math.round(tr.lengthMs);
+ if(focused!==$('deskPitch'))$('deskPitch').value=state.pitchDisplay==='midi'?pitch.toFixed(2):tr.frequencyHz.toFixed(1);
+ $('deskLevelMeta').textContent=`${Math.round(tr.level)}%`;
+ $('deskLengthMeta').textContent=`${Math.round(tr.lengthMs)} ms`;
+ $('deskPitchMeta').textContent=state.pitchDisplay==='midi'?noteNameFromMidi(pitch):`${hzToMidi(tr.frequencyHz).toFixed(2)} MIDI`;
+ $('deskPitchSuffix').textContent=state.pitchDisplay==='midi'?'MIDI':'Hz';
+ $('trackMute').textContent=tr.enabled?'MUTE TRACK':'ENABLE TRACK';$('trackMute').classList.toggle('muted-action',!tr.enabled)
+}
+
+let inspectorView='event';
+function setInspectorView(view){
+ inspectorView=view==='track'?'track':'event';
+ document.querySelectorAll('[data-inspector-view]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.inspectorView===inspectorView)));
+ document.querySelectorAll('[data-inspector-pane]').forEach(p=>p.hidden=p.dataset.inspectorPane!==inspectorView)
+}
+
+
+function fitPadGrid(){
+ const stage=document.querySelector('.pad-stage'),grid=document.querySelector('.pad-grid');
+ if(!stage||!grid)return;
+ const cs=getComputedStyle(grid),gap=parseFloat(cs.columnGap||cs.gap)||7;
+ const stageW=Math.max(0,stage.clientWidth),stageH=Math.max(0,stage.clientHeight);
+ const padRatio=1.48;
+ // Four rows: H = (W - 3g)/ratio + 3g
+ const widthByHeight=Math.max(0,(stageH-3*gap)*padRatio+3*gap);
+ let hardMax=620;
+ if(innerWidth<=900)hardMax=570;
+ if(innerWidth<=720)hardMax=520;
+ const fitted=Math.floor(Math.min(stageW,widthByHeight,hardMax));
+ grid.style.width=`${Math.max(220,fitted)}px`;
+}
+
+function renderAll(){renderHeader();renderPads();renderModeGuide();syncDesktopInspector();setInspectorView(inspectorView);if(!$('settingsBackdrop').hidden)syncOpenSettings();requestAnimationFrame(fitPadGrid)}
+function toast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),1050)}
+
+function liveNumeric(input,apply,{min,max,step=1,bigStep=5,integer=false,onApplied=()=>{}}){
+ let before=input.value,timer=null;
+ const parse=()=>{const raw=input.value.trim();if(raw===''||raw==='-'||raw==='.'||raw==='-.')return{pending:true};const n=Number(raw);if(!Number.isFinite(n)||n<min||n>max)return{invalid:true};return{ok:true,value:integer?Math.round(n):n}};
+ const schedule=()=>{clearTimeout(timer);input.classList.remove('live-applied');const r=parse();input.classList.toggle('live-pending',!!r.pending);input.setAttribute('aria-invalid',String(!!r.invalid));if(!r.ok)return;timer=setTimeout(()=>{apply(r.value);input.classList.remove('live-pending');input.classList.add('live-applied');clearTimeout(input._applied);input._applied=setTimeout(()=>input.classList.remove('live-applied'),120);onApplied(r.value)},30)};
+ input.addEventListener('focus',()=>before=input.value);
+ input.addEventListener('input',schedule);
+ input.addEventListener('keydown',event=>{event.stopPropagation();if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();const base=Number(input.value||before),delta=(event.key==='ArrowUp'?1:-1)*(event.shiftKey?bigStep:step),v=clamp(base+delta,min,max,Number(before));input.value=Number(v.toFixed(6));input.dispatchEvent(new Event('input',{bubbles:true}))}else if(event.key==='Escape'){event.preventDefault();clearTimeout(timer);input.value=before;input.setAttribute('aria-invalid','false');input.classList.remove('live-pending');input.blur()}});
+ input.addEventListener('blur',()=>{clearTimeout(timer);const r=parse();if(r.ok){apply(r.value);input.value=integer?Math.round(r.value):Number(r.value.toFixed(6));onApplied(r.value)}else{input.value=before;input.setAttribute('aria-invalid','false');input.classList.remove('live-pending')}})
+}
+function setPitchDisplay(unit){
+ state.pitchDisplay=unit==='hz'?'hz':'midi';save();syncDesktopInspector();bindDesktopPitch();if(settingsView==='sound')renderTrackSoundForm();if(settingsView==='edit')renderMobileEdit()
+}
+function setMasterVolume(v){state.masterVolume=Math.round(clamp(v,0,100,state.masterVolume));setMasterGain();save();$('masterVolumeMeta').textContent=`${state.masterVolume}%`}
+function applyTrackPreset(track,preset){if(!presetDefinitions[preset])return;track.preset=preset;track.custom=false;track.brightness=presetDefinitions[preset].brightness;track.noise=presetDefinitions[preset].noise;save();syncDesktopInspector()}
+function bindDesktopPitch(){
+ const old=$('deskPitch');if(!old)return;const fresh=old.cloneNode(true);old.replaceWith(fresh);
+ liveNumeric(fresh,v=>{currentTrack().frequencyHz=state.pitchDisplay==='midi'?midiToHz(v):v;save()},{min:state.pitchDisplay==='midi'?0:20,max:state.pitchDisplay==='midi'?127:20000,step:state.pitchDisplay==='midi'?.01:1,bigStep:state.pitchDisplay==='midi'?1:10,onApplied:syncDesktopInspector})
+}
+function bindDesktopInputs(){
+ $('deskPreset').onchange=()=>{applyTrackPreset(currentTrack(),$('deskPreset').value);syncDesktopInspector()};
+ liveNumeric($('deskLevel'),v=>{currentTrack().level=Math.round(v);save()},{min:0,max:100,integer:true,onApplied:syncDesktopInspector});
+ liveNumeric($('deskLength'),v=>{currentTrack().lengthMs=Math.round(v);save()},{min:5,max:500,integer:true,onApplied:syncDesktopInspector});
+ bindDesktopPitch()
+}
+function bindEventControls(){
+ $('eventOn').onclick=()=>{currentEvent().active=true;save();renderAll()};$('eventOff').onclick=()=>{const e=currentEvent();e.active=false;e.articulation='normal';e.retrig=1;save();renderAll()};
+ $('trackMute').onclick=()=>{currentTrack().enabled=!currentTrack().enabled;save();renderAll()};
+ $('inspectorEventTab').onclick=()=>setInspectorView('event');$('inspectorTrackTab').onclick=()=>setInspectorView('track');
+ $('openAdvancedSound').onclick=()=>openSettings('sound',state.currentTrack,$('openAdvancedSound'))
+}
+
+/* Settings */
+function renderSettingsTrackTabs(){const root=$('trackTabs');root.innerHTML=currentPattern().tracks.map((_,i)=>`<button type="button" data-sound-track="${i}" aria-selected="${selectedSettingsTrack===i}">T${i+1}</button>`).join('');root.querySelectorAll('[data-sound-track]').forEach(b=>b.onclick=()=>{selectedSettingsTrack=Number(b.dataset.soundTrack);renderSettingsTrackTabs();renderTrackSoundForm()})}
+function renderTrackSoundForm(){
+ const root=$('trackSoundForm');if(!root)return;const generation=++soundFormGeneration,track=currentPattern().tracks[selectedSettingsTrack],pitch=state.pitchDisplay==='midi'?hzToMidi(track.frequencyHz):track.frequencyHz,pitchSuffix=state.pitchDisplay==='midi'?'MIDI':'Hz',pitchMin=state.pitchDisplay==='midi'?0:20,pitchMax=state.pitchDisplay==='midi'?127:20000,pitchStep=state.pitchDisplay==='midi'?.01:1;
+ root.innerHTML=`<div class="track-settings-heading"><h3>Track ${selectedSettingsTrack+1}</h3><span class="sound-status">${soundLabel(track)}</span></div><div class="form-grid">
+ <div class="field"><label>Sound</label><select id="soundPreset">${soundOptions(track.preset)}</select></div>
+ <div class="field"><label>Level <span id="settingsLevelMeta">${track.level}%</span></label><div class="suffix-wrap"><input id="trackLevel" type="text" inputmode="numeric" value="${track.level}"><span class="suffix">%</span></div></div>
+ <div class="field"><label>Pitch <span id="pitchMeta">${state.pitchDisplay==='midi'?noteNameFromMidi(pitch):`${hzToMidi(track.frequencyHz).toFixed(2)} MIDI`}</span></label><div class="suffix-wrap"><input id="trackPitch" type="text" inputmode="decimal" value="${state.pitchDisplay==='midi'?pitch.toFixed(2):track.frequencyHz.toFixed(1)}"><span class="suffix">${pitchSuffix}</span></div></div>
+ <div class="field"><label>Length <span id="settingsLengthMeta">${track.lengthMs} ms</span></label><div class="suffix-wrap"><input id="trackLength" type="text" inputmode="numeric" value="${track.lengthMs}"><span class="suffix">ms</span></div></div>
+ <div class="field"><label>Brightness <span id="settingsBrightnessMeta">${track.brightness}%</span></label><div class="suffix-wrap"><input id="trackBrightness" type="text" inputmode="numeric" value="${track.brightness}"><span class="suffix">%</span></div></div>
+ <div class="field"><label>Noise <span id="settingsNoiseMeta">${track.noise}%</span></label><div class="suffix-wrap"><input id="trackNoise" type="text" inputmode="numeric" value="${track.noise}"><span class="suffix">%</span></div></div></div>`;
+ $('soundPreset').onchange=()=>{applyTrackPreset(track,$('soundPreset').value);renderTrackSoundForm()};
+ const current=()=>generation===soundFormGeneration;
+ liveNumeric($('trackLevel'),v=>{if(current()){track.level=Math.round(v);save();$('settingsLevelMeta').textContent=`${track.level}%`;syncDesktopInspector()}},{min:0,max:100,integer:true});
+ liveNumeric($('trackPitch'),v=>{if(current()){track.frequencyHz=state.pitchDisplay==='midi'?midiToHz(v):v;save();const m=hzToMidi(track.frequencyHz);$('pitchMeta').textContent=state.pitchDisplay==='midi'?noteNameFromMidi(m):`${m.toFixed(2)} MIDI`;syncDesktopInspector()}},{min:pitchMin,max:pitchMax,step:pitchStep,bigStep:state.pitchDisplay==='midi'?1:10});
+ liveNumeric($('trackLength'),v=>{if(current()){track.lengthMs=Math.round(v);save();$('settingsLengthMeta').textContent=`${track.lengthMs} ms`;syncDesktopInspector()}},{min:5,max:500,integer:true});
+ liveNumeric($('trackBrightness'),v=>{if(current()){track.brightness=Math.round(v);track.custom=true;save();$('settingsBrightnessMeta').textContent=`${track.brightness}%`;root.querySelector('.sound-status').textContent=soundLabel(track);syncDesktopInspector()}},{min:0,max:100,integer:true});
+ liveNumeric($('trackNoise'),v=>{if(current()){track.noise=Math.round(v);track.custom=true;save();$('settingsNoiseMeta').textContent=`${track.noise}%`;root.querySelector('.sound-status').textContent=soundLabel(track);syncDesktopInspector()}},{min:0,max:100,integer:true})
+}
+function renderMobileEdit(){
+ const root=$('mobileEditRoot');if(!root)return;const tr=currentTrack(),e=currentEvent(),pitch=state.pitchDisplay==='midi'?hzToMidi(tr.frequencyHz):tr.frequencyHz;
+ root.innerHTML=`<div class="form-section"><h3 class="form-section-title">Track</h3><div class="settings-track-tabs" id="mobileTrackTabs">${currentPattern().tracks.map((t,i)=>`<button type="button" data-mobile-track="${i}" aria-selected="${state.currentTrack===i}">T${i+1}</button>`).join('')}</div></div>
+ <div class="form-section"><h3 class="form-section-title">Event Position</h3><div class="event-state"><button id="mEventOn" class="${e.active?'on':''}">ON</button><button id="mEventOff" class="${e.active?'':'on'}">OFF</button></div><div class="control-label">BEAT</div><div class="choice-row" id="mBeat" style="--count:4"></div><div class="control-label">SPLIT</div><div class="choice-row" id="mSplit" style="--count:6"></div><div class="control-label">POINT</div><div class="choice-row" id="mPoint" style="--count:${Math.min(8,e.split)}"></div><div class="position-summary" id="mSummary"></div></div>
+ <div class="form-section"><h3 class="form-section-title">Track Quick Sound</h3><div class="form-grid"><div class="field full"><label>Sound</label><select id="mPreset">${soundOptions(tr.preset)}</select></div><div class="field"><label>Level <span id="mLevelMeta">${tr.level}%</span></label><div class="suffix-wrap"><input id="mLevel" type="text" inputmode="numeric" value="${tr.level}"><span class="suffix">%</span></div></div><div class="field"><label>Length <span id="mLengthMeta">${tr.lengthMs} ms</span></label><div class="suffix-wrap"><input id="mLength" type="text" inputmode="numeric" value="${tr.lengthMs}"><span class="suffix">ms</span></div></div><div class="field full"><label>Pitch <span id="mPitchMeta">${state.pitchDisplay==='midi'?noteNameFromMidi(pitch):`${hzToMidi(tr.frequencyHz).toFixed(2)} MIDI`}</span></label><div class="suffix-wrap"><input id="mPitch" type="text" inputmode="decimal" value="${state.pitchDisplay==='midi'?pitch.toFixed(2):tr.frequencyHz.toFixed(1)}"><span class="suffix">${state.pitchDisplay==='midi'?'MIDI':'Hz'}</span></div></div></div><div class="action-row"><button id="mMute">${tr.enabled?'MUTE TRACK':'ENABLE TRACK'}</button><button id="mAdvanced">ADVANCED SOUND</button></div></div>`;
+ root.querySelectorAll('[data-mobile-track]').forEach(b=>b.onclick=()=>{state.currentTrack=Number(b.dataset.mobileTrack);state.selectedEvent=0;save();renderAll();renderMobileEdit()});
+ $('mEventOn').onclick=()=>{currentEvent().active=true;save();renderAll();renderMobileEdit()};$('mEventOff').onclick=()=>{const x=currentEvent();x.active=false;x.articulation='normal';x.retrig=1;save();renderAll();renderMobileEdit()};
+ const build=(id,values,get,set)=>{const r=$(id);r.innerHTML='';values.forEach(v=>{const b=document.createElement('button');b.textContent=Number(v)+1*(id==='mPoint');if(id!=='mPoint')b.textContent=v;b.className=get()===v?'on':'';b.onclick=()=>{set(v);save();renderAll();renderMobileEdit()};r.appendChild(b)})};
+ build('mBeat',[1,2,3,4],()=>currentEvent().beat,v=>currentEvent().beat=v);build('mSplit',SPLITS,()=>currentEvent().split,v=>{currentEvent().split=v;currentEvent().point=Math.min(currentEvent().point,v-1)});build('mPoint',Array.from({length:e.split},(_,i)=>i),()=>currentEvent().point,v=>currentEvent().point=v);
+ const c=collisionCount(tr,e,state.selectedEvent);$('mSummary').innerHTML=`<b>${eventSummary(e)}</b>${c?`<br><span class="collision">${c} other Event(s) share this time</span>`:''}`;
+ $('mPreset').onchange=()=>{applyTrackPreset(tr,$('mPreset').value);renderMobileEdit()};
+ liveNumeric($('mLevel'),v=>{tr.level=Math.round(v);save();$('mLevelMeta').textContent=`${tr.level}%`;syncDesktopInspector()},{min:0,max:100,integer:true});
+ liveNumeric($('mLength'),v=>{tr.lengthMs=Math.round(v);save();$('mLengthMeta').textContent=`${tr.lengthMs} ms`;syncDesktopInspector()},{min:5,max:500,integer:true});
+ liveNumeric($('mPitch'),v=>{tr.frequencyHz=state.pitchDisplay==='midi'?midiToHz(v):v;save();const m=hzToMidi(tr.frequencyHz);$('mPitchMeta').textContent=state.pitchDisplay==='midi'?noteNameFromMidi(m):`${m.toFixed(2)} MIDI`;syncDesktopInspector()},{min:state.pitchDisplay==='midi'?0:20,max:state.pitchDisplay==='midi'?127:20000,step:state.pitchDisplay==='midi'?.01:1,bigStep:state.pitchDisplay==='midi'?1:10});
+ $('mMute').onclick=()=>{tr.enabled=!tr.enabled;save();renderAll();renderMobileEdit()};
+ $('mAdvanced').onclick=()=>showSettingsView('sound')
+}
+function renderTools(){
+ if(document.activeElement!==$('swingInput'))$('swingInput').value=currentPattern().swing;$('swingMeta').textContent=`${currentPattern().swing} · 50 = Straight`;
+ const cp=$('copyPatterns'),ct=$('copyTracks');cp.innerHTML='';ct.innerHTML='';
+ for(let i=0;i<4;i++){const b=document.createElement('button');b.textContent=i+1;b.disabled=i===state.currentPattern;b.onclick=()=>{state.patterns[i]=clone(currentPattern());state.currentPattern=i;state.selectedEvent=0;save();renderAll();renderTools();toast(`Copied to Pattern ${i+1}`)};cp.appendChild(b);
+ const t=document.createElement('button');t.textContent=i+1;t.disabled=i===state.currentTrack;t.onclick=()=>{currentPattern().tracks[i]=clone(currentTrack());state.currentTrack=i;state.selectedEvent=0;save();renderAll();renderTools();toast(`Copied to Track ${i+1}`)};ct.appendChild(t)}
+}
+function syncOpenSettings(){
+ if($('settingsBackdrop').hidden)return;
+ if(settingsView==='edit')renderMobileEdit();
+ if(settingsView==='sound'){if(document.activeElement!==$('masterVolumeSettings'))$('masterVolumeSettings').value=state.masterVolume;$('masterVolumeMeta').textContent=`${state.masterVolume}%`;renderSettingsTrackTabs()}
+ if(settingsView==='tools')renderTools()
+}
+function showSettingsView(view){
+ const allowed=['edit','sound','tools','log','guide','notes'];settingsView=allowed.includes(view)?view:'sound';
+ document.querySelectorAll('[data-settings-view]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.settingsView===settingsView)));document.querySelectorAll('[data-view-panel]').forEach(p=>p.hidden=p.dataset.viewPanel!==settingsView);$('settingsContent').scrollTop=0;
+ if(view==='edit')renderMobileEdit();if(view==='sound'){renderSettingsTrackTabs();renderTrackSoundForm();if(document.activeElement!==$('masterVolumeSettings'))$('masterVolumeSettings').value=state.masterVolume;$('masterVolumeMeta').textContent=`${state.masterVolume}%`}if(view==='tools')renderTools();if(view==='log')renderLogs()
+}
+function openSettings(view=null,trackIndex=null,returnFocus=null){
+ settingsReturnFocus=returnFocus||document.activeElement;if(Number.isInteger(trackIndex))selectedSettingsTrack=clamp(trackIndex,0,3,0);$('settingsBackdrop').hidden=false;$('appShell').inert=true;
+ const mobile=matchMedia('(max-width:720px)').matches;showSettingsView(view||'edit');updateTransport();requestAnimationFrame(()=>$('closeSettings').focus())
+}
+function closeSettings(){if($('settingsBackdrop').hidden)return;$('settingsBackdrop').hidden=true;$('appShell').inert=false;(settingsReturnFocus&&document.contains(settingsReturnFocus)?settingsReturnFocus:$('openSettings')).focus();settingsReturnFocus=null}
+function trapSettingsFocus(event){if(event.key!=='Tab'||$('settingsBackdrop').hidden)return;const f=[...$('settingsWindow').querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href]')].filter(e=>e.offsetParent!==null);if(!f.length)return;const first=f[0],last=f.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}}
+
+/* Log system retained from v2.4.2 */
+function currentSessionSeconds(){return playing&&sessionStartedAt?Math.max(0,Math.round((Date.now()-sessionStartedAt)/1000)):lastSessionSeconds}
+function snapshotState(){return{schemaVersion:4,app:APP_NAME,appVersion:VERSION,capturedAt:new Date().toISOString(),bpm:state.bpm,masterVolume:state.masterVolume,pitchDisplay:state.pitchDisplay,currentPattern:state.currentPattern,patterns:clone(state.patterns)}}
+function makeLogId(){return globalThis.crypto?.randomUUID?.()||`log-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`}
+function fallbackGetLogs(){try{const logs=JSON.parse(localStorage.getItem(LOG_FALLBACK_KEY)||'[]');return Array.isArray(logs)?logs:[]}catch(e){return[]}}
+function fallbackSaveLogs(logs){localStorage.setItem(LOG_FALLBACK_KEY,JSON.stringify(logs))}
+function fallbackAddLog(entry){const logs=fallbackGetLogs();if(logs.some(item=>item.id===entry.id))return false;logs.push(entry);fallbackSaveLogs(logs);return true}
+function openLogDb(){if(logDbPromise)return logDbPromise;logDbPromise=new Promise((resolve,reject)=>{if(!('indexedDB'in globalThis)){reject(new Error('IndexedDB is unavailable.'));return}const request=indexedDB.open(LOG_DB,LOG_DB_VERSION);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(LOG_STORE)){const store=db.createObjectStore(LOG_STORE,{keyPath:'id'});store.createIndex('createdAt','createdAt',{unique:false})}};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('Unable to open Log database.'))});return logDbPromise}
+async function logTx(mode,work){const db=await openLogDb();return new Promise((resolve,reject)=>{const transaction=db.transaction(LOG_STORE,mode),store=transaction.objectStore(LOG_STORE);let result;try{result=work(store)}catch(error){reject(error);return}transaction.oncomplete=()=>resolve(result);transaction.onerror=()=>reject(transaction.error||new Error('Log operation failed.'));transaction.onabort=()=>reject(transaction.error||new Error('Log operation was cancelled.'))})}
+async function getIndexedLogs(){try{const db=await openLogDb();return await new Promise((resolve,reject)=>{const transaction=db.transaction(LOG_STORE,'readonly'),request=transaction.objectStore(LOG_STORE).getAll();request.onsuccess=()=>resolve(request.result||[]);request.onerror=()=>reject(request.error||new Error('Unable to read Log entries.'))})}catch(e){return[]}}
+async function getLogs(){const merged=new Map();for(const log of fallbackGetLogs())if(log?.id)merged.set(log.id,log);for(const log of await getIndexedLogs())if(log?.id)merged.set(log.id,log);return[...merged.values()]}
+function sortLogs(logs){return[...logs].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)))}
+function formatDateTime(iso){const date=new Date(iso);if(Number.isNaN(date.getTime()))return String(iso);const parts=new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(date),get=type=>parts.find(part=>part.type===type)?.value||'';return`${get('year')}-${get('month')}-${get('day')} ${get('hour')}:${get('minute')}`}
+function formatDuration(seconds){seconds=Math.max(0,Math.round(Number(seconds)||0));const hours=Math.floor(seconds/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;return hours?`${hours}:${String(minutes).padStart(2,'0')}:${String(secs).padStart(2,'0')}`:`${minutes}:${String(secs).padStart(2,'0')}`}
+function snapshotText(snapshot){
+ if(!snapshot)return'';const pattern=Array.isArray(snapshot.patterns)?snapshot.patterns[snapshot.currentPattern||0]:null,tracks=pattern?.tracks||snapshot.tracks||[];
+ return`BPM ${snapshot.bpm} · Master ${snapshot.masterVolume}% · Pattern ${(snapshot.currentPattern||0)+1}\n`+tracks.map((t,i)=>{const events=(t.events||[]).filter(e=>e.active!==false).map(e=>'beat'in e?`B${e.beat}/÷${e.split}/${Number(e.point)+1}`:String(e.position??'')).join(', ');return`T${i+1} ${t.enabled?'ON':'OFF'} · ${t.preset||t.timbre||'clear'} · ${t.level??t.volume??0}% · ${events}`}).join('\n')
+}
+function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char]))}
+function logDeletionMap(logs){const map=new Map();for(const log of logs)if(log.kind==='delete'&&log.targetId&&!map.has(log.targetId))map.set(log.targetId,log);return map}
+function logMessageText(log){const message=String(log.message||'').trim();return message||[String(log.summary||'').trim(),String(log.content||'').trim()].filter(Boolean).join('\n')}
+async function renderLogs(){
+ const root=$('logList');if(!root)return;try{const logs=sortLogs(await getLogs()),deleted=logDeletionMap(logs),commits=logs.filter(log=>log.kind!=='delete');if(!commits.length){root.innerHTML='<div class="log-empty">No log entries.</div>';return}
+ root.innerHTML=commits.map(log=>{const deletion=deleted.get(log.id),isDeleted=Boolean(deletion),message=logMessageText(log)||'(Empty entry)',snapshot=log.snapshot?`<details class="log-snapshot"><summary>Settings snapshot</summary><pre>${escapeHtml(snapshotText(log.snapshot))}</pre></details>`:'';return`<details class="log-entry ${isDeleted?'deleted':''}" data-log-id="${escapeHtml(log.id)}"><summary><span class="log-time">${escapeHtml(formatDateTime(log.createdAt))}</span><span class="log-preview">${escapeHtml(message)}</span></summary><div class="log-detail"><div>${escapeHtml(message)}</div>${log.sessionSeconds!=null?`<div>Session ${escapeHtml(formatDuration(log.sessionSeconds))}</div>`:''}${snapshot}${isDeleted?`<div class="deleted-label">Deleted ${escapeHtml(formatDateTime(deletion.createdAt))}</div>`:`<button class="log-delete" type="button" data-delete-log="${escapeHtml(log.id)}">Mark as Deleted</button>`}</div></details>`}).join('');
+ root.querySelectorAll('[data-delete-log]').forEach(b=>b.onclick=async()=>{try{await markLogDeleted(b.dataset.deleteLog)}catch(e){$('logStatus').textContent=e.message}})
+ }catch(e){root.innerHTML=`<div class="log-empty">${escapeHtml(e.message)}</div>`}
+}
+async function addLogEntry(entry){let saved=false,lastError=null;try{fallbackAddLog(entry);saved=true}catch(error){lastError=error}try{await logTx('readwrite',store=>store.add(entry));saved=true}catch(error){if(error?.name!=='ConstraintError')lastError=error}if(!saved)throw lastError||new Error('Unable to save the Log entry.')}
+async function commitLog(){const message=$('logMessage').value.trim();if(!message){$('logMessage').setAttribute('aria-invalid','true');$('logStatus').textContent='Enter a note before committing.';$('logMessage').focus();return false}const entry={id:makeLogId(),schemaVersion:4,kind:'commit',createdAt:new Date().toISOString(),message:message.slice(0,2000),sessionSeconds:currentSessionSeconds(),snapshot:$('logAttachSnapshot').checked?snapshotState():null};await addLogEntry(entry);$('logMessage').value='';$('logMessage').setAttribute('aria-invalid','false');$('logStatus').textContent='Committed.';await renderLogs();return true}
+async function markLogDeleted(id){const logs=await getLogs(),target=logs.find(item=>item.id===id&&item.kind!=='delete');if(!target)throw new Error('Original Commit not found.');if(logs.some(item=>item.kind==='delete'&&item.targetId===id)){await renderLogs();return false}const entry={id:makeLogId(),schemaVersion:4,kind:'delete',targetId:id,createdAt:new Date().toISOString()};await addLogEntry(entry);await renderLogs();return true}
+async function exportLogs(){const logs=await getLogs(),payload={app:APP_NAME,appVersion:VERSION,exportVersion:4,exportedAt:new Date().toISOString(),logs},blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),anchor=document.createElement('a');anchor.href=url;anchor.download=`1.0595-log-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('logStatus').textContent=`Exported ${logs.length} entries.`}
+function validImportedLog(log){return Boolean(log&&typeof log.id==='string'&&log.id&&typeof log.createdAt==='string'&&((log.kind==='delete'&&typeof log.targetId==='string'&&log.targetId)||(String(log.message||'').trim()||String(log.summary||'').trim())))}
+async function importLogsFile(file){const raw=await file.text(),payload=JSON.parse(raw),logs=Array.isArray(payload)?payload:payload.logs;if(!Array.isArray(logs))throw new Error('The JSON file does not contain a valid logs array.');const existing=await getLogs(),ids=new Set(existing.map(item=>item.id));let added=0,skipped=0,invalid=0;for(const rawLog of logs){if(!validImportedLog(rawLog)){invalid++;continue}if(ids.has(rawLog.id)){skipped++;continue}const log={...rawLog};try{await addLogEntry(log);ids.add(log.id);added++}catch(e){skipped++}}$('logStatus').textContent=`Imported ${added}; skipped ${skipped}; invalid ${invalid}.`;await renderLogs()}
+function bindLog(){const form=$('logForm'),message=$('logMessage');const resize=()=>{message.style.height='auto';message.style.height=`${Math.min(170,Math.max(82,message.scrollHeight))}px`};message.addEventListener('input',()=>{resize();message.setAttribute('aria-invalid',String(!message.value.trim()))});form.addEventListener('submit',async event=>{event.preventDefault();try{await commitLog()}catch(error){$('logStatus').textContent=error.message}});$('exportLogs').onclick=async()=>{try{await exportLogs()}catch(e){$('logStatus').textContent=e.message}};$('importLogs').onclick=()=>$('logFile').click();$('logFile').onchange=async()=>{const file=$('logFile').files?.[0];if(!file)return;try{await importLogsFile(file)}catch(e){$('logStatus').textContent=e.message}finally{$('logFile').value=''}}}
+
+function updateMedia(){try{if(!('mediaSession'in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:APP_NAME,artist:`${state.bpm} BPM`,album:`Pattern ${state.currentPattern+1} · Track ${state.currentTrack+1}`});navigator.mediaSession.playbackState=playing?'playing':'paused'}catch(e){}}
+function bindMedia(){if(!('mediaSession'in navigator))return;try{navigator.mediaSession.setActionHandler('play',start);navigator.mediaSession.setActionHandler('pause',stop);navigator.mediaSession.setActionHandler('stop',stop);navigator.mediaSession.setActionHandler('previoustrack',()=>stepBpm(-1));navigator.mediaSession.setActionHandler('nexttrack',()=>stepBpm(1))}catch(e){}}
+
+function clearCurrentTrack(){currentTrack().events=newEvents();state.selectedEvent=0;save();renderAll();if(settingsView==='tools')renderTools();toast('Track cleared')}
+function clearCurrentPattern(){currentPattern().tracks.forEach(t=>t.events=newEvents());state.selectedEvent=0;save();renderAll();if(settingsView==='tools')renderTools();toast('Pattern cleared')}
+
+function init(){
+ renderAll();renderSettingsTrackTabs();bindHold($('bpmDown'),-1);bindHold($('bpmUp'),1);
+ liveNumeric($('bpm'),v=>applyBpm(v),{min:10,max:450,integer:true,onApplied:()=>{updateTransport();renderHeader()}});
+ bindDesktopInputs();bindEventControls();
+ document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+ $('tap').onclick=tap;$('toggle').onclick=toggleTransport;$('openSettings').onclick=e=>openSettings(null,null,e.currentTarget);$('closeSettings').onclick=closeSettings;$('doneSettings').onclick=closeSettings;$('settingsTransport').onclick=toggleTransport;
+ document.querySelectorAll('[data-settings-view]').forEach(b=>b.onclick=()=>showSettingsView(b.dataset.settingsView));
+ $('unitMidi').onclick=()=>setPitchDisplay('midi');$('unitHz').onclick=()=>setPitchDisplay('hz');
+ liveNumeric($('masterVolumeSettings'),setMasterVolume,{min:0,max:100,integer:true,onApplied:()=>{syncDesktopInspector()}});
+ liveNumeric($('swingInput'),v=>{currentPattern().swing=Math.round(v);save()},{min:50,max:75,integer:true,onApplied:renderTools});
+ $('clearTrack').onclick=clearCurrentTrack;$('clearPattern').onclick=clearCurrentPattern;
+ bindLog();bindMedia();setPitchDisplay(state.pitchDisplay);updateTransport();$('masterVolumeSettings').value=state.masterVolume;$('masterVolumeMeta').textContent=`${state.masterVolume}%`;
+ document.addEventListener('keydown',event=>{trapSettingsFocus(event);if(event.defaultPrevented)return;if(event.key==='Escape'&&!$('settingsBackdrop').hidden){event.preventDefault();closeSettings();return}const interactive=event.target.closest?.('input,select,textarea,button,a,summary,[contenteditable="true"]');if(interactive)return;if(event.code==='Space'){event.preventDefault();toggleTransport()}else if(event.key.toLowerCase()==='t'){event.preventDefault();tap()}else if(event.key==='ArrowUp'){event.preventDefault();stepBpm(event.shiftKey?5:1)}else if(event.key==='ArrowDown'){event.preventDefault();stepBpm(event.shiftKey?-5:-1)}});
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&playing)requestWakeLock()});window.addEventListener('resize',fitPadGrid,{passive:true});window.addEventListener('orientationchange',()=>setTimeout(fitPadGrid,80),{passive:true});window.addEventListener('beforeunload',stop)
+}
+
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+
+window.__sequencerTest={APP_NAME,VERSION,state,presetDefinitions,articulationDefs,PPQN,BAR_TICKS,SPLITS,eventTick,eventUnitTicks,applyBpm,setMasterVolume,setPitchDisplay,start,stop,toggleTransport,tap,snapshotState,getLogs,commitLog,markLogDeleted,validImportedLog,importLogsFile,exportLogs,deriveSound,migrateSaved};
+init();
+</script>
+</body>
+</html>
