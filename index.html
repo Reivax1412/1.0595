@@ -13,7 +13,7 @@
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<title>1.0595 | Rhythm Sequencer v3.0.0-beta.3</title>
+<title>1.0595 | Rhythm Sequencer v3.0.0-beta.5</title>
 <style>
 :root{
   color-scheme:dark;
@@ -56,7 +56,7 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 .mode-button[aria-pressed="true"]{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
 .pad-stage{min-height:0;display:grid;place-items:center;overflow:hidden}
 .pad-grid{
-  width:min(100%,620px);
+  width:100%;max-width:620px;
   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;
 }
 .pad{
@@ -140,12 +140,12 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 
 @media(min-width:721px) and (max-height:760px){
   .app-shell{padding-top:7px;padding-bottom:7px}.app-header{margin-bottom:5px}.sequencer-panel{padding:8px 10px}.mode-button{min-height:31px}
-  .pad-grid{width:min(100%,600px);gap:6px}
+  .pad-grid{width:100%;max-width:620px;gap:6px}
   .mode-guide{min-height:25px;padding:5px 7px}.transport-row{margin-top:4px;padding-top:4px}.transport-row button{min-height:34px}
   .inspector-panel{padding:7px;gap:5px}.compact-section{padding:6px 7px}.control-label{margin:4px 0 2px}.choice-row button{height:23px}
   .sound-grid input,.sound-grid select{height:28px}.track-tabs button,.inspector-tabs button{height:28px}.action-row button{min-height:27px}.art-item{padding:2px 1px}
 }
-@media(max-width:900px) and (min-width:721px){.main-layout{grid-template-columns:minmax(0,1fr) 295px}.pad-grid{width:min(100%,570px)}.settings-window{width:94vw;min-width:0}.settings-main{grid-template-columns:165px minmax(0,1fr)}}
+@media(max-width:900px) and (min-width:721px){.main-layout{grid-template-columns:minmax(0,1fr) 295px}.pad-grid{width:100%;max-width:620px}.settings-window{width:94vw;min-width:0}.settings-main{grid-template-columns:165px minmax(0,1fr)}}
 @media(max-width:720px){
   html,body{height:100%;overflow:hidden}
   .app-shell{height:100vh;height:100dvh;min-height:0;overflow:hidden;padding:9px 8px 8px}
@@ -153,7 +153,7 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
   .brand-lockup{grid-area:brand}.status-row{grid-area:status;justify-content:flex-start}.header-tempo{grid-area:tempo;justify-content:end}.icon-button{grid-area:help}
   .main-layout{grid-template-columns:1fr;height:100%;gap:0}.inspector-panel{display:none}
   .sequencer-panel{padding:8px;grid-template-rows:auto minmax(0,1fr) auto auto}.mode-bar{gap:4px;margin-bottom:4px}.mode-button{min-height:32px;padding:3px;font-size:.61rem}
-  .pad-grid{width:min(100%,520px);gap:5px}.pad{border-radius:8px}.event-glyph .art{font-size:clamp(1.8rem,9vw,2.55rem)}.event-glyph .retrig{font-size:clamp(.95rem,5vw,1.25rem)}
+  .pad-grid{width:100%;max-width:620px;gap:5px}.pad{border-radius:8px}.event-glyph .art{font-size:clamp(1.8rem,9vw,2.55rem)}.event-glyph .retrig{font-size:clamp(.95rem,5vw,1.25rem)}
   .mode-guide{margin-top:4px;min-height:27px;padding:5px 7px;font-size:.6rem}.transport-row{margin-top:4px;padding-top:4px}.transport-row button{min-height:37px}
   .modal-backdrop{padding:0;background:var(--bg-app);backdrop-filter:none}.settings-window{width:100%;height:100dvh;min-width:0;min-height:0;border:0;border-radius:0}
   .settings-header{padding:max(9px,env(safe-area-inset-top)) 10px 8px}.settings-main{display:grid;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.settings-nav{display:none}
@@ -166,6 +166,23 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
   .form-grid,.tool-grid{grid-template-columns:1fr}.log-form-row{align-items:flex-start;flex-direction:column}.commit-button{width:100%}.log-entry summary{grid-template-columns:1fr;gap:4px}.log-detail{padding-left:2px}.play-status{display:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+@media(max-width:720px){
+  .app-shell{height:100dvh;min-height:0;overflow:hidden}
+  .main-layout{height:100%;min-height:0}
+  .sequencer-panel{height:100%;min-height:0}
+  .pad-stage{min-height:0;overflow:hidden}
+}
+@media(max-width:900px) and (orientation:landscape){
+  .app-shell{padding-top:6px;padding-bottom:6px}
+  .app-header{margin-bottom:5px}
+  .mode-bar{margin-bottom:4px}
+  .mode-button{min-height:30px;padding:3px 5px}
+  .mode-guide{min-height:24px;margin-top:4px;padding:4px 7px}
+  .transport-row{margin-top:4px;padding-top:4px}
+  .transport-row button{min-height:33px}
+}
+
 </style>
 </head>
 <body>
@@ -309,8 +326,8 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 
         <section class="settings-view" id="viewNotes" data-view-panel="notes" hidden>
           <h2 class="view-title">Release Notes</h2><p class="view-intro">Recent application changes.</p>
-          <article class="release"><h3>v3.0.0-beta.3 · 2026-08-10</h3><h4>Improved</h4><ul><li>Unified the entire application interface and Guide in English.</li><li>Re-centered the visual system on the deep-navy 1.0595 CIS with muted steel-blue active states.</li><li>Rebuilt the laptop Inspector as EVENT / TRACK tabs so the 4×4 pad grid can stay larger without hiding information or forcing normal page scrolling.</li><li>Moved Brightness, Noise, Pitch Display, Master Volume, Tools, Log, Guide, and Release Notes into Settings as lower-frequency controls.</li><li>Kept Sound, Level, Pitch, Length, and Mute in the quick TRACK Inspector.</li><li>Increased playback flash contrast with a brighter center, stronger steel-blue outline, and longer pulse.</li><li>Kept all numeric controls on the shared 30 ms live-update path so state, summaries, and duplicate views remain synchronized.</li></ul></article>
-          <article class="release"><h3>v3.0.0-beta.3 · 2026-08-10</h3><h4>Added</h4><ul><li>4×4 Rhythm Sequencer with sixteen independent Event slots per Track.</li><li>Beat + Split + Point timing model supporting mixed binary and triplet positions inside one Track.</li><li>Four Patterns, four independent Tracks, Retrig, Pattern queue, Swing, and mobile Performance View.</li></ul><h4>Improved</h4><ul><li>Built on the v2.4.2 navy CIS, Settings, Log, Guide, Release Notes, Media Session, Wake Lock, and detailed sound engine.</li><li>Laptop workbench fits the sequencer and inspector into one viewport without normal page scrolling.</li><li>Playback Pad flash uses high-contrast white + steel-blue glow.</li><li>All numeric settings use clearable 30 ms live input and immediately update visible state summaries.</li><li>Master Volume 100% maps to gain 1.00 while retaining the Dynamics Compressor.</li></ul></article>
+          <article class="release"><h3>v3.0.0-beta.5 · 2026-08-10</h3><h4>Improved</h4><ul><li>Unified the entire application interface and Guide in English.</li><li>Re-centered the visual system on the deep-navy 1.0595 CIS with muted steel-blue active states.</li><li>Rebuilt the laptop Inspector as EVENT / TRACK tabs so the 4×4 pad grid can stay larger without hiding information or forcing normal page scrolling.</li><li>Moved Brightness, Noise, Pitch Display, Master Volume, Tools, Log, Guide, and Release Notes into Settings as lower-frequency controls.</li><li>Kept Sound, Level, Pitch, Length, and Mute in the quick TRACK Inspector.</li><li>Increased playback flash contrast with a brighter center, stronger steel-blue outline, and longer pulse.</li><li>Kept all numeric controls on the shared 30 ms live-update path so state, summaries, and duplicate views remain synchronized.</li></ul></article>
+          <article class="release"><h3>v3.0.0-beta.5 · 2026-08-10</h3><h4>Added</h4><ul><li>4×4 Rhythm Sequencer with sixteen independent Event slots per Track.</li><li>Beat + Split + Point timing model supporting mixed binary and triplet positions inside one Track.</li><li>Four Patterns, four independent Tracks, Retrig, Pattern queue, Swing, and mobile Performance View.</li></ul><h4>Improved</h4><ul><li>Built on the v2.4.2 navy CIS, Settings, Log, Guide, Release Notes, Media Session, Wake Lock, and detailed sound engine.</li><li>Laptop workbench fits the sequencer and inspector into one viewport without normal page scrolling.</li><li>Playback Pad flash uses high-contrast white + steel-blue glow.</li><li>All numeric settings use clearable 30 ms live input and immediately update visible state summaries.</li><li>Master Volume 100% maps to gain 1.00 while retaining the Dynamics Compressor.</li></ul></article>
           <article class="release"><h3>v2.4.2 · 2026-07-29</h3><h4>Improved</h4><ul><li>Settings Transport now switches between PLAY and STOP in real time.</li><li>Main Transport, Settings Transport, keyboard Space, and Media Session share one playback state.</li><li>Licensing notices and project documentation were consolidated and simplified.</li><li>README now includes usage, privacy, deployment, release, and licensing guidance.</li></ul></article>
           <article class="release"><h3>v2.4.1 · 2026-07-29</h3><h4>Improved</h4><ul><li>Version number moved to the right of the 1.0595 wordmark.</li><li>Low-height desktop layouts use adaptive layout behavior.</li><li>Track Pattern, Articulation, and Sound were presented at one information level.</li><li>Deep navy and muted steel blue replaced the brighter signal palette.</li></ul></article>
           <article class="release"><h3>v2.4.0 · 2026-07-29</h3><h4>Added</h4><ul><li>New 1.0595 product identity and navy-based CIS.</li><li>Central Settings window with Sound, Log, Guide, and Release Notes views.</li><li>Track sound summaries and direct Track-to-Settings navigation.</li></ul><h4>Improved</h4><ul><li>Single-source state, real-time parameter feedback, responsive layout, and keyboard documentation.</li><li>Sound controls reduced to Sound, Level, Pitch, Length, Brightness, and Noise.</li></ul></article>
@@ -329,8 +346,8 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-const APP_NAME='1.0595',VERSION='3.0.0-beta.3',STORAGE_KEY='1.0595-rhythm-sequencer-v3.0.0-beta.3';
-const LEGACY_STORAGE_KEYS=['1.0595-rhythm-sequencer-v3.0.0-beta.2','1.0595-rhythm-sequencer-v3.0.0-beta.1','1-0595-rhythm-sequencer-v3-revl','1-0595-rhythm-sequencer-v3-revk','1.0595-metronome-v2.4.2','1.0595-metronome-v2.4.1','1.0595-metronome-v2.4.0','sqrt12-metronome-v2.3.2','sqrt12-metronome-v2.3.1'];
+const APP_NAME='1.0595',VERSION='3.0.0-beta.5',STORAGE_KEY='1.0595-rhythm-sequencer-v3.0.0-beta.5';
+const LEGACY_STORAGE_KEYS=['1.0595-rhythm-sequencer-v3.0.0-beta.4','1.0595-rhythm-sequencer-v3.0.0-beta.3','1.0595-rhythm-sequencer-v3.0.0-beta.2','1.0595-rhythm-sequencer-v3.0.0-beta.1','1-0595-rhythm-sequencer-v3-revl','1-0595-rhythm-sequencer-v3-revk','1.0595-metronome-v2.4.2','1.0595-metronome-v2.4.1','1.0595-metronome-v2.4.0','sqrt12-metronome-v2.3.2','sqrt12-metronome-v2.3.1'];
 const LOG_DB='sqrt12-metronome-log',LOG_STORE='logs',LOG_DB_VERSION=1,LOG_FALLBACK_KEY='sqrt12-metronome-log-fallback';
 const PPQN=960,BAR_TICKS=3840,EVENT_SLOTS=16,SPLITS=[1,2,3,4,6,8];
 const clamp=(v,min,max,fb=min)=>{v=Number(v);return Number.isFinite(v)?Math.max(min,Math.min(max,v)):fb};
@@ -643,16 +660,40 @@ function setInspectorView(view){
 function fitPadGrid(){
  const stage=document.querySelector('.pad-stage'),grid=document.querySelector('.pad-grid');
  if(!stage||!grid)return;
- const cs=getComputedStyle(grid),gap=parseFloat(cs.columnGap||cs.gap)||7;
- const stageW=Math.max(0,stage.clientWidth),stageH=Math.max(0,stage.clientHeight);
- const padRatio=1.48;
- // Four rows: H = (W - 3g)/ratio + 3g
- const widthByHeight=Math.max(0,(stageH-3*gap)*padRatio+3*gap);
- let hardMax=620;
- if(innerWidth<=900)hardMax=570;
- if(innerWidth<=720)hardMax=520;
- const fitted=Math.floor(Math.min(stageW,widthByHeight,hardMax));
- grid.style.width=`${Math.max(220,fitted)}px`;
+
+ const stageRect=stage.getBoundingClientRect();
+ const gridStyle=getComputedStyle(grid);
+ const gap=parseFloat(gridStyle.columnGap||gridStyle.gap)||7;
+
+ // Read the real visible space, not nominal screen dimensions.
+ const vv=window.visualViewport;
+ const viewportW=vv?.width||document.documentElement.clientWidth||innerWidth;
+ const viewportH=vv?.height||document.documentElement.clientHeight||innerHeight;
+
+ const availableW=Math.max(0,Math.min(stage.clientWidth,viewportW-stageRect.left-8));
+ const availableH=Math.max(0,Math.min(stage.clientHeight,viewportH-stageRect.top-8));
+
+ // Pad aspect ratio is width / height.
+ const ratio=1.48;
+
+ // For a 4×4 grid:
+ // gridHeight = 4 * padHeight + 3 * gap
+ // gridWidth  = 4 * padWidth  + 3 * gap
+ // padWidth = padHeight * ratio
+ const widthByHeight=Math.max(0,4*(((availableH-3*gap)/4)*ratio)+3*gap);
+
+ // Device-independent safety margins.
+ let maxW=620;
+ if(viewportW<1100)maxW=590;
+ if(viewportW<900)maxW=560;
+ if(viewportW<720)maxW=520;
+ if(viewportW<520)maxW=viewportW-20;
+
+ const fitted=Math.floor(Math.min(availableW,widthByHeight,maxW));
+ const safeWidth=Math.max(180,fitted);
+
+ grid.style.width=`${safeWidth}px`;
+ grid.style.maxWidth=`${safeWidth}px`;
 }
 
 function renderAll(){renderHeader();renderPads();renderModeGuide();syncDesktopInspector();setInspectorView(inspectorView);if(!$('settingsBackdrop').hidden)syncOpenSettings();requestAnimationFrame(fitPadGrid)}
@@ -803,7 +844,12 @@ function init(){
  $('clearTrack').onclick=clearCurrentTrack;$('clearPattern').onclick=clearCurrentPattern;
  bindLog();bindMedia();setPitchDisplay(state.pitchDisplay);updateTransport();$('masterVolumeSettings').value=state.masterVolume;$('masterVolumeMeta').textContent=`${state.masterVolume}%`;
  document.addEventListener('keydown',event=>{trapSettingsFocus(event);if(event.defaultPrevented)return;if(event.key==='Escape'&&!$('settingsBackdrop').hidden){event.preventDefault();closeSettings();return}const interactive=event.target.closest?.('input,select,textarea,button,a,summary,[contenteditable="true"]');if(interactive)return;if(event.code==='Space'){event.preventDefault();toggleTransport()}else if(event.key.toLowerCase()==='t'){event.preventDefault();tap()}else if(event.key==='ArrowUp'){event.preventDefault();stepBpm(event.shiftKey?5:1)}else if(event.key==='ArrowDown'){event.preventDefault();stepBpm(event.shiftKey?-5:-1)}});
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&playing)requestWakeLock()});window.addEventListener('resize',fitPadGrid,{passive:true});window.addEventListener('orientationchange',()=>setTimeout(fitPadGrid,80),{passive:true});window.addEventListener('beforeunload',stop)
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&playing)requestWakeLock()});window.addEventListener('resize',fitPadGrid,{passive:true});
+window.visualViewport?.addEventListener('resize',fitPadGrid,{passive:true});
+window.visualViewport?.addEventListener('scroll',fitPadGrid,{passive:true});
+const padStageObserver=new ResizeObserver(()=>fitPadGrid());
+const observedPadStage=document.querySelector('.pad-stage');
+if(observedPadStage)padStageObserver.observe(observedPadStage);window.addEventListener('orientationchange',()=>setTimeout(fitPadGrid,80),{passive:true});window.addEventListener('beforeunload',stop)
 }
 
 if('serviceWorker' in navigator){

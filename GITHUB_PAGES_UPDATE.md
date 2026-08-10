@@ -1,60 +1,31 @@
 # 1.0595 — GitHub Pages Update
 
-Version: v3.0.0-beta.3 · RevO
+Version: v3.0.0-beta.5 · RevQ
 
-## Upload these files to the GitHub Pages publishing root
+## Main change
+This package updates the app icon set to the selected fourth concept: the minimal pulse-pad icon.
 
-- `index.html`
-- `manifest.webmanifest`
-- `sw.js`
-- `favicon.svg`
-- `favicon-32.png`
-- `apple-touch-icon.png`
-- `icon-192.png`
-- `icon-512.png`
-- `icon-maskable-512.png`
-- `.nojekyll`
+Updated assets:
+- favicon-32.png
+- favicon.svg
+- apple-touch-icon.png
+- icon-192.png
+- icon-512.png
+- icon-maskable-512.png
 
-`VERSION.txt` is optional.
+## Upload
+Replace the files in the GitHub Pages publishing root with all files from this package.
 
-If GitHub Pages is configured as **main / root**, upload these files to the repository root.
-If Pages publishes from `/docs`, place all of them together inside `/docs`.
+Current recommended Pages source:
+- Branch: `main`
+- Folder: `/(root)`
 
-## Phone home-screen icon
+## Cache / installed app
+The service-worker cache name is now `1.0595-v3.0.0-beta.5`, so the new deployment supersedes beta.4.
 
-### iPhone / iPad
-1. Open the GitHub Pages URL in **Safari**.
-2. Tap **Share**.
-3. Choose **Add to Home Screen**.
-4. Keep the name `1.0595` and tap **Add**.
+After deployment:
+1. Open the website once while online.
+2. Refresh once.
+3. If the old icon remains on the home screen, remove the old shortcut / installed app and add it again.
 
-Safari uses `apple-touch-icon.png`.
-
-### Android
-1. Open the GitHub Pages URL in **Chrome**.
-2. Open the menu.
-3. Choose **Install app** or **Add to Home screen**.
-
-Chrome uses `manifest.webmanifest` and the 192/512 icons.
-
-## Important after updating
-
-A service worker caches the app for faster/offline reopening.
-After replacing an older version on GitHub Pages:
-- refresh the page once after deployment;
-- if the old version remains, close/reopen the installed app or reload once online.
-
-The cache name changes with this release, so beta.3 replaces the older cached shell automatically.
-
-## Grid-fit change
-
-The 4×4 pad width is now calculated from the **actual `.pad-stage` width and height** at runtime.
-This avoids slight overflow caused by:
-- browser address/tool bars,
-- Windows display scaling,
-- browser zoom,
-- laptop viewports shorter than the nominal screen resolution.
-
-## Existing data
-
-beta.3 reads beta.2 as a legacy storage source, so existing local settings migrate forward.
+Existing beta.4 local settings migrate into beta.5.

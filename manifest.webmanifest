@@ -1,7 +1,7 @@
 {
   "name": "1.0595 Rhythm Sequencer",
   "short_name": "1.0595",
-  "description": "A compact 4×4 rhythm sequencer with per-Track sound and Event Split timing.",
+  "description": "1.0595 Rhythm Sequencer — adaptive 4×4 event sequencer.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
