@@ -1,31 +1,30 @@
 # 1.0595 — GitHub Pages Update
 
-Version: v3.0.0-beta.5 · RevQ
+Version: v3.0.0-beta.6 · RevR
 
-## Main change
-This package updates the app icon set to the selected fourth concept: the minimal pulse-pad icon.
+## Mobile adaptive-grid fix
+This release changes how phone pad sizing works. The app no longer trusts the CSS grid row height on mobile. Instead, it reads the live Visual Viewport and subtracts the measured interface elements around the pad stage, then solves the largest 4×4 grid that fits both available width and height.
 
-Updated assets:
-- favicon-32.png
-- favicon.svg
-- apple-touch-icon.png
-- icon-192.png
-- icon-512.png
-- icon-maskable-512.png
+It also performs a second viewport-boundary check after layout. If browser rounding or a dynamic address bar still causes clipping, the grid is reduced once more.
+
+Triggers include:
+- Visual Viewport resize
+- Visual Viewport scroll / browser chrome movement
+- window resize
+- orientation change
+- ResizeObserver
+- pageshow
+
+## Version / cache
+- App: v3.0.0-beta.6
+- Package: RevR
+- Service-worker cache: `1.0595-v3.0.0-beta.6`
+- beta.5 local settings migrate forward.
+
+The installed PWA now checks for a new service worker on load and reloads once when the new worker takes control.
 
 ## Upload
-Replace the files in the GitHub Pages publishing root with all files from this package.
-
-Current recommended Pages source:
-- Branch: `main`
-- Folder: `/(root)`
-
-## Cache / installed app
-The service-worker cache name is now `1.0595-v3.0.0-beta.5`, so the new deployment supersedes beta.4.
-
-After deployment:
-1. Open the website once while online.
-2. Refresh once.
-3. If the old icon remains on the home screen, remove the old shortcut / installed app and add it again.
-
-Existing beta.4 local settings migrate into beta.5.
+Upload all files in this package to the GitHub Pages root.
+Pages source should remain:
+- `main`
+- `/(root)`

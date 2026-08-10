@@ -13,7 +13,7 @@
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<title>1.0595 | Rhythm Sequencer v3.0.0-beta.5</title>
+<title>1.0595 | Rhythm Sequencer v3.0.0-beta.6</title>
 <style>
 :root{
   color-scheme:dark;
@@ -183,12 +183,28 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
   .transport-row button{min-height:33px}
 }
 
+
+/* RevR: universal stage contract. JS supplies --pad-stage-height on compact devices. */
+@media(max-width:720px){
+  .app-shell{box-sizing:border-box;height:100dvh;max-height:100dvh}
+  .main-layout{min-height:0;overflow:hidden}
+  .sequencer-panel{min-height:0;overflow:hidden}
+  .pad-stage{
+    height:var(--pad-stage-height,auto);
+    min-height:0;
+    max-height:var(--pad-stage-height,none);
+    align-self:start;
+    overflow:visible;
+  }
+  .pad-grid{margin:0 auto;transform-origin:center center}
+}
+
 </style>
 </head>
 <body>
 <div class="app-shell" id="appShell">
   <header class="app-header">
-    <div class="brand-lockup"><div class="brand-name" id="appTitle">1.0595</div><div class="brand-version">v3.0.0 β3</div></div>
+    <div class="brand-lockup"><div class="brand-name" id="appTitle">1.0595</div><div class="brand-version">v3.0.0 β6</div></div>
     <div class="status-row" aria-label="Current status">
       <div class="status-chip"><span>Pattern</span><b id="patternStatus">1</b></div>
       <div class="status-chip"><span>Track</span><b id="trackStatus">1</b></div>
@@ -326,8 +342,8 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 
         <section class="settings-view" id="viewNotes" data-view-panel="notes" hidden>
           <h2 class="view-title">Release Notes</h2><p class="view-intro">Recent application changes.</p>
-          <article class="release"><h3>v3.0.0-beta.5 · 2026-08-10</h3><h4>Improved</h4><ul><li>Unified the entire application interface and Guide in English.</li><li>Re-centered the visual system on the deep-navy 1.0595 CIS with muted steel-blue active states.</li><li>Rebuilt the laptop Inspector as EVENT / TRACK tabs so the 4×4 pad grid can stay larger without hiding information or forcing normal page scrolling.</li><li>Moved Brightness, Noise, Pitch Display, Master Volume, Tools, Log, Guide, and Release Notes into Settings as lower-frequency controls.</li><li>Kept Sound, Level, Pitch, Length, and Mute in the quick TRACK Inspector.</li><li>Increased playback flash contrast with a brighter center, stronger steel-blue outline, and longer pulse.</li><li>Kept all numeric controls on the shared 30 ms live-update path so state, summaries, and duplicate views remain synchronized.</li></ul></article>
-          <article class="release"><h3>v3.0.0-beta.5 · 2026-08-10</h3><h4>Added</h4><ul><li>4×4 Rhythm Sequencer with sixteen independent Event slots per Track.</li><li>Beat + Split + Point timing model supporting mixed binary and triplet positions inside one Track.</li><li>Four Patterns, four independent Tracks, Retrig, Pattern queue, Swing, and mobile Performance View.</li></ul><h4>Improved</h4><ul><li>Built on the v2.4.2 navy CIS, Settings, Log, Guide, Release Notes, Media Session, Wake Lock, and detailed sound engine.</li><li>Laptop workbench fits the sequencer and inspector into one viewport without normal page scrolling.</li><li>Playback Pad flash uses high-contrast white + steel-blue glow.</li><li>All numeric settings use clearable 30 ms live input and immediately update visible state summaries.</li><li>Master Volume 100% maps to gain 1.00 while retaining the Dynamics Compressor.</li></ul></article>
+          <article class="release"><h3>v3.0.0-beta.6 · 2026-08-10</h3><h4>Improved</h4><ul><li>Unified the entire application interface and Guide in English.</li><li>Re-centered the visual system on the deep-navy 1.0595 CIS with muted steel-blue active states.</li><li>Rebuilt the laptop Inspector as EVENT / TRACK tabs so the 4×4 pad grid can stay larger without hiding information or forcing normal page scrolling.</li><li>Moved Brightness, Noise, Pitch Display, Master Volume, Tools, Log, Guide, and Release Notes into Settings as lower-frequency controls.</li><li>Kept Sound, Level, Pitch, Length, and Mute in the quick TRACK Inspector.</li><li>Increased playback flash contrast with a brighter center, stronger steel-blue outline, and longer pulse.</li><li>Kept all numeric controls on the shared 30 ms live-update path so state, summaries, and duplicate views remain synchronized.</li></ul></article>
+          <article class="release"><h3>v3.0.0-beta.6 · 2026-08-10</h3><h4>Added</h4><ul><li>4×4 Rhythm Sequencer with sixteen independent Event slots per Track.</li><li>Beat + Split + Point timing model supporting mixed binary and triplet positions inside one Track.</li><li>Four Patterns, four independent Tracks, Retrig, Pattern queue, Swing, and mobile Performance View.</li></ul><h4>Improved</h4><ul><li>Built on the v2.4.2 navy CIS, Settings, Log, Guide, Release Notes, Media Session, Wake Lock, and detailed sound engine.</li><li>Laptop workbench fits the sequencer and inspector into one viewport without normal page scrolling.</li><li>Playback Pad flash uses high-contrast white + steel-blue glow.</li><li>All numeric settings use clearable 30 ms live input and immediately update visible state summaries.</li><li>Master Volume 100% maps to gain 1.00 while retaining the Dynamics Compressor.</li></ul></article>
           <article class="release"><h3>v2.4.2 · 2026-07-29</h3><h4>Improved</h4><ul><li>Settings Transport now switches between PLAY and STOP in real time.</li><li>Main Transport, Settings Transport, keyboard Space, and Media Session share one playback state.</li><li>Licensing notices and project documentation were consolidated and simplified.</li><li>README now includes usage, privacy, deployment, release, and licensing guidance.</li></ul></article>
           <article class="release"><h3>v2.4.1 · 2026-07-29</h3><h4>Improved</h4><ul><li>Version number moved to the right of the 1.0595 wordmark.</li><li>Low-height desktop layouts use adaptive layout behavior.</li><li>Track Pattern, Articulation, and Sound were presented at one information level.</li><li>Deep navy and muted steel blue replaced the brighter signal palette.</li></ul></article>
           <article class="release"><h3>v2.4.0 · 2026-07-29</h3><h4>Added</h4><ul><li>New 1.0595 product identity and navy-based CIS.</li><li>Central Settings window with Sound, Log, Guide, and Release Notes views.</li><li>Track sound summaries and direct Track-to-Settings navigation.</li></ul><h4>Improved</h4><ul><li>Single-source state, real-time parameter feedback, responsive layout, and keyboard documentation.</li><li>Sound controls reduced to Sound, Level, Pitch, Length, Brightness, and Noise.</li></ul></article>
@@ -346,8 +362,8 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-const APP_NAME='1.0595',VERSION='3.0.0-beta.5',STORAGE_KEY='1.0595-rhythm-sequencer-v3.0.0-beta.5';
-const LEGACY_STORAGE_KEYS=['1.0595-rhythm-sequencer-v3.0.0-beta.4','1.0595-rhythm-sequencer-v3.0.0-beta.3','1.0595-rhythm-sequencer-v3.0.0-beta.2','1.0595-rhythm-sequencer-v3.0.0-beta.1','1-0595-rhythm-sequencer-v3-revl','1-0595-rhythm-sequencer-v3-revk','1.0595-metronome-v2.4.2','1.0595-metronome-v2.4.1','1.0595-metronome-v2.4.0','sqrt12-metronome-v2.3.2','sqrt12-metronome-v2.3.1'];
+const APP_NAME='1.0595',VERSION='3.0.0-beta.6',STORAGE_KEY='1.0595-rhythm-sequencer-v3.0.0-beta.6';
+const LEGACY_STORAGE_KEYS=['1.0595-rhythm-sequencer-v3.0.0-beta.5','1.0595-rhythm-sequencer-v3.0.0-beta.4','1.0595-rhythm-sequencer-v3.0.0-beta.3','1.0595-rhythm-sequencer-v3.0.0-beta.2','1.0595-rhythm-sequencer-v3.0.0-beta.1','1-0595-rhythm-sequencer-v3-revl','1-0595-rhythm-sequencer-v3-revk','1.0595-metronome-v2.4.2','1.0595-metronome-v2.4.1','1.0595-metronome-v2.4.0','sqrt12-metronome-v2.3.2','sqrt12-metronome-v2.3.1'];
 const LOG_DB='sqrt12-metronome-log',LOG_STORE='logs',LOG_DB_VERSION=1,LOG_FALLBACK_KEY='sqrt12-metronome-log-fallback';
 const PPQN=960,BAR_TICKS=3840,EVENT_SLOTS=16,SPLITS=[1,2,3,4,6,8];
 const clamp=(v,min,max,fb=min)=>{v=Number(v);return Number.isFinite(v)?Math.max(min,Math.min(max,v)):fb};
@@ -661,39 +677,81 @@ function fitPadGrid(){
  const stage=document.querySelector('.pad-stage'),grid=document.querySelector('.pad-grid');
  if(!stage||!grid)return;
 
- const stageRect=stage.getBoundingClientRect();
- const gridStyle=getComputedStyle(grid);
- const gap=parseFloat(gridStyle.columnGap||gridStyle.gap)||7;
-
- // Read the real visible space, not nominal screen dimensions.
  const vv=window.visualViewport;
  const viewportW=vv?.width||document.documentElement.clientWidth||innerWidth;
  const viewportH=vv?.height||document.documentElement.clientHeight||innerHeight;
+ const viewportTop=vv?.offsetTop||0;
+ const viewportBottom=viewportTop+viewportH;
 
- const availableW=Math.max(0,Math.min(stage.clientWidth,viewportW-stageRect.left-8));
- const availableH=Math.max(0,Math.min(stage.clientHeight,viewportH-stageRect.top-8));
-
- // Pad aspect ratio is width / height.
+ const gridStyle=getComputedStyle(grid);
+ const gap=parseFloat(gridStyle.columnGap||gridStyle.gap)||7;
  const ratio=1.48;
+ const stageRect=stage.getBoundingClientRect();
+ const panel=stage.closest('.sequencer-panel');
+ const guide=document.querySelector('.mode-guide');
+ const transport=document.querySelector('.transport-row');
 
- // For a 4×4 grid:
- // gridHeight = 4 * padHeight + 3 * gap
- // gridWidth  = 4 * padWidth  + 3 * gap
- // padWidth = padHeight * ratio
- const widthByHeight=Math.max(0,4*(((availableH-3*gap)/4)*ratio)+3*gap);
+ const outerHeight=el=>{
+  if(!el)return 0;
+  const r=el.getBoundingClientRect(),cs=getComputedStyle(el);
+  return r.height+(parseFloat(cs.marginTop)||0)+(parseFloat(cs.marginBottom)||0)
+ };
 
- // Device-independent safety margins.
+ // Width always comes from the real stage and the visible viewport.
+ const stageW=stage.clientWidth||stageRect.width;
+ const availableW=Math.max(0,Math.min(stageW,viewportW-Math.max(0,stageRect.left)-8));
+
+ let availableH;
+ if(viewportW<=720){
+  // Mobile browsers frequently report a stale grid-row height while the URL bar
+  // expands/collapses. Calculate the stage from fixed UI below it instead.
+  const panelStyle=panel?getComputedStyle(panel):null;
+  const shellStyle=getComputedStyle(document.querySelector('.app-shell'));
+  const reserveBelow=
+    outerHeight(guide)+
+    outerHeight(transport)+
+    (parseFloat(panelStyle?.paddingBottom)||0)+
+    (parseFloat(panelStyle?.borderBottomWidth)||0)+
+    (parseFloat(shellStyle.paddingBottom)||0)+
+    6;
+  availableH=Math.max(72,viewportBottom-stageRect.top-reserveBelow);
+  stage.style.setProperty('--pad-stage-height',`${Math.floor(availableH)}px`);
+ }else{
+  stage.style.removeProperty('--pad-stage-height');
+  const visibleH=Math.max(0,viewportBottom-stageRect.top-8);
+  availableH=Math.max(0,Math.min(stage.clientHeight||visibleH,visibleH));
+ }
+
+ // Solve a 4×4 grid against both width and height.
+ // H = (W - 3g) / ratio + 3g  =>  W = ratio(H - 3g) + 3g
+ const widthByHeight=Math.max(0,ratio*Math.max(0,availableH-3*gap)+3*gap);
+
  let maxW=620;
  if(viewportW<1100)maxW=590;
  if(viewportW<900)maxW=560;
  if(viewportW<720)maxW=520;
- if(viewportW<520)maxW=viewportW-20;
+ if(viewportW<520)maxW=Math.max(180,viewportW-20);
 
  const fitted=Math.floor(Math.min(availableW,widthByHeight,maxW));
- const safeWidth=Math.max(180,fitted);
-
+ const safeWidth=Math.max(160,fitted);
  grid.style.width=`${safeWidth}px`;
  grid.style.maxWidth=`${safeWidth}px`;
+
+ // Final verification against the *visible* viewport. If rounded CSS layout still
+ // exceeds either edge, shrink once more rather than allowing clipping.
+ requestAnimationFrame(()=>{
+  const r=grid.getBoundingClientRect();
+  const rightLimit=viewportW-6;
+  const bottomLimit=viewportBottom-6;
+  let scale=1;
+  if(r.right>rightLimit)scale=Math.min(scale,(rightLimit-r.left)/Math.max(1,r.width));
+  if(r.bottom>bottomLimit)scale=Math.min(scale,(bottomLimit-r.top)/Math.max(1,r.height));
+  if(scale<.999){
+   const corrected=Math.max(150,Math.floor(safeWidth*scale));
+   grid.style.width=`${corrected}px`;
+   grid.style.maxWidth=`${corrected}px`;
+  }
+ });
 }
 
 function renderAll(){renderHeader();renderPads();renderModeGuide();syncDesktopInspector();setInspectorView(inspectorView);if(!$('settingsBackdrop').hidden)syncOpenSettings();requestAnimationFrame(fitPadGrid)}
@@ -844,16 +902,26 @@ function init(){
  $('clearTrack').onclick=clearCurrentTrack;$('clearPattern').onclick=clearCurrentPattern;
  bindLog();bindMedia();setPitchDisplay(state.pitchDisplay);updateTransport();$('masterVolumeSettings').value=state.masterVolume;$('masterVolumeMeta').textContent=`${state.masterVolume}%`;
  document.addEventListener('keydown',event=>{trapSettingsFocus(event);if(event.defaultPrevented)return;if(event.key==='Escape'&&!$('settingsBackdrop').hidden){event.preventDefault();closeSettings();return}const interactive=event.target.closest?.('input,select,textarea,button,a,summary,[contenteditable="true"]');if(interactive)return;if(event.code==='Space'){event.preventDefault();toggleTransport()}else if(event.key.toLowerCase()==='t'){event.preventDefault();tap()}else if(event.key==='ArrowUp'){event.preventDefault();stepBpm(event.shiftKey?5:1)}else if(event.key==='ArrowDown'){event.preventDefault();stepBpm(event.shiftKey?-5:-1)}});
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&playing)requestWakeLock()});window.addEventListener('resize',fitPadGrid,{passive:true});
-window.visualViewport?.addEventListener('resize',fitPadGrid,{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&playing)requestWakeLock()});const refitPads=()=>{fitPadGrid();setTimeout(fitPadGrid,50);setTimeout(fitPadGrid,180)};
+window.addEventListener('resize',refitPads,{passive:true});
+window.visualViewport?.addEventListener('resize',refitPads,{passive:true});
 window.visualViewport?.addEventListener('scroll',fitPadGrid,{passive:true});
 const padStageObserver=new ResizeObserver(()=>fitPadGrid());
 const observedPadStage=document.querySelector('.pad-stage');
-if(observedPadStage)padStageObserver.observe(observedPadStage);window.addEventListener('orientationchange',()=>setTimeout(fitPadGrid,80),{passive:true});window.addEventListener('beforeunload',stop)
+if(observedPadStage)padStageObserver.observe(observedPadStage);
+window.addEventListener('orientationchange',refitPads,{passive:true});
+window.addEventListener('pageshow',refitPads,{passive:true});
+window.addEventListener('beforeunload',stop)
 }
 
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+ let reloadingForUpdate=false;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  if(reloadingForUpdate)return;
+  reloadingForUpdate=true;
+  location.reload();
+ });
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(reg=>reg.update()).catch(()=>{}));
 }
 
 window.__sequencerTest={APP_NAME,VERSION,state,presetDefinitions,articulationDefs,PPQN,BAR_TICKS,SPLITS,eventTick,eventUnitTicks,applyBpm,setMasterVolume,setPitchDisplay,start,stop,toggleTransport,tap,snapshotState,getLogs,commitLog,markLogDeleted,validImportedLog,importLogsFile,exportLogs,deriveSound,migrateSaved};
