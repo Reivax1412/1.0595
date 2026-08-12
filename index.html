@@ -13,7 +13,7 @@
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<title>1.0595 | Rhythm Sequencer v3.0.0-beta.6</title>
+<title>1.0595 | Rhythm Sequencer v3.1.0-beta.1</title>
 <style>
 :root{
   color-scheme:dark;
@@ -93,7 +93,7 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 }
 .pad.event-pad.playing .timing-badge{color:var(--brand-navy)}
 .mode-guide{margin-top:5px;min-height:29px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-button);background:#07192b;color:var(--text-secondary);font-size:.65rem;line-height:1.35}.mode-guide b{color:var(--text-primary);margin-right:5px}
-.transport-row{display:grid;grid-template-columns:minmax(85px,1fr) minmax(120px,2fr);gap:7px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.transport-row{display:grid;grid-template-columns:minmax(72px,1fr) minmax(110px,1.8fr) minmax(62px,.8fr);gap:7px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
 .transport-row button{min-height:40px;border-radius:var(--radius-button);font-weight:750;letter-spacing:.04em}.primary{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}.primary:hover:not(:disabled){background:#87acc2}.danger{background:var(--error);border-color:var(--error);color:#24090d}.tap.flash{border-color:var(--flash);box-shadow:0 0 0 3px var(--focus-ring);color:var(--flash)}
 .inspector-panel{padding:9px;display:flex;flex-direction:column;gap:7px;overflow:hidden}
 .inspector-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:1px 1px 6px;border-bottom:1px solid var(--border)}
@@ -165,6 +165,20 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
   .brand-name{font-size:1.32rem}.brand-version{font-size:.52rem}.status-chip{height:27px;padding:0 7px;font-size:.58rem}.status-chip b{font-size:.62rem}.header-tempo .mini{width:28px;height:31px}.tempo-input{width:57px;height:31px}
   .form-grid,.tool-grid{grid-template-columns:1fr}.log-form-row{align-items:flex-start;flex-direction:column}.commit-button{width:100%}.log-entry summary{grid-template-columns:1fr;gap:4px}.log-detail{padding-left:2px}.play-status{display:none}
 }
+
+/* v3.1 interaction and meter controls */
+.meter-presets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:7px}.meter-presets button{min-height:30px;border-radius:6px;padding:0 5px;font-size:.62rem;font-weight:750}.meter-presets button.on{background:var(--brand-signal);border-color:var(--brand-signal);color:var(--brand-navy)}
+.tool-card-wide{grid-column:1/-1}.tool-note{margin:5px 0 0;color:var(--text-muted);font-size:.58rem;line-height:1.45}.meter-custom{margin-top:3px}
+#stopTransport,#settingsStop{color:var(--text-secondary)}#stopTransport:disabled,#settingsStop:disabled{opacity:.32}.transport-row #stopTransport{font-size:.68rem}
+.pad-grid.gesture-editing{touch-action:none;user-select:none;-webkit-user-select:none}.pad-grid.gesture-editing .event-pad{touch-action:none}.event-pad.context-open{outline:3px solid var(--brand-signal-2);outline-offset:-3px}
+@media(max-width:720px){
+  .pad-stage{display:block;width:100%;height:var(--pad-stage-height,1px);min-height:0;max-height:var(--pad-stage-height,none);overflow:hidden;align-self:stretch}
+  .pad-grid{width:100%!important;max-width:none!important;height:100%!important;margin:0!important;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:5px}
+  .pad-grid .pad{width:100%;height:100%;min-width:0;min-height:0;aspect-ratio:auto}
+  .transport-row{grid-template-columns:minmax(62px,.9fr) minmax(100px,1.7fr) minmax(58px,.75fr);gap:5px}
+  .meter-presets{grid-template-columns:repeat(5,minmax(54px,1fr));overflow-x:auto}.tool-card-wide{grid-column:auto}.tool-grid .tool-card-wide{grid-column:1/-1}
+}
+
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 @media(max-width:720px){
@@ -199,16 +213,25 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
   .pad-grid{margin:0 auto;transform-origin:center center}
 }
 
+
+/* v3.1 final compact-device grid contract */
+@media(max-width:720px){
+  .pad-stage{display:block!important;width:100%!important;height:var(--pad-stage-height,1px)!important;max-height:var(--pad-stage-height,none)!important;min-height:0!important;align-self:stretch!important;overflow:hidden!important}
+  .pad-grid{width:100%!important;max-width:none!important;height:100%!important;margin:0!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-template-rows:repeat(4,minmax(0,1fr))!important}
+  .pad-grid .pad{width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;aspect-ratio:auto!important}
+}
+
 </style>
 </head>
 <body>
 <div class="app-shell" id="appShell">
   <header class="app-header">
-    <div class="brand-lockup"><div class="brand-name" id="appTitle">1.0595</div><div class="brand-version">v3.0.0 β6</div></div>
+    <div class="brand-lockup"><div class="brand-name" id="appTitle">1.0595</div><div class="brand-version">v3.1.0 β1</div></div>
     <div class="status-row" aria-label="Current status">
       <div class="status-chip"><span>Pattern</span><b id="patternStatus">1</b></div>
       <div class="status-chip"><span>Track</span><b id="trackStatus">1</b></div>
       <div class="status-chip"><span>Event</span><b id="eventStatus">Beat 1 · Split 4 · Point 1</b></div>
+      <div class="status-chip"><span>Meter</span><b id="meterStatus">4/4</b></div>
     </div>
     <div class="header-tempo"><span class="tempo-mark">♩=</span><button class="mini" id="bpmDown" type="button" aria-label="Decrease BPM by 1">−</button><input class="tempo-input" id="bpm" type="text" inputmode="numeric" autocomplete="off" value="120" aria-label="BPM from 10 to 450"><button class="mini" id="bpmUp" type="button" aria-label="Increase BPM by 1">+</button></div>
     <button class="icon-button" id="openSettings" type="button" aria-label="Settings and Help">?</button>
@@ -225,7 +248,7 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
       </div>
       <div class="pad-stage"><div class="pad-grid" id="padGrid" aria-label="16 event pads"></div></div>
       <div class="mode-guide" id="modeGuide" role="status"></div>
-      <div class="transport-row"><button class="tap" id="tap" type="button">TAP</button><button class="primary" id="toggle" type="button"><span id="transportLabel">START</span></button></div>
+      <div class="transport-row"><button class="tap" id="tap" type="button">TAP</button><button class="primary" id="toggle" type="button"><span id="transportLabel">START</span></button><button id="stopTransport" type="button">STOP</button></div>
     </section>
 
     <aside class="panel inspector-panel" id="desktopInspector" aria-label="Event and Track inspector">
@@ -284,7 +307,7 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
   <section class="settings-window" id="settingsWindow" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <header class="settings-header">
       <div class="settings-heading"><div class="settings-title" id="settingsTitle">1.0595 Settings</div><div class="play-status" id="settingsPlayStatus"><span class="play-dot"></span><span id="settingsPlayText">Stopped · 120 BPM</span></div></div>
-      <div class="settings-header-actions"><button class="compact-transport primary" id="settingsTransport" type="button">PLAY</button><button class="close-button" id="closeSettings" type="button" aria-label="Close">×</button></div>
+      <div class="settings-header-actions"><button class="compact-transport primary" id="settingsTransport" type="button">START</button><button class="compact-transport" id="settingsStop" type="button">STOP</button><button class="close-button" id="closeSettings" type="button" aria-label="Close">×</button></div>
     </header>
     <div class="settings-main">
       <nav class="settings-nav" aria-label="Settings views">
@@ -311,11 +334,14 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
         </section>
 
         <section class="settings-view" id="viewTools" data-view-panel="tools" hidden>
-          <h2 class="view-title">Tools</h2><p class="view-intro">Pattern-level timing and maintenance actions. Track sound remains independent for all four Tracks.</p>
+          <h2 class="view-title">Tools</h2><p class="view-intro">Pattern timing, controlled variation, copy, recovery, and maintenance. These controls are identical on phone, tablet, laptop, and desktop.</p>
           <div class="tool-grid">
+            <div class="tool-card tool-card-wide"><h3>Meter / Bar</h3><div class="meter-presets" id="meterPresets"><button type="button" data-meter="2/4">2/4</button><button type="button" data-meter="3/4">3/4</button><button type="button" data-meter="4/4">4/4</button><button type="button" data-meter="6/8">6/8</button><button type="button" data-meter="custom">CUSTOM</button></div><div class="form-grid meter-custom"><div class="field"><label for="barLengthInput">Bar Length <span>quarter-note units</span></label><input id="barLengthInput" type="text" inputmode="decimal"><div class="meta" id="barLengthMeta"></div></div><div class="field"><label for="beatCountInput">Beat Count <span>1–16</span></label><input id="beatCountInput" type="text" inputmode="numeric"><div class="meta" id="beatCountMeta"></div></div></div><div class="tool-note" id="meterMeta"></div></div>
             <div class="tool-card"><h3>Swing</h3><div class="field"><label for="swingInput">Swing <span>50 = straight</span></label><input id="swingInput" type="text" inputmode="numeric"><div class="meta" id="swingMeta"></div></div></div>
-            <div class="tool-card"><h3>Pattern</h3><div class="copy-grid" id="copyPatterns"></div></div>
+            <div class="tool-card"><h3>Controlled Shuffle</h3><p class="tool-note">Randomizes active Event positions only. Sound, articulation, retrig, velocity, and Event identity stay attached.</p><div class="action-row"><button id="shuffleTrack" type="button">Shuffle Track</button></div></div>
+            <div class="tool-card"><h3>Pattern Copy</h3><div class="copy-grid" id="copyPatterns"></div></div>
             <div class="tool-card"><h3>Track Copy</h3><div class="copy-grid" id="copyTracks"></div></div>
+            <div class="tool-card"><h3>Undo</h3><p class="tool-note" id="undoMeta">No destructive action to undo.</p><div class="action-row"><button id="undoAction" type="button" disabled>Undo Last</button></div></div>
             <div class="tool-card"><h3>Clear</h3><div class="action-row"><button id="clearTrack" class="danger" type="button">Clear Track</button><button id="clearPattern" class="danger" type="button">Clear Pattern</button></div></div>
           </div>
         </section>
@@ -328,10 +354,12 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 
         <section class="settings-view" id="viewGuide" data-view-panel="guide" hidden>
           <h2 class="view-title">Guide</h2><p class="view-intro">English-only product guide, workflow, terminology, shortcuts, and licensing.</p>
-          <nav class="guide-nav" aria-label="Guide sections"><a href="#guideAbout">About</a><a href="#guideBasics">Basics</a><a href="#guideSplit">Split</a><a href="#guideTracks">Tracks</a><a href="#guideSound">Sound</a><a href="#guideLayout">Layout</a><a href="#guideKeys">Shortcuts</a><a href="#guideTerms">Terms</a><a href="#guideCopyright">Copyright</a></nav>
+          <nav class="guide-nav" aria-label="Guide sections"><a href="#guideAbout">About</a><a href="#guideBasics">Basics</a><a href="#guideGestures">Gestures</a><a href="#guideMeter">Meter</a><a href="#guideSplit">Split</a><a href="#guideTracks">Tracks</a><a href="#guideSound">Sound</a><a href="#guideLayout">Layout</a><a href="#guideKeys">Shortcuts</a><a href="#guideTerms">Terms</a><a href="#guideCopyright">Copyright</a></nav>
           <section class="guide-section guide-lead" id="guideAbout"><h3>About 1.0595</h3><p>1.0595 is derived from the approximate frequency ratio of one semitone in twelve-tone equal temperament. The interface uses a deep-navy visual system for stability and control, with muted steel blue reserved for focus, timing, and active states.</p></section>
-          <section class="guide-section" id="guideBasics"><h3>Getting Started</h3><p>Set BPM, choose a Track, and use the 4×4 pads as sixteen independent Event slots. A bright pad plays; a dark pad does not. Select a pad, set its Beat, Split, and Point in the Event inspector, then press START.</p><ol><li>Set BPM.</li><li>Select a Track.</li><li>In STEP mode, turn on one or more pads.</li><li>Open EVENT and choose Beat.</li><li>Choose Split, then Point.</li><li>Press START.</li></ol></section>
-          <section class="guide-section" id="guideSplit"><h3>Event and Split</h3><p>Each pad is an Event, not a fixed sixteenth note. Beat chooses the beat of the 4/4 bar. Split divides that beat into equal parts. Point chooses which part receives the Event.</p><table class="data-table"><thead><tr><th>Split</th><th>Meaning</th></tr></thead><tbody><tr><td>1</td><td>Quarter-note position</td></tr><tr><td>2</td><td>Eighth-note positions</td></tr><tr><td>3</td><td>Triplet positions</td></tr><tr><td>4</td><td>Sixteenth-note positions</td></tr><tr><td>6</td><td>Sixteenth-note triplet positions</td></tr><tr><td>8</td><td>Thirty-second-note positions</td></tr></tbody></table></section>
+          <section class="guide-section" id="guideBasics"><h3>Getting Started</h3><p>Set BPM, choose a Track, and use the 4×4 pads as sixteen independent Event slots. A bright pad plays; a dark pad does not. Select a pad, set its Beat, Split, and Point in the Event inspector, then press START.</p><ol><li>Set BPM.</li><li>Select a Track.</li><li>In STEP mode, tap or swipe to edit Events.</li><li>Long-press an Event to open Event Edit.</li><li>Choose Meter, Beat, Split, and Point as needed.</li><li>Press START. PAUSE preserves the musical position; STOP returns to the bar start.</li></ol></section>
+          <section class="guide-section" id="guideGestures"><h3>Gestures</h3><p>STEP uses one consistent gesture model on pointer-capable devices: tap toggles one Event, swipe paints or erases multiple Events, and a stationary 500 ms long-press opens that Event for detailed editing. Swipe direction does not toggle repeatedly: the first Event decides whether that pointer paints ON or erases OFF. Multiple pointers are tracked independently.</p></section>
+          <section class="guide-section" id="guideMeter"><h3>Meter and Bar Structure</h3><p>Each Pattern stores its own Bar Length and Beat Count. Presets include 2/4, 3/4, 4/4, and 6/8; Custom exposes the same two underlying values. Pattern changes still occur at a bar boundary. Editing bar structure while paused resets transport to Beat 1 because the old musical position may no longer exist.</p></section>
+          <section class="guide-section" id="guideSplit"><h3>Event and Split</h3><p>Each pad is an Event, not a fixed sixteenth note. Beat chooses a beat within the current Pattern. Split divides that beat into equal parts. Point chooses which part receives the Event.</p><table class="data-table"><thead><tr><th>Split</th><th>Meaning</th></tr></thead><tbody><tr><td>1</td><td>Quarter-note position</td></tr><tr><td>2</td><td>Eighth-note positions</td></tr><tr><td>3</td><td>Triplet positions</td></tr><tr><td>4</td><td>Sixteenth-note positions</td></tr><tr><td>6</td><td>Sixteenth-note triplet positions</td></tr><tr><td>8</td><td>Thirty-second-note positions</td></tr></tbody></table></section>
           <section class="guide-section" id="guideTracks"><h3>Tracks, Articulation, and Retrig</h3><p>Each of the four Tracks stores its own Events and sound settings. ART changes how an active Event is played: Normal, Accent, Marcato, Staccato, or Tenuto. RETRIG repeats an Event two to four times inside its own Split interval.</p></section>
           <section class="guide-section" id="guideSound"><h3>Sound Settings</h3><p>Each Track keeps independent Sound, Level, Pitch, Length, Brightness, and Noise. The main TRACK inspector exposes the frequent controls: Sound, Level, Pitch, Length, and Mute. Advanced sound controls—Brightness, Noise, Pitch Display, and Master Volume—are in <b>? → Sound</b>.</p><p>All valid numeric edits are committed after 30 ms and update visible summaries immediately. Master Volume 100% maps to gain 1.00 while the Dynamics Compressor remains active.</p></section>
           <section class="guide-section" id="guideLayout"><h3>Layout</h3><p><b>Laptop/Desktop:</b> the 4×4 sequencer stays on the left. The compact right inspector uses EVENT and TRACK tabs so the pad grid can remain large without forcing page scrolling. Low-frequency and advanced controls are kept in Settings.</p><p><b>Phone:</b> the main screen shows the rhythm machine only. Open <b>?</b> for Edit, Sound, Tools, Log, Guide, and Release Notes.</p></section>
@@ -341,9 +369,9 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
         </section>
 
         <section class="settings-view" id="viewNotes" data-view-panel="notes" hidden>
-          <h2 class="view-title">Release Notes</h2><p class="view-intro">Recent application changes.</p>
-          <article class="release"><h3>v3.0.0-beta.6 · 2026-08-10</h3><h4>Improved</h4><ul><li>Unified the entire application interface and Guide in English.</li><li>Re-centered the visual system on the deep-navy 1.0595 CIS with muted steel-blue active states.</li><li>Rebuilt the laptop Inspector as EVENT / TRACK tabs so the 4×4 pad grid can stay larger without hiding information or forcing normal page scrolling.</li><li>Moved Brightness, Noise, Pitch Display, Master Volume, Tools, Log, Guide, and Release Notes into Settings as lower-frequency controls.</li><li>Kept Sound, Level, Pitch, Length, and Mute in the quick TRACK Inspector.</li><li>Increased playback flash contrast with a brighter center, stronger steel-blue outline, and longer pulse.</li><li>Kept all numeric controls on the shared 30 ms live-update path so state, summaries, and duplicate views remain synchronized.</li></ul></article>
-          <article class="release"><h3>v3.0.0-beta.6 · 2026-08-10</h3><h4>Added</h4><ul><li>4×4 Rhythm Sequencer with sixteen independent Event slots per Track.</li><li>Beat + Split + Point timing model supporting mixed binary and triplet positions inside one Track.</li><li>Four Patterns, four independent Tracks, Retrig, Pattern queue, Swing, and mobile Performance View.</li></ul><h4>Improved</h4><ul><li>Built on the v2.4.2 navy CIS, Settings, Log, Guide, Release Notes, Media Session, Wake Lock, and detailed sound engine.</li><li>Laptop workbench fits the sequencer and inspector into one viewport without normal page scrolling.</li><li>Playback Pad flash uses high-contrast white + steel-blue glow.</li><li>All numeric settings use clearable 30 ms live input and immediately update visible state summaries.</li><li>Master Volume 100% maps to gain 1.00 while retaining the Dynamics Compressor.</li></ul></article>
+          <h2 class="view-title">Release Notes</h2><p class="view-intro">Recent application changes.</p><article class="release"><h3>v3.1.0-beta.1 · 2026-08-12</h3><h4>Interaction</h4><ul><li>Added tap, multi-pointer Swipe Paint/Erase, and stationary long-press Event Edit with consistent behavior across device classes.</li><li>Added START / PAUSE / STOP transport semantics. PAUSE preserves musical position; STOP returns to bar start.</li></ul><h4>Pattern Time</h4><ul><li>Added per-Pattern Bar Length + Beat Count with 2/4, 3/4, 4/4, 6/8, and Custom controls.</li><li>Scheduler now follows each Pattern's own bar duration and queues meter changes only at bar boundaries.</li></ul><h4>Tools</h4><ul><li>Added Controlled Shuffle for active Event positions and one-step Undo for Shuffle, Clear, and Bar Structure changes.</li></ul></article>
+          <article class="release"><h3>v3.1.0-beta.1 · 2026-08-10</h3><h4>Improved</h4><ul><li>Unified the entire application interface and Guide in English.</li><li>Re-centered the visual system on the deep-navy 1.0595 CIS with muted steel-blue active states.</li><li>Rebuilt the laptop Inspector as EVENT / TRACK tabs so the 4×4 pad grid can stay larger without hiding information or forcing normal page scrolling.</li><li>Moved Brightness, Noise, Pitch Display, Master Volume, Tools, Log, Guide, and Release Notes into Settings as lower-frequency controls.</li><li>Kept Sound, Level, Pitch, Length, and Mute in the quick TRACK Inspector.</li><li>Increased playback flash contrast with a brighter center, stronger steel-blue outline, and longer pulse.</li><li>Kept all numeric controls on the shared 30 ms live-update path so state, summaries, and duplicate views remain synchronized.</li></ul></article>
+          <article class="release"><h3>v3.1.0-beta.1 · 2026-08-10</h3><h4>Added</h4><ul><li>4×4 Rhythm Sequencer with sixteen independent Event slots per Track.</li><li>Beat + Split + Point timing model supporting mixed binary and triplet positions inside one Track.</li><li>Four Patterns, four independent Tracks, Retrig, Pattern queue, Swing, and mobile Performance View.</li></ul><h4>Improved</h4><ul><li>Built on the v2.4.2 navy CIS, Settings, Log, Guide, Release Notes, Media Session, Wake Lock, and detailed sound engine.</li><li>Laptop workbench fits the sequencer and inspector into one viewport without normal page scrolling.</li><li>Playback Pad flash uses high-contrast white + steel-blue glow.</li><li>All numeric settings use clearable 30 ms live input and immediately update visible state summaries.</li><li>Master Volume 100% maps to gain 1.00 while retaining the Dynamics Compressor.</li></ul></article>
           <article class="release"><h3>v2.4.2 · 2026-07-29</h3><h4>Improved</h4><ul><li>Settings Transport now switches between PLAY and STOP in real time.</li><li>Main Transport, Settings Transport, keyboard Space, and Media Session share one playback state.</li><li>Licensing notices and project documentation were consolidated and simplified.</li><li>README now includes usage, privacy, deployment, release, and licensing guidance.</li></ul></article>
           <article class="release"><h3>v2.4.1 · 2026-07-29</h3><h4>Improved</h4><ul><li>Version number moved to the right of the 1.0595 wordmark.</li><li>Low-height desktop layouts use adaptive layout behavior.</li><li>Track Pattern, Articulation, and Sound were presented at one information level.</li><li>Deep navy and muted steel blue replaced the brighter signal palette.</li></ul></article>
           <article class="release"><h3>v2.4.0 · 2026-07-29</h3><h4>Added</h4><ul><li>New 1.0595 product identity and navy-based CIS.</li><li>Central Settings window with Sound, Log, Guide, and Release Notes views.</li><li>Track sound summaries and direct Track-to-Settings navigation.</li></ul><h4>Improved</h4><ul><li>Single-source state, real-time parameter feedback, responsive layout, and keyboard documentation.</li><li>Sound controls reduced to Sound, Level, Pitch, Length, Brightness, and Noise.</li></ul></article>
@@ -362,10 +390,10 @@ input.live-applied{border-color:var(--success);box-shadow:0 0 0 3px rgba(115,173
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-const APP_NAME='1.0595',VERSION='3.0.0-beta.6',STORAGE_KEY='1.0595-rhythm-sequencer-v3.0.0-beta.6';
-const LEGACY_STORAGE_KEYS=['1.0595-rhythm-sequencer-v3.0.0-beta.5','1.0595-rhythm-sequencer-v3.0.0-beta.4','1.0595-rhythm-sequencer-v3.0.0-beta.3','1.0595-rhythm-sequencer-v3.0.0-beta.2','1.0595-rhythm-sequencer-v3.0.0-beta.1','1-0595-rhythm-sequencer-v3-revl','1-0595-rhythm-sequencer-v3-revk','1.0595-metronome-v2.4.2','1.0595-metronome-v2.4.1','1.0595-metronome-v2.4.0','sqrt12-metronome-v2.3.2','sqrt12-metronome-v2.3.1'];
+const APP_NAME='1.0595',VERSION='3.1.0-beta.1',STORAGE_KEY='1.0595-rhythm-sequencer-v3.1.0-beta.1';
+const LEGACY_STORAGE_KEYS=['1.0595-rhythm-sequencer-v3.0.0-beta.6','1.0595-rhythm-sequencer-v3.0.0-beta.5','1.0595-rhythm-sequencer-v3.0.0-beta.4','1.0595-rhythm-sequencer-v3.0.0-beta.3','1.0595-rhythm-sequencer-v3.0.0-beta.2','1.0595-rhythm-sequencer-v3.0.0-beta.1','1-0595-rhythm-sequencer-v3-revl','1-0595-rhythm-sequencer-v3-revk','1.0595-metronome-v2.4.2','1.0595-metronome-v2.4.1','1.0595-metronome-v2.4.0','sqrt12-metronome-v2.3.2','sqrt12-metronome-v2.3.1'];
 const LOG_DB='sqrt12-metronome-log',LOG_STORE='logs',LOG_DB_VERSION=1,LOG_FALLBACK_KEY='sqrt12-metronome-log-fallback';
-const PPQN=960,BAR_TICKS=3840,EVENT_SLOTS=16,SPLITS=[1,2,3,4,6,8];
+const PPQN=960,BAR_TICKS=3840,EVENT_SLOTS=16,SPLITS=[1,2,3,4,6,8],METER_PRESETS={'2/4':[2,2],'3/4':[3,3],'4/4':[4,4],'6/8':[3,6]};
 const clamp=(v,min,max,fb=min)=>{v=Number(v);return Number.isFinite(v)?Math.max(min,Math.min(max,v)):fb};
 const midiToHz=m=>440*Math.pow(2,(m-69)/12),hzToMidi=hz=>69+12*Math.log2(hz/440);
 const clone=o=>typeof structuredClone==='function'?structuredClone(o):JSON.parse(JSON.stringify(o));
@@ -399,7 +427,7 @@ function newTrack(i){
  const d=defaultSounds[i],p=presetDefinitions[d.preset];
  return{...d,brightness:p.brightness,noise:p.noise,events:newEvents()}
 }
-function newPattern(){return{swing:50,tracks:Array.from({length:4},(_,i)=>newTrack(i))}}
+function newPattern(){return{swing:50,barLength:4,beatCount:4,tracks:Array.from({length:4},(_,i)=>newTrack(i))}}
 function seedState(){
  const patterns=Array.from({length:4},newPattern),p=patterns[0];
  [0,4,8,12].forEach(i=>p.tracks[0].events[i].active=true);
@@ -422,7 +450,7 @@ function normalizeEvent(raw,i){
    const inf=inferSplitPoint(Number(raw.position));x.beat=d.beat;x.split=inf.split;x.point=inf.point
  }
  x.active=raw?.active!==undefined?!!raw.active:true;
- x.beat=Math.round(clamp(x.beat,1,4,d.beat));
+ x.beat=Math.round(clamp(x.beat,1,16,d.beat));
  x.split=SPLITS.includes(Number(x.split))?Number(x.split):4;
  x.point=Math.round(clamp(x.point,0,x.split-1,Math.min(d.point,x.split-1)));
  x.articulation=articulationDefs[x.articulation]?x.articulation:'normal';
@@ -453,7 +481,10 @@ function normalizeTrack(raw,index){
 }
 function normalizePattern(raw){
  const p=newPattern();p.swing=Math.round(clamp(raw?.swing,50,75,50));
+ p.barLength=Math.round(clamp(raw?.barLength,0.25,16,4)*4)/4;
+ p.beatCount=Math.round(clamp(raw?.beatCount,1,16,4));
  if(Array.isArray(raw?.tracks)&&raw.tracks.length===4)p.tracks=raw.tracks.map(normalizeTrack);
+ p.tracks.forEach(t=>t.events.forEach(e=>e.beat=Math.min(e.beat,p.beatCount)));
  return p
 }
 function migrateSaved(saved){
@@ -485,14 +516,17 @@ load();
 const currentPattern=()=>state.patterns[state.currentPattern];
 const currentTrack=()=>currentPattern().tracks[state.currentTrack];
 const currentEvent=()=>currentTrack().events[state.selectedEvent];
-function eventTick(e){return(e.beat-1)*PPQN+e.point*(PPQN/e.split)+(e.microOffsetTicks||0)}
-function eventUnitTicks(e){return PPQN/e.split}
+function patternBarTicks(p=currentPattern()){return Math.max(1,p.barLength*PPQN)}
+function patternBeatTicks(p=currentPattern()){return patternBarTicks(p)/Math.max(1,p.beatCount)}
+function meterLabel(p=currentPattern()){for(const [name,[bar,beats]] of Object.entries(METER_PRESETS))if(Math.abs(p.barLength-bar)<.0001&&p.beatCount===beats)return name;return'Custom'}
+function eventTick(e,p=currentPattern()){const beatTicks=patternBeatTicks(p);return(e.beat-1)*beatTicks+e.point*(beatTicks/e.split)+(e.microOffsetTicks||0)}
+function eventUnitTicks(e,p=currentPattern()){return patternBeatTicks(p)/e.split}
 function eventSummary(e){return`Beat ${e.beat} · Split ${e.split} · Point ${e.point+1}`}
-function collisionCount(track,e,index){if(!e.active)return 0;const tick=eventTick(e);return track.events.reduce((n,x,i)=>n+(i!==index&&x.active&&Math.abs(eventTick(x)-tick)<.001?1:0),0)}
-function swingOffsetTicks(e,swing){if(swing<=50||![2,4,8].includes(e.split)||e.point%2===0)return 0;return eventUnitTicks(e)*((swing-50)/50)*.5}
+function collisionCount(track,e,index,p=currentPattern()){if(!e.active)return 0;const tick=eventTick(e,p);return track.events.reduce((n,x,i)=>n+(i!==index&&x.active&&Math.abs(eventTick(x,p)-tick)<.001?1:0),0)}
+function swingOffsetTicks(e,swing,p=currentPattern()){if(swing<=50||![2,4,8].includes(e.split)||e.point%2===0)return 0;return eventUnitTicks(e,p)*((swing-50)/50)*.5}
 
 function deriveSound(track){const p=presetDefinitions[track.preset]||presetDefinitions.clear,b=(track.brightness-p.brightness)/35;return{...p,noiseMix:track.noise/100,oscFilterHz:clamp(p.oscFilterHz*Math.pow(2,b),20,20000,p.oscFilterHz)}}
-let ctx=null,masterGain=null,compressor=null,playing=false,schedulerTimer=null,nextBarTime=0,scheduledPattern=0,visualQueue=[],boundaryQueue=[],rafId=null,tapTimes=[],wakeLock=null,sessionStartedAt=null,lastSessionSeconds=0,settingsView='sound',selectedSettingsTrack=0,settingsReturnFocus=null,toastTimer=null,logDbPromise=null,flashTimers=new Map(),soundFormGeneration=0;
+let ctx=null,masterGain=null,compressor=null,playing=false,paused=false,pauseTick=0,currentBarStartTime=0,schedulerTimer=null,nextBarTime=0,scheduledPattern=0,visualQueue=[],boundaryQueue=[],rafId=null,tapTimes=[],wakeLock=null,sessionStartedAt=null,lastSessionSeconds=0,settingsView='sound',selectedSettingsTrack=0,settingsReturnFocus=null,toastTimer=null,logDbPromise=null,flashTimers=new Map(),soundFormGeneration=0,scheduledSources=new Set(),undoState=null,meterEditSession=false;
 
 function ensureAudio(){
  if(!ctx){
@@ -504,6 +538,9 @@ function ensureAudio(){
 }
 function setMasterGain(){if(masterGain&&ctx)masterGain.gain.setTargetAtTime(state.masterVolume/100,ctx.currentTime,.006)}
 function tickSec(){return(60/state.bpm)/PPQN}
+function trackScheduledSource(source){scheduledSources.add(source);source.addEventListener?.('ended',()=>scheduledSources.delete(source),{once:true})}
+function cancelScheduledSources(){for(const source of [...scheduledSources]){try{source.stop()}catch(e){}scheduledSources.delete(source)}}
+function stopSchedulerVisuals(){clearInterval(schedulerTimer);schedulerTimer=null;cancelAnimationFrame(rafId);rafId=null;cancelScheduledSources();visualQueue=[];boundaryQueue=[];document.querySelectorAll('.event-pad.playing').forEach(x=>x.classList.remove('playing'));flashTimers.forEach(clearTimeout);flashTimers.clear()}
 function playEvent(track,event,time,slotSec){
  ensureAudio();if(!track.enabled||track.level<=0||state.masterVolume<=0)return;
  const sound=deriveSound(track),art=articulationDefs[event.articulation]||articulationDefs.normal,hits=Math.max(1,Math.min(4,event.retrig||1));
@@ -515,34 +552,35 @@ function playEvent(track,event,time,slotSec){
    filter.type=sound.oscFilter;filter.frequency.setValueAtTime(sound.oscFilterHz,hitTime);filter.Q.setValueAtTime(sound.oscQ,hitTime);
    const duration=clamp(track.lengthMs*art.duration*sound.durationScale/Math.max(1,hits*.70),5,750,30)/1000,attack=clamp(sound.attackMs*art.attack,.25,24,1.5)/1000,peak=Math.max(.0002,Math.min(.96,(track.level/100)*art.gain*sound.level)),body=Math.max(.00015,peak*art.sustain),decayAt=Math.min(duration*.82,Math.max(attack+.001,duration*art.decayPoint));
    gain.gain.setValueAtTime(.0001,hitTime);gain.gain.exponentialRampToValueAtTime(peak,hitTime+attack);gain.gain.exponentialRampToValueAtTime(body,hitTime+decayAt);gain.gain.exponentialRampToValueAtTime(.0001,hitTime+duration);
-   osc.connect(filter);filter.connect(gain);gain.connect(masterGain);osc.start(hitTime);osc.stop(hitTime+duration+.02);
+   osc.connect(filter);filter.connect(gain);gain.connect(masterGain);trackScheduledSource(osc);osc.start(hitTime);osc.stop(hitTime+duration+.02);
    const noiseLevel=sound.noiseMix*art.noise+art.burst;
    if(noiseLevel>0){
      const noiseDur=Math.min(.045,Math.max(.006,duration*(event.articulation==='tenuto'?.22:.58))),size=Math.max(1,Math.floor(ctx.sampleRate*noiseDur)),buffer=ctx.createBuffer(1,size,ctx.sampleRate),data=buffer.getChannelData(0);
      for(let i=0;i<size;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/size,event.articulation==='marcato'?5:3);
      const source=ctx.createBufferSource(),ng=ctx.createGain(),nf=ctx.createBiquadFilter();source.buffer=buffer;nf.type=sound.noiseFilter;nf.frequency.value=sound.noiseFilterHz;nf.Q.value=sound.noiseQ;
-     ng.gain.setValueAtTime(Math.max(.0002,Math.min(.9,peak*noiseLevel)),hitTime);ng.gain.exponentialRampToValueAtTime(.0001,hitTime+noiseDur);source.connect(nf);nf.connect(ng);ng.connect(masterGain);source.start(hitTime);source.stop(hitTime+noiseDur+.008)
+     ng.gain.setValueAtTime(Math.max(.0002,Math.min(.9,peak*noiseLevel)),hitTime);ng.gain.exponentialRampToValueAtTime(.0001,hitTime+noiseDur);source.connect(nf);nf.connect(ng);ng.connect(masterGain);trackScheduledSource(source);source.start(hitTime);source.stop(hitTime+noiseDur+.008)
    }
  }
 }
-function scheduleBar(startTime,patternIndex){
- const p=state.patterns[patternIndex],sec=tickSec();
+function scheduleBar(startTime,patternIndex,fromTick=0){
+ const p=state.patterns[patternIndex],sec=tickSec(),barTicks=patternBarTicks(p);
  p.tracks.forEach((track,trackIndex)=>{
    if(!track.enabled)return;
    track.events.forEach((event,eventIndex)=>{
      if(!event.active)return;
-     let tick=eventTick(event)+swingOffsetTicks(event,p.swing);tick=Math.max(0,Math.min(BAR_TICKS-.001,tick));
-     const time=startTime+tick*sec;playEvent(track,event,time,eventUnitTicks(event)*sec);visualQueue.push({time,patternIndex,trackIndex,eventIndex})
+     let tick=eventTick(event,p)+swingOffsetTicks(event,p.swing,p);tick=Math.max(0,Math.min(barTicks-.001,tick));
+     if(tick+0.0001<fromTick)return;
+     const time=startTime+tick*sec;if(time<ctx.currentTime-.005)return;
+     playEvent(track,event,time,eventUnitTicks(event,p)*sec);visualQueue.push({time,patternIndex,trackIndex,eventIndex})
    })
  });
- boundaryQueue.push({time:startTime,patternIndex});visualQueue.sort((a,b)=>a.time-b.time)
+ boundaryQueue.push({time:startTime,patternIndex,barStartTime:startTime});visualQueue.sort((a,b)=>a.time-b.time);boundaryQueue.sort((a,b)=>a.time-b.time)
 }
 function scheduler(){
- if(!playing||!ctx)return;const ahead=.105,barSec=BAR_TICKS*tickSec();
+ if(!playing||!ctx)return;const ahead=.105;
  while(nextBarTime<ctx.currentTime+ahead){
-   let p=scheduledPattern;
-   if(state.queuedPattern!==null&&nextBarTime>ctx.currentTime+.02){p=state.queuedPattern;scheduledPattern=p;state.queuedPattern=null}
-   scheduleBar(nextBarTime,p);nextBarTime+=barSec
+   let p=scheduledPattern;if(state.queuedPattern!==null)p=state.queuedPattern;
+   scheduleBar(nextBarTime,p,0);scheduledPattern=p;nextBarTime+=patternBarTicks(state.patterns[p])*tickSec()
  }
 }
 function flashPad(index){
@@ -553,7 +591,9 @@ function flashPad(index){
 function visualLoop(){
  if(!ctx)return;const now=ctx.currentTime+.012;
  while(boundaryQueue.length&&boundaryQueue[0].time<=now){
-   const b=boundaryQueue.shift();if(state.currentPattern!==b.patternIndex){state.currentPattern=b.patternIndex;save();renderAll()}
+   const b=boundaryQueue.shift();currentBarStartTime=b.barStartTime;scheduledPattern=b.patternIndex;
+   if(state.currentPattern!==b.patternIndex){state.currentPattern=b.patternIndex;state.selectedEvent=Math.min(state.selectedEvent,15)}
+   if(state.queuedPattern===b.patternIndex)state.queuedPattern=null;save();renderAll()
  }
  while(visualQueue.length&&visualQueue[0].time<=now){
    const v=visualQueue.shift();if(v.patternIndex===state.currentPattern&&v.trackIndex===state.currentTrack&&['step','art','retrig'].includes(state.mode))flashPad(v.eventIndex)
@@ -562,19 +602,32 @@ function visualLoop(){
 }
 async function requestWakeLock(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}
 async function releaseWakeLock(){try{if(wakeLock){await wakeLock.release();wakeLock=null}}catch(e){}}
+function addSessionTime(){if(sessionStartedAt){lastSessionSeconds+=Math.max(0,Math.round((Date.now()-sessionStartedAt)/1000));sessionStartedAt=null}}
 async function start(){
- if(playing)return true;try{const audio=ensureAudio();if(audio.state==='suspended')await audio.resume();playing=true;sessionStartedAt=Date.now();scheduledPattern=state.currentPattern;visualQueue=[];boundaryQueue=[];nextBarTime=audio.currentTime+.04;scheduler();schedulerTimer=setInterval(scheduler,16);rafId=requestAnimationFrame(visualLoop);updateTransport();updateMedia();requestWakeLock();return true}catch(error){playing=false;updateTransport();toast('Unable to start audio');return false}
+ if(playing)return true;try{
+  const audio=ensureAudio();if(audio.state==='suspended')await audio.resume();
+  playing=true;sessionStartedAt=Date.now();scheduledPattern=state.currentPattern;visualQueue=[];boundaryQueue=[];
+  const p=currentPattern(),barTicks=patternBarTicks(p),sec=tickSec(),lead=.04;
+  if(paused){const offset=Math.max(0,Math.min(barTicks-.001,pauseTick));paused=false;currentBarStartTime=audio.currentTime+lead-offset*sec;scheduleBar(currentBarStartTime,state.currentPattern,offset);nextBarTime=currentBarStartTime+barTicks*sec}
+  else{pauseTick=0;currentBarStartTime=audio.currentTime+lead;scheduleBar(currentBarStartTime,state.currentPattern,0);nextBarTime=currentBarStartTime+barTicks*sec}
+  scheduler();schedulerTimer=setInterval(scheduler,16);rafId=requestAnimationFrame(visualLoop);updateTransport();updateMedia();requestWakeLock();return true
+ }catch(error){playing=false;updateTransport();toast('Unable to start audio');return false}
+}
+function pause(){
+ if(!playing)return false;const p=currentPattern(),barTicks=patternBarTicks(p),sec=tickSec();
+ pauseTick=Math.max(0,Math.min(barTicks-.001,(ctx.currentTime-currentBarStartTime)/sec));playing=false;paused=true;addSessionTime();stopSchedulerVisuals();updateTransport();updateMedia();releaseWakeLock();renderHeader();return true
 }
 function stop(){
- if(playing&&sessionStartedAt){lastSessionSeconds=Math.max(0,Math.round((Date.now()-sessionStartedAt)/1000));sessionStartedAt=null}
- playing=false;clearInterval(schedulerTimer);schedulerTimer=null;cancelAnimationFrame(rafId);rafId=null;visualQueue=[];boundaryQueue=[];state.queuedPattern=null;
- document.querySelectorAll('.event-pad.playing').forEach(x=>x.classList.remove('playing'));flashTimers.forEach(clearTimeout);flashTimers.clear();updateTransport();updateMedia();releaseWakeLock();renderHeader();return true
+ addSessionTime();playing=false;paused=false;pauseTick=0;currentBarStartTime=0;state.queuedPattern=null;stopSchedulerVisuals();updateTransport();updateMedia();releaseWakeLock();renderHeader();return true
 }
-function toggleTransport(){return playing?stop():start()}
+function toggleTransport(){return playing?pause():start()}
 function updateTransport(){
- const main=$('toggle'),settings=$('settingsTransport');main.classList.toggle('primary',!playing);main.classList.toggle('danger',playing);$('transportLabel').textContent=playing?'STOP':'START';
- settings.classList.toggle('primary',!playing);settings.classList.toggle('danger',playing);settings.textContent=playing?'STOP':'PLAY';
- $('settingsPlayStatus').classList.toggle('playing',playing);$('settingsPlayText').textContent=`${playing?'Playing':'Stopped'} · ${state.bpm} BPM`
+ const main=$('toggle'),settings=$('settingsTransport'),stopBtn=$('stopTransport'),settingsStop=$('settingsStop');
+ const label=playing?'PAUSE':'START',status=playing?'Playing':paused?'Paused':'Stopped';
+ main.classList.toggle('primary',!playing);main.classList.toggle('danger',playing);$('transportLabel').textContent=label;
+ settings.classList.toggle('primary',!playing);settings.classList.toggle('danger',playing);settings.textContent=label;
+ stopBtn.disabled=!playing&&!paused;settingsStop.disabled=!playing&&!paused;
+ $('settingsPlayStatus').classList.toggle('playing',playing);$('settingsPlayText').textContent=`${status} · ${state.bpm} BPM`;if(!$('settingsBackdrop').hidden&&settingsView==='tools')renderTools()
 }
 function tap(at){
  const now=Number.isFinite(Number(at))?Number(at):performance.now();if(tapTimes.length&&now-tapTimes.at(-1)>2500)tapTimes=[];tapTimes.push(now);tapTimes=tapTimes.slice(-7);$('tap').classList.add('flash');setTimeout(()=>$('tap').classList.remove('flash'),130);if(tapTimes.length<2)return;
@@ -593,18 +646,32 @@ function padChoice(label,sub='',cls=''){const b=document.createElement('button')
 function renderPads(){
  const root=$('padGrid');root.innerHTML='';
  if(state.mode==='pattern'){
-   for(let i=0;i<16;i++){if(i<4){const b=padChoice(i+1,'Pattern',(state.currentPattern===i?'current ':'')+(state.queuedPattern===i?'queued':''));b.onclick=()=>selectPattern(i);root.appendChild(b)}else{const b=padChoice('');b.disabled=true;root.appendChild(b)}}return
+   for(let i=0;i<16;i++){if(i<4){const p=state.patterns[i],b=padChoice(i+1,meterLabel(p),(state.currentPattern===i?'current ':'')+(state.queuedPattern===i?'queued':''));b.onclick=()=>selectPattern(i);root.appendChild(b)}else{const b=padChoice('');b.disabled=true;root.appendChild(b)}}return
  }
  if(state.mode==='track'){
    for(let i=0;i<16;i++){if(i<4){const t=currentPattern().tracks[i],b=padChoice(i+1,t.enabled?'Track':'Muted',(state.currentTrack===i?'current ':'')+(!t.enabled?'muted':''));bindTrackHold(b,i);root.appendChild(b)}else{const b=padChoice('');b.disabled=true;root.appendChild(b)}}return
  }
  currentTrack().events.forEach((e,i)=>{
    const b=document.createElement('button');b.type='button';b.dataset.event=i;b.className=`pad event-pad ${e.active?'active ':''}${state.selectedEvent===i?'selected ':''}${e.active&&e.articulation!=='normal'?`art-${e.articulation}`:''}`;
-   b.setAttribute('aria-label',`${e.active?'On':'Off'}；${eventSummary(e)}`);
+   b.setAttribute('aria-label',`${e.active?'On':'Off'}; ${eventSummary(e)}`);
    b.innerHTML=`<span class="timing-badge">${e.split===4?'':`÷${e.split}`}</span><span class="event-glyph"><span class="art">${e.active?articulationDefs[e.articulation].symbol:''}</span><span class="retrig">${e.active&&e.retrig>1?`×${e.retrig}`:''}</span></span>`;
-   b.onclick=()=>handleEvent(i);root.appendChild(b)
- })
+   b.onclick=ev=>{if(state.mode==='step'&&ev.detail!==0)return;handleEvent(i)};
+   b.oncontextmenu=ev=>{if(!['step','art','retrig'].includes(state.mode))return;ev.preventDefault();openEventContext(i,b)};root.appendChild(b)
+ });requestAnimationFrame(updateGestureClass)
 }
+const pointerGestures=new Map(),GESTURE_MOVE_PX=10,LONGPRESS_MS=500;
+function updateGestureClass(){const grid=$('padGrid');if(grid)grid.classList.toggle('gesture-editing',state.mode==='step')}
+function padFromPoint(x,y){const hit=document.elementFromPoint(x,y)?.closest?.('.event-pad');return hit&&$('padGrid').contains(hit)?hit:null}
+function applyPaint(index,value,gesture){if(gesture.visited.has(index))return;gesture.visited.add(index);const e=currentTrack().events[index];e.active=value;if(!value){e.articulation='normal';e.retrig=1}state.selectedEvent=index;renderPads();renderHeader();syncDesktopInspector()}
+function openEventContext(index,button=null){state.selectedEvent=index;save();renderAll();const mobile=matchMedia('(max-width:720px)').matches;if(mobile)openSettings('edit',state.currentTrack,button||document.activeElement);else{setInspectorView('event');syncDesktopInspector();button?.classList.add('context-open');setTimeout(()=>button?.classList.remove('context-open'),220)}}
+function beginEventGesture(ev){
+ if(state.mode!=='step'||ev.pointerType==='mouse'&&ev.button!==0)return;const button=ev.target.closest('.event-pad');if(!button)return;ev.preventDefault();
+ const index=Number(button.dataset.event),gesture={pointerId:ev.pointerId,startX:ev.clientX,startY:ev.clientY,startIndex:index,dragging:false,longPressed:false,paintValue:!currentTrack().events[index].active,visited:new Set(),timer:null};
+ gesture.timer=setTimeout(()=>{if(!gesture.dragging&&pointerGestures.has(ev.pointerId)){gesture.longPressed=true;openEventContext(index,button)}},LONGPRESS_MS);pointerGestures.set(ev.pointerId,gesture);try{$('padGrid').setPointerCapture(ev.pointerId)}catch(e){}
+}
+function moveEventGesture(ev){const g=pointerGestures.get(ev.pointerId);if(!g)return;const dist=Math.hypot(ev.clientX-g.startX,ev.clientY-g.startY);if(!g.dragging&&dist>=GESTURE_MOVE_PX){g.dragging=true;clearTimeout(g.timer);applyPaint(g.startIndex,g.paintValue,g)}if(!g.dragging)return;ev.preventDefault();const b=padFromPoint(ev.clientX,ev.clientY);if(b)applyPaint(Number(b.dataset.event),g.paintValue,g)}
+function endEventGesture(ev){const g=pointerGestures.get(ev.pointerId);if(!g)return;clearTimeout(g.timer);if(!g.dragging&&!g.longPressed)handleEvent(g.startIndex);else if(g.dragging){save();renderAll()}pointerGestures.delete(ev.pointerId);try{$('padGrid').releasePointerCapture(ev.pointerId)}catch(e){}}
+function bindEventGestures(){const grid=$('padGrid');if(!grid||grid.dataset.gestureBound)return;grid.dataset.gestureBound='1';grid.addEventListener('pointerdown',beginEventGesture,{passive:false});grid.addEventListener('pointermove',moveEventGesture,{passive:false});grid.addEventListener('pointerup',endEventGesture,{passive:false});grid.addEventListener('pointercancel',endEventGesture,{passive:false})}
 function handleEvent(i){
  state.selectedEvent=i;const e=currentEvent();
  if(state.mode==='art'){if(!e.active){renderAll();return toast('Turn the Event on first')}e.articulation=articulationOrder[(articulationOrder.indexOf(e.articulation)+1)%articulationOrder.length]}
@@ -615,7 +682,7 @@ function handleEvent(i){
 function setMode(mode){state.mode=(state.mode===mode&&mode!=='step')?'step':mode;renderAll()}
 function selectPattern(i){
  if(playing){if(i===state.currentPattern){state.queuedPattern=null;toast('Pattern queue canceled')}else{state.queuedPattern=i;toast(`Queued Pattern ${i+1} for next bar`)}}
- else{state.currentPattern=i;state.selectedEvent=0;save()}
+ else{if(paused)stop();state.currentPattern=i;state.selectedEvent=0;save()}
  state.mode='step';renderAll()
 }
 function bindTrackHold(b,i){
@@ -624,14 +691,14 @@ function bindTrackHold(b,i){
 }
 function renderHeader(){
  $('patternStatus').textContent=(state.currentPattern+1)+(state.queuedPattern!==null?` → ${state.queuedPattern+1}`:'');
- $('trackStatus').textContent=(state.currentTrack+1)+(currentTrack().enabled?'':' ×');$('eventStatus').textContent=eventSummary(currentEvent());
+ $('trackStatus').textContent=(state.currentTrack+1)+(currentTrack().enabled?'':' ×');$('eventStatus').textContent=eventSummary(currentEvent());$('meterStatus').textContent=meterLabel(currentPattern());
  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(state.mode===b.dataset.mode)));syncHeaderTempo()
 }
 function syncHeaderTempo(){if(document.activeElement!==$('bpm'))$('bpm').value=state.bpm}
 function renderModeGuide(){
  const map={
-  step:['STEP','Tap a pad to turn the Event on or off. The last selected Event can be edited in EVENT or Settings.'],
-  pattern:['PATTERN','Choose Pattern 1–4. During playback, the new Pattern starts at the next bar.'],
+  step:['STEP','Tap = toggle · Swipe = paint / erase · Long press = Event Edit. Multiple pointers are independent.'],
+  pattern:['PATTERN','Choose Pattern 1–4. Each Pattern owns its Meter; queued changes start at the next bar boundary.'],
   track:['TRACK','Choose Track 1–4. Press and hold a Track pad to mute or enable it.'],
   art:['ART','Tap an active Event to cycle Accent, Marcato, Staccato, Tenuto, and Normal.'],
   retrig:['RETRIG','Tap an active Event to cycle ×2, ×3, ×4, and ×1.']
@@ -644,7 +711,7 @@ function renderTrackTabs(rootId='desktopTrackTabs'){
 }
 function renderEventEditor(){
  const e=currentEvent(),tr=currentTrack();$('eventEnabledText').textContent=e.active?'On':'Off';$('eventOn').classList.toggle('on',e.active);$('eventOff').classList.toggle('on',!e.active);
- const beat=$('beatChoices');beat.innerHTML='';for(let n=1;n<=4;n++){const b=document.createElement('button');b.textContent=n;b.className=e.beat===n?'on':'';b.onclick=()=>{e.beat=n;save();renderAll()};beat.appendChild(b)}
+ const beat=$('beatChoices');beat.innerHTML='';beat.style.setProperty('--count',Math.min(8,currentPattern().beatCount));for(let n=1;n<=currentPattern().beatCount;n++){const b=document.createElement('button');b.textContent=n;b.className=e.beat===n?'on':'';b.onclick=()=>{e.beat=n;save();renderAll()};beat.appendChild(b)}
  const split=$('splitChoices');split.innerHTML='';SPLITS.forEach(n=>{const b=document.createElement('button');b.textContent=n;b.className=e.split===n?'on':'';b.onclick=()=>{e.split=n;e.point=Math.min(e.point,n-1);save();renderAll()};split.appendChild(b)});
  const points=$('pointChoices');points.innerHTML='';points.style.setProperty('--count',Math.min(8,e.split));for(let n=0;n<e.split;n++){const b=document.createElement('button');b.textContent=n+1;b.className=e.point===n?'on':'';b.onclick=()=>{e.point=n;save();renderAll()};points.appendChild(b)}
  const c=collisionCount(tr,e,state.selectedEvent);$('positionSummary').innerHTML=`<b>${eventSummary(e)}</b>${c?`<br><span class="collision">${c} other Event(s) share this time</span>`:''}`
@@ -674,86 +741,17 @@ function setInspectorView(view){
 
 
 function fitPadGrid(){
- const stage=document.querySelector('.pad-stage'),grid=document.querySelector('.pad-grid');
- if(!stage||!grid)return;
-
- const vv=window.visualViewport;
- const viewportW=vv?.width||document.documentElement.clientWidth||innerWidth;
- const viewportH=vv?.height||document.documentElement.clientHeight||innerHeight;
- const viewportTop=vv?.offsetTop||0;
- const viewportBottom=viewportTop+viewportH;
-
- const gridStyle=getComputedStyle(grid);
- const gap=parseFloat(gridStyle.columnGap||gridStyle.gap)||7;
- const ratio=1.48;
- const stageRect=stage.getBoundingClientRect();
- const panel=stage.closest('.sequencer-panel');
- const guide=document.querySelector('.mode-guide');
- const transport=document.querySelector('.transport-row');
-
- const outerHeight=el=>{
-  if(!el)return 0;
-  const r=el.getBoundingClientRect(),cs=getComputedStyle(el);
-  return r.height+(parseFloat(cs.marginTop)||0)+(parseFloat(cs.marginBottom)||0)
- };
-
- // Width always comes from the real stage and the visible viewport.
- const stageW=stage.clientWidth||stageRect.width;
- const availableW=Math.max(0,Math.min(stageW,viewportW-Math.max(0,stageRect.left)-8));
-
- let availableH;
+ const stage=document.querySelector('.pad-stage'),grid=document.querySelector('.pad-grid');if(!stage||!grid)return;
+ const vv=window.visualViewport,viewportW=vv?.width||document.documentElement.clientWidth||innerWidth,viewportH=vv?.height||document.documentElement.clientHeight||innerHeight,viewportTop=vv?.offsetTop||0,viewportBottom=viewportTop+viewportH;
+ const stageRect=stage.getBoundingClientRect(),panel=stage.closest('.sequencer-panel'),guide=document.querySelector('.mode-guide'),transport=document.querySelector('.transport-row');
+ const outerHeight=el=>{if(!el)return 0;const r=el.getBoundingClientRect(),cs=getComputedStyle(el);return r.height+(parseFloat(cs.marginTop)||0)+(parseFloat(cs.marginBottom)||0)};
  if(viewportW<=720){
-  // Mobile browsers frequently report a stale grid-row height while the URL bar
-  // expands/collapses. Calculate the stage from fixed UI below it instead.
-  const panelStyle=panel?getComputedStyle(panel):null;
-  const shellStyle=getComputedStyle(document.querySelector('.app-shell'));
-  const reserveBelow=
-    outerHeight(guide)+
-    outerHeight(transport)+
-    (parseFloat(panelStyle?.paddingBottom)||0)+
-    (parseFloat(panelStyle?.borderBottomWidth)||0)+
-    (parseFloat(shellStyle.paddingBottom)||0)+
-    6;
-  availableH=Math.max(72,viewportBottom-stageRect.top-reserveBelow);
-  stage.style.setProperty('--pad-stage-height',`${Math.floor(availableH)}px`);
- }else{
-  stage.style.removeProperty('--pad-stage-height');
-  const visibleH=Math.max(0,viewportBottom-stageRect.top-8);
-  availableH=Math.max(0,Math.min(stage.clientHeight||visibleH,visibleH));
+  const panelStyle=panel?getComputedStyle(panel):null,shellStyle=getComputedStyle(document.querySelector('.app-shell'));
+  const reserveBelow=outerHeight(guide)+outerHeight(transport)+(parseFloat(panelStyle?.paddingBottom)||0)+(parseFloat(panelStyle?.borderBottomWidth)||0)+(parseFloat(shellStyle.paddingBottom)||0)+4;
+  const availableH=Math.max(80,viewportBottom-stageRect.top-reserveBelow);stage.style.setProperty('--pad-stage-height',`${Math.floor(availableH)}px`);grid.style.width='100%';grid.style.maxWidth='none';return
  }
-
- // Solve a 4×4 grid against both width and height.
- // H = (W - 3g) / ratio + 3g  =>  W = ratio(H - 3g) + 3g
- const widthByHeight=Math.max(0,ratio*Math.max(0,availableH-3*gap)+3*gap);
-
- let maxW=620;
- if(viewportW<1100)maxW=590;
- if(viewportW<900)maxW=560;
- if(viewportW<720)maxW=520;
- if(viewportW<520)maxW=Math.max(180,viewportW-20);
-
- const fitted=Math.floor(Math.min(availableW,widthByHeight,maxW));
- const safeWidth=Math.max(160,fitted);
- grid.style.width=`${safeWidth}px`;
- grid.style.maxWidth=`${safeWidth}px`;
-
- // Final verification against the *visible* viewport. If rounded CSS layout still
- // exceeds either edge, shrink once more rather than allowing clipping.
- requestAnimationFrame(()=>{
-  const r=grid.getBoundingClientRect();
-  const rightLimit=viewportW-6;
-  const bottomLimit=viewportBottom-6;
-  let scale=1;
-  if(r.right>rightLimit)scale=Math.min(scale,(rightLimit-r.left)/Math.max(1,r.width));
-  if(r.bottom>bottomLimit)scale=Math.min(scale,(bottomLimit-r.top)/Math.max(1,r.height));
-  if(scale<.999){
-   const corrected=Math.max(150,Math.floor(safeWidth*scale));
-   grid.style.width=`${corrected}px`;
-   grid.style.maxWidth=`${corrected}px`;
-  }
- });
+ stage.style.removeProperty('--pad-stage-height');const gridStyle=getComputedStyle(grid),gap=parseFloat(gridStyle.columnGap||gridStyle.gap)||7,ratio=1.48,stageW=stage.clientWidth||stageRect.width,availableW=Math.max(0,Math.min(stageW,viewportW-Math.max(0,stageRect.left)-8)),visibleH=Math.max(0,viewportBottom-stageRect.top-8),availableH=Math.max(0,Math.min(stage.clientHeight||visibleH,visibleH)),widthByHeight=Math.max(0,ratio*Math.max(0,availableH-3*gap)+3*gap);let maxW=620;if(viewportW<1100)maxW=590;if(viewportW<900)maxW=560;const fitted=Math.floor(Math.min(availableW,widthByHeight,maxW));grid.style.width=`${Math.max(160,fitted)}px`;grid.style.maxWidth=`${Math.max(160,fitted)}px`
 }
-
 function renderAll(){renderHeader();renderPads();renderModeGuide();syncDesktopInspector();setInspectorView(inspectorView);if(!$('settingsBackdrop').hidden)syncOpenSettings();requestAnimationFrame(fitPadGrid)}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),1050)}
 
@@ -810,12 +808,12 @@ function renderTrackSoundForm(){
 function renderMobileEdit(){
  const root=$('mobileEditRoot');if(!root)return;const tr=currentTrack(),e=currentEvent(),pitch=state.pitchDisplay==='midi'?hzToMidi(tr.frequencyHz):tr.frequencyHz;
  root.innerHTML=`<div class="form-section"><h3 class="form-section-title">Track</h3><div class="settings-track-tabs" id="mobileTrackTabs">${currentPattern().tracks.map((t,i)=>`<button type="button" data-mobile-track="${i}" aria-selected="${state.currentTrack===i}">T${i+1}</button>`).join('')}</div></div>
- <div class="form-section"><h3 class="form-section-title">Event Position</h3><div class="event-state"><button id="mEventOn" class="${e.active?'on':''}">ON</button><button id="mEventOff" class="${e.active?'':'on'}">OFF</button></div><div class="control-label">BEAT</div><div class="choice-row" id="mBeat" style="--count:4"></div><div class="control-label">SPLIT</div><div class="choice-row" id="mSplit" style="--count:6"></div><div class="control-label">POINT</div><div class="choice-row" id="mPoint" style="--count:${Math.min(8,e.split)}"></div><div class="position-summary" id="mSummary"></div></div>
+ <div class="form-section"><h3 class="form-section-title">Event Position</h3><div class="event-state"><button id="mEventOn" class="${e.active?'on':''}">ON</button><button id="mEventOff" class="${e.active?'':'on'}">OFF</button></div><div class="control-label">BEAT</div><div class="choice-row" id="mBeat" style="--count:${Math.min(8,currentPattern().beatCount)}"></div><div class="control-label">SPLIT</div><div class="choice-row" id="mSplit" style="--count:6"></div><div class="control-label">POINT</div><div class="choice-row" id="mPoint" style="--count:${Math.min(8,e.split)}"></div><div class="position-summary" id="mSummary"></div></div>
  <div class="form-section"><h3 class="form-section-title">Track Quick Sound</h3><div class="form-grid"><div class="field full"><label>Sound</label><select id="mPreset">${soundOptions(tr.preset)}</select></div><div class="field"><label>Level <span id="mLevelMeta">${tr.level}%</span></label><div class="suffix-wrap"><input id="mLevel" type="text" inputmode="numeric" value="${tr.level}"><span class="suffix">%</span></div></div><div class="field"><label>Length <span id="mLengthMeta">${tr.lengthMs} ms</span></label><div class="suffix-wrap"><input id="mLength" type="text" inputmode="numeric" value="${tr.lengthMs}"><span class="suffix">ms</span></div></div><div class="field full"><label>Pitch <span id="mPitchMeta">${state.pitchDisplay==='midi'?noteNameFromMidi(pitch):`${hzToMidi(tr.frequencyHz).toFixed(2)} MIDI`}</span></label><div class="suffix-wrap"><input id="mPitch" type="text" inputmode="decimal" value="${state.pitchDisplay==='midi'?pitch.toFixed(2):tr.frequencyHz.toFixed(1)}"><span class="suffix">${state.pitchDisplay==='midi'?'MIDI':'Hz'}</span></div></div></div><div class="action-row"><button id="mMute">${tr.enabled?'MUTE TRACK':'ENABLE TRACK'}</button><button id="mAdvanced">ADVANCED SOUND</button></div></div>`;
  root.querySelectorAll('[data-mobile-track]').forEach(b=>b.onclick=()=>{state.currentTrack=Number(b.dataset.mobileTrack);state.selectedEvent=0;save();renderAll();renderMobileEdit()});
  $('mEventOn').onclick=()=>{currentEvent().active=true;save();renderAll();renderMobileEdit()};$('mEventOff').onclick=()=>{const x=currentEvent();x.active=false;x.articulation='normal';x.retrig=1;save();renderAll();renderMobileEdit()};
  const build=(id,values,get,set)=>{const r=$(id);r.innerHTML='';values.forEach(v=>{const b=document.createElement('button');b.textContent=Number(v)+1*(id==='mPoint');if(id!=='mPoint')b.textContent=v;b.className=get()===v?'on':'';b.onclick=()=>{set(v);save();renderAll();renderMobileEdit()};r.appendChild(b)})};
- build('mBeat',[1,2,3,4],()=>currentEvent().beat,v=>currentEvent().beat=v);build('mSplit',SPLITS,()=>currentEvent().split,v=>{currentEvent().split=v;currentEvent().point=Math.min(currentEvent().point,v-1)});build('mPoint',Array.from({length:e.split},(_,i)=>i),()=>currentEvent().point,v=>currentEvent().point=v);
+ build('mBeat',Array.from({length:currentPattern().beatCount},(_,i)=>i+1),()=>currentEvent().beat,v=>currentEvent().beat=v);build('mSplit',SPLITS,()=>currentEvent().split,v=>{currentEvent().split=v;currentEvent().point=Math.min(currentEvent().point,v-1)});build('mPoint',Array.from({length:e.split},(_,i)=>i),()=>currentEvent().point,v=>currentEvent().point=v);
  const c=collisionCount(tr,e,state.selectedEvent);$('mSummary').innerHTML=`<b>${eventSummary(e)}</b>${c?`<br><span class="collision">${c} other Event(s) share this time</span>`:''}`;
  $('mPreset').onchange=()=>{applyTrackPreset(tr,$('mPreset').value);renderMobileEdit()};
  liveNumeric($('mLevel'),v=>{tr.level=Math.round(v);save();$('mLevelMeta').textContent=`${tr.level}%`;syncDesktopInspector()},{min:0,max:100,integer:true});
@@ -824,10 +822,21 @@ function renderMobileEdit(){
  $('mMute').onclick=()=>{tr.enabled=!tr.enabled;save();renderAll();renderMobileEdit()};
  $('mAdvanced').onclick=()=>showSettingsView('sound')
 }
+function meterPresetName(p=currentPattern()){return meterLabel(p).toLowerCase()==='custom'?'custom':meterLabel(p)}
+function updateUndoUi(){const b=$('undoAction'),m=$('undoMeta');if(!b||!m)return;b.disabled=!undoState||playing;m.textContent=undoState?`Undo: ${undoState.label}`:'No destructive action to undo.'}
+function captureUndo(label){undoState={label,patterns:clone(state.patterns),currentPattern:state.currentPattern,currentTrack:state.currentTrack,selectedEvent:state.selectedEvent};updateUndoUi()}
+function undoLast(){if(!undoState)return;if(playing)return toast('Pause or stop before Undo');const u=undoState;state.patterns=u.patterns;state.currentPattern=u.currentPattern;state.currentTrack=u.currentTrack;state.selectedEvent=u.selectedEvent;state.queuedPattern=null;undoState=null;if(paused)stop();save();renderAll();renderTools();toast(`Undid ${u.label}`)}
+function roundBarLength(v){return Math.round(clamp(v,.25,16,4)*4)/4}
+function applyPatternMeter(barLength,beatCount,{capture=true}={}){if(playing){toast('Pause or stop before changing Meter');renderTools();return false}const p=currentPattern(),bar=roundBarLength(barLength),beats=Math.round(clamp(beatCount,1,16,4));if(Math.abs(p.barLength-bar)<.0001&&p.beatCount===beats)return true;if(capture)captureUndo('Bar Structure');p.barLength=bar;p.beatCount=beats;p.tracks.forEach(t=>t.events.forEach(e=>e.beat=Math.min(e.beat,beats)));if(paused)stop();save();renderAll();renderTools();return true}
+function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function legalShufflePositions(p=currentPattern()){const seen=new Map();for(let beat=1;beat<=p.beatCount;beat++)for(const split of SPLITS)for(let point=0;point<split;point++){const x={beat,split,point,microOffsetTicks:0},tick=eventTick(x,p),key=tick.toFixed(6);if(!seen.has(key)||split<seen.get(key).split)seen.set(key,x)}return[...seen.values()]}
+function shuffleCurrentTrack(){if(playing)return toast('Pause or stop before Shuffle');const active=currentTrack().events.filter(e=>e.active);if(active.length<1)return toast('No active Events to shuffle');const positions=shuffleArray(legalShufflePositions());if(positions.length<active.length)return toast('Not enough unique positions for this Meter');captureUndo('Shuffle Track');active.forEach((e,i)=>{const p=positions[i];e.beat=p.beat;e.split=p.split;e.point=p.point;e.microOffsetTicks=0});save();renderAll();renderTools();toast('Track positions shuffled')}
 function renderTools(){
- if(document.activeElement!==$('swingInput'))$('swingInput').value=currentPattern().swing;$('swingMeta').textContent=`${currentPattern().swing} · 50 = Straight`;
+ const p=currentPattern();if(document.activeElement!==$('swingInput'))$('swingInput').value=p.swing;$('swingMeta').textContent=`${p.swing} · 50 = Straight`;
+ if(document.activeElement!==$('barLengthInput'))$('barLengthInput').value=String(p.barLength);if(document.activeElement!==$('beatCountInput'))$('beatCountInput').value=String(p.beatCount);$('barLengthMeta').textContent=`${patternBarTicks(p).toFixed(0)} ticks`; $('beatCountMeta').textContent=`Beat unit ${patternBeatTicks(p).toFixed(2)} ticks`; $('meterMeta').textContent=`${meterLabel(p)} · ${p.barLength} quarter-note units · ${p.beatCount} beats`;
+ $('barLengthInput').disabled=playing;$('beatCountInput').disabled=playing;document.querySelectorAll('[data-meter]').forEach(b=>{b.classList.toggle('on',b.dataset.meter===meterPresetName(p));b.disabled=playing});$('shuffleTrack').disabled=playing;$('clearTrack').disabled=playing;$('clearPattern').disabled=playing;updateUndoUi();
  const cp=$('copyPatterns'),ct=$('copyTracks');cp.innerHTML='';ct.innerHTML='';
- for(let i=0;i<4;i++){const b=document.createElement('button');b.textContent=i+1;b.disabled=i===state.currentPattern;b.onclick=()=>{state.patterns[i]=clone(currentPattern());state.currentPattern=i;state.selectedEvent=0;save();renderAll();renderTools();toast(`Copied to Pattern ${i+1}`)};cp.appendChild(b);
+ for(let i=0;i<4;i++){const b=document.createElement('button');b.textContent=i+1;b.disabled=i===state.currentPattern;b.onclick=()=>{const copied=clone(currentPattern());if(paused)stop();state.patterns[i]=copied;state.currentPattern=i;state.selectedEvent=0;save();renderAll();renderTools();toast(`Copied to Pattern ${i+1}`)};cp.appendChild(b);
  const t=document.createElement('button');t.textContent=i+1;t.disabled=i===state.currentTrack;t.onclick=()=>{currentPattern().tracks[i]=clone(currentTrack());state.currentTrack=i;state.selectedEvent=0;save();renderAll();renderTools();toast(`Copied to Track ${i+1}`)};ct.appendChild(t)}
 }
 function syncOpenSettings(){
@@ -850,7 +859,7 @@ function trapSettingsFocus(event){if(event.key!=='Tab'||$('settingsBackdrop').hi
 
 /* Log system retained from v2.4.2 */
 function currentSessionSeconds(){return playing&&sessionStartedAt?Math.max(0,Math.round((Date.now()-sessionStartedAt)/1000)):lastSessionSeconds}
-function snapshotState(){return{schemaVersion:4,app:APP_NAME,appVersion:VERSION,capturedAt:new Date().toISOString(),bpm:state.bpm,masterVolume:state.masterVolume,pitchDisplay:state.pitchDisplay,currentPattern:state.currentPattern,patterns:clone(state.patterns)}}
+function snapshotState(){return{schemaVersion:5,app:APP_NAME,appVersion:VERSION,capturedAt:new Date().toISOString(),bpm:state.bpm,masterVolume:state.masterVolume,pitchDisplay:state.pitchDisplay,currentPattern:state.currentPattern,patterns:clone(state.patterns)}}
 function makeLogId(){return globalThis.crypto?.randomUUID?.()||`log-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`}
 function fallbackGetLogs(){try{const logs=JSON.parse(localStorage.getItem(LOG_FALLBACK_KEY)||'[]');return Array.isArray(logs)?logs:[]}catch(e){return[]}}
 function fallbackSaveLogs(logs){localStorage.setItem(LOG_FALLBACK_KEY,JSON.stringify(logs))}
@@ -876,42 +885,30 @@ async function renderLogs(){
  }catch(e){root.innerHTML=`<div class="log-empty">${escapeHtml(e.message)}</div>`}
 }
 async function addLogEntry(entry){let saved=false,lastError=null;try{fallbackAddLog(entry);saved=true}catch(error){lastError=error}try{await logTx('readwrite',store=>store.add(entry));saved=true}catch(error){if(error?.name!=='ConstraintError')lastError=error}if(!saved)throw lastError||new Error('Unable to save the Log entry.')}
-async function commitLog(){const message=$('logMessage').value.trim();if(!message){$('logMessage').setAttribute('aria-invalid','true');$('logStatus').textContent='Enter a note before committing.';$('logMessage').focus();return false}const entry={id:makeLogId(),schemaVersion:4,kind:'commit',createdAt:new Date().toISOString(),message:message.slice(0,2000),sessionSeconds:currentSessionSeconds(),snapshot:$('logAttachSnapshot').checked?snapshotState():null};await addLogEntry(entry);$('logMessage').value='';$('logMessage').setAttribute('aria-invalid','false');$('logStatus').textContent='Committed.';await renderLogs();return true}
-async function markLogDeleted(id){const logs=await getLogs(),target=logs.find(item=>item.id===id&&item.kind!=='delete');if(!target)throw new Error('Original Commit not found.');if(logs.some(item=>item.kind==='delete'&&item.targetId===id)){await renderLogs();return false}const entry={id:makeLogId(),schemaVersion:4,kind:'delete',targetId:id,createdAt:new Date().toISOString()};await addLogEntry(entry);await renderLogs();return true}
+async function commitLog(){const message=$('logMessage').value.trim();if(!message){$('logMessage').setAttribute('aria-invalid','true');$('logStatus').textContent='Enter a note before committing.';$('logMessage').focus();return false}const entry={id:makeLogId(),schemaVersion:5,kind:'commit',createdAt:new Date().toISOString(),message:message.slice(0,2000),sessionSeconds:currentSessionSeconds(),snapshot:$('logAttachSnapshot').checked?snapshotState():null};await addLogEntry(entry);$('logMessage').value='';$('logMessage').setAttribute('aria-invalid','false');$('logStatus').textContent='Committed.';await renderLogs();return true}
+async function markLogDeleted(id){const logs=await getLogs(),target=logs.find(item=>item.id===id&&item.kind!=='delete');if(!target)throw new Error('Original Commit not found.');if(logs.some(item=>item.kind==='delete'&&item.targetId===id)){await renderLogs();return false}const entry={id:makeLogId(),schemaVersion:5,kind:'delete',targetId:id,createdAt:new Date().toISOString()};await addLogEntry(entry);await renderLogs();return true}
 async function exportLogs(){const logs=await getLogs(),payload={app:APP_NAME,appVersion:VERSION,exportVersion:4,exportedAt:new Date().toISOString(),logs},blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),anchor=document.createElement('a');anchor.href=url;anchor.download=`1.0595-log-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('logStatus').textContent=`Exported ${logs.length} entries.`}
 function validImportedLog(log){return Boolean(log&&typeof log.id==='string'&&log.id&&typeof log.createdAt==='string'&&((log.kind==='delete'&&typeof log.targetId==='string'&&log.targetId)||(String(log.message||'').trim()||String(log.summary||'').trim())))}
 async function importLogsFile(file){const raw=await file.text(),payload=JSON.parse(raw),logs=Array.isArray(payload)?payload:payload.logs;if(!Array.isArray(logs))throw new Error('The JSON file does not contain a valid logs array.');const existing=await getLogs(),ids=new Set(existing.map(item=>item.id));let added=0,skipped=0,invalid=0;for(const rawLog of logs){if(!validImportedLog(rawLog)){invalid++;continue}if(ids.has(rawLog.id)){skipped++;continue}const log={...rawLog};try{await addLogEntry(log);ids.add(log.id);added++}catch(e){skipped++}}$('logStatus').textContent=`Imported ${added}; skipped ${skipped}; invalid ${invalid}.`;await renderLogs()}
 function bindLog(){const form=$('logForm'),message=$('logMessage');const resize=()=>{message.style.height='auto';message.style.height=`${Math.min(170,Math.max(82,message.scrollHeight))}px`};message.addEventListener('input',()=>{resize();message.setAttribute('aria-invalid',String(!message.value.trim()))});form.addEventListener('submit',async event=>{event.preventDefault();try{await commitLog()}catch(error){$('logStatus').textContent=error.message}});$('exportLogs').onclick=async()=>{try{await exportLogs()}catch(e){$('logStatus').textContent=e.message}};$('importLogs').onclick=()=>$('logFile').click();$('logFile').onchange=async()=>{const file=$('logFile').files?.[0];if(!file)return;try{await importLogsFile(file)}catch(e){$('logStatus').textContent=e.message}finally{$('logFile').value=''}}}
 
-function updateMedia(){try{if(!('mediaSession'in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:APP_NAME,artist:`${state.bpm} BPM`,album:`Pattern ${state.currentPattern+1} · Track ${state.currentTrack+1}`});navigator.mediaSession.playbackState=playing?'playing':'paused'}catch(e){}}
-function bindMedia(){if(!('mediaSession'in navigator))return;try{navigator.mediaSession.setActionHandler('play',start);navigator.mediaSession.setActionHandler('pause',stop);navigator.mediaSession.setActionHandler('stop',stop);navigator.mediaSession.setActionHandler('previoustrack',()=>stepBpm(-1));navigator.mediaSession.setActionHandler('nexttrack',()=>stepBpm(1))}catch(e){}}
-
-function clearCurrentTrack(){currentTrack().events=newEvents();state.selectedEvent=0;save();renderAll();if(settingsView==='tools')renderTools();toast('Track cleared')}
-function clearCurrentPattern(){currentPattern().tracks.forEach(t=>t.events=newEvents());state.selectedEvent=0;save();renderAll();if(settingsView==='tools')renderTools();toast('Pattern cleared')}
-
+function updateMedia(){try{if(!('mediaSession'in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:APP_NAME,artist:`${state.bpm} BPM`,album:`Pattern ${state.currentPattern+1} · ${meterLabel()} · Track ${state.currentTrack+1}`});navigator.mediaSession.playbackState=playing?'playing':'paused'}catch(e){}}
+function bindMedia(){if(!('mediaSession'in navigator))return;try{navigator.mediaSession.setActionHandler('play',start);navigator.mediaSession.setActionHandler('pause',pause);navigator.mediaSession.setActionHandler('stop',stop);navigator.mediaSession.setActionHandler('previoustrack',()=>stepBpm(-1));navigator.mediaSession.setActionHandler('nexttrack',()=>stepBpm(1))}catch(e){}}
+function clearCurrentTrack(){if(playing)return toast('Pause or stop before Clear');captureUndo('Clear Track');currentTrack().events=newEvents();currentTrack().events.forEach(e=>e.beat=Math.min(e.beat,currentPattern().beatCount));state.selectedEvent=0;save();renderAll();if(settingsView==='tools')renderTools();toast('Track cleared')}
+function clearCurrentPattern(){if(playing)return toast('Pause or stop before Clear');captureUndo('Clear Pattern');currentPattern().tracks.forEach(t=>{t.events=newEvents();t.events.forEach(e=>e.beat=Math.min(e.beat,currentPattern().beatCount))});state.selectedEvent=0;save();renderAll();if(settingsView==='tools')renderTools();toast('Pattern cleared')}
 function init(){
- renderAll();renderSettingsTrackTabs();bindHold($('bpmDown'),-1);bindHold($('bpmUp'),1);
+ renderAll();renderSettingsTrackTabs();bindHold($('bpmDown'),-1);bindHold($('bpmUp'),1);bindEventGestures();
  liveNumeric($('bpm'),v=>applyBpm(v),{min:10,max:450,integer:true,onApplied:()=>{updateTransport();renderHeader()}});
- bindDesktopInputs();bindEventControls();
- document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
- $('tap').onclick=tap;$('toggle').onclick=toggleTransport;$('openSettings').onclick=e=>openSettings(null,null,e.currentTarget);$('closeSettings').onclick=closeSettings;$('doneSettings').onclick=closeSettings;$('settingsTransport').onclick=toggleTransport;
- document.querySelectorAll('[data-settings-view]').forEach(b=>b.onclick=()=>showSettingsView(b.dataset.settingsView));
- $('unitMidi').onclick=()=>setPitchDisplay('midi');$('unitHz').onclick=()=>setPitchDisplay('hz');
- liveNumeric($('masterVolumeSettings'),setMasterVolume,{min:0,max:100,integer:true,onApplied:()=>{syncDesktopInspector()}});
- liveNumeric($('swingInput'),v=>{currentPattern().swing=Math.round(v);save()},{min:50,max:75,integer:true,onApplied:renderTools});
- $('clearTrack').onclick=clearCurrentTrack;$('clearPattern').onclick=clearCurrentPattern;
+ bindDesktopInputs();bindEventControls();document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+ $('tap').onclick=tap;$('toggle').onclick=toggleTransport;$('stopTransport').onclick=stop;$('openSettings').onclick=e=>openSettings(null,null,e.currentTarget);$('closeSettings').onclick=closeSettings;$('doneSettings').onclick=closeSettings;$('settingsTransport').onclick=toggleTransport;$('settingsStop').onclick=stop;
+ document.querySelectorAll('[data-settings-view]').forEach(b=>b.onclick=()=>showSettingsView(b.dataset.settingsView));$('unitMidi').onclick=()=>setPitchDisplay('midi');$('unitHz').onclick=()=>setPitchDisplay('hz');
+ liveNumeric($('masterVolumeSettings'),setMasterVolume,{min:0,max:100,integer:true,onApplied:()=>{syncDesktopInspector()}});liveNumeric($('swingInput'),v=>{currentPattern().swing=Math.round(v);save()},{min:50,max:75,integer:true,onApplied:renderTools});
+ $('barLengthInput').addEventListener('focus',()=>{if(!meterEditSession){captureUndo('Bar Structure');meterEditSession=true}});$('barLengthInput').addEventListener('blur',()=>meterEditSession=false);$('beatCountInput').addEventListener('focus',()=>{if(!meterEditSession){captureUndo('Bar Structure');meterEditSession=true}});$('beatCountInput').addEventListener('blur',()=>meterEditSession=false);
+ liveNumeric($('barLengthInput'),v=>applyPatternMeter(v,currentPattern().beatCount,{capture:!meterEditSession}),{min:.25,max:16,integer:false,onApplied:renderTools});liveNumeric($('beatCountInput'),v=>applyPatternMeter(currentPattern().barLength,v,{capture:!meterEditSession}),{min:1,max:16,integer:true,onApplied:renderTools});
+ document.querySelectorAll('[data-meter]').forEach(b=>b.onclick=()=>{if(b.dataset.meter==='custom'){renderTools();$('barLengthInput').focus();return}const [bar,beats]=METER_PRESETS[b.dataset.meter];applyPatternMeter(bar,beats)});$('shuffleTrack').onclick=shuffleCurrentTrack;$('undoAction').onclick=undoLast;$('clearTrack').onclick=clearCurrentTrack;$('clearPattern').onclick=clearCurrentPattern;
  bindLog();bindMedia();setPitchDisplay(state.pitchDisplay);updateTransport();$('masterVolumeSettings').value=state.masterVolume;$('masterVolumeMeta').textContent=`${state.masterVolume}%`;
- document.addEventListener('keydown',event=>{trapSettingsFocus(event);if(event.defaultPrevented)return;if(event.key==='Escape'&&!$('settingsBackdrop').hidden){event.preventDefault();closeSettings();return}const interactive=event.target.closest?.('input,select,textarea,button,a,summary,[contenteditable="true"]');if(interactive)return;if(event.code==='Space'){event.preventDefault();toggleTransport()}else if(event.key.toLowerCase()==='t'){event.preventDefault();tap()}else if(event.key==='ArrowUp'){event.preventDefault();stepBpm(event.shiftKey?5:1)}else if(event.key==='ArrowDown'){event.preventDefault();stepBpm(event.shiftKey?-5:-1)}});
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&playing)requestWakeLock()});const refitPads=()=>{fitPadGrid();setTimeout(fitPadGrid,50);setTimeout(fitPadGrid,180)};
-window.addEventListener('resize',refitPads,{passive:true});
-window.visualViewport?.addEventListener('resize',refitPads,{passive:true});
-window.visualViewport?.addEventListener('scroll',fitPadGrid,{passive:true});
-const padStageObserver=new ResizeObserver(()=>fitPadGrid());
-const observedPadStage=document.querySelector('.pad-stage');
-if(observedPadStage)padStageObserver.observe(observedPadStage);
-window.addEventListener('orientationchange',refitPads,{passive:true});
-window.addEventListener('pageshow',refitPads,{passive:true});
-window.addEventListener('beforeunload',stop)
+ document.addEventListener('keydown',event=>{trapSettingsFocus(event);if(event.defaultPrevented)return;if(event.key==='Escape'&&!$('settingsBackdrop').hidden){event.preventDefault();closeSettings();return}const interactive=event.target.closest?.('input,select,textarea,button,a,summary,[contenteditable="true"]');if(interactive)return;if(event.code==='Space'){event.preventDefault();toggleTransport()}else if(event.key.toLowerCase()==='s'){event.preventDefault();stop()}else if(event.key.toLowerCase()==='t'){event.preventDefault();tap()}else if(event.key==='ArrowUp'){event.preventDefault();stepBpm(event.shiftKey?5:1)}else if(event.key==='ArrowDown'){event.preventDefault();stepBpm(event.shiftKey?-5:-1)}});
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&playing)requestWakeLock()});const refitPads=()=>{fitPadGrid();setTimeout(fitPadGrid,50);setTimeout(fitPadGrid,180)};window.addEventListener('resize',refitPads,{passive:true});window.visualViewport?.addEventListener('resize',refitPads,{passive:true});window.visualViewport?.addEventListener('scroll',fitPadGrid,{passive:true});const padStageObserver=new ResizeObserver(()=>fitPadGrid()),observedPadStage=document.querySelector('.pad-stage');if(observedPadStage)padStageObserver.observe(observedPadStage);window.addEventListener('orientationchange',refitPads,{passive:true});window.addEventListener('pageshow',refitPads,{passive:true});window.addEventListener('beforeunload',stop)
 }
 
 if('serviceWorker' in navigator){
@@ -924,7 +921,7 @@ if('serviceWorker' in navigator){
  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(reg=>reg.update()).catch(()=>{}));
 }
 
-window.__sequencerTest={APP_NAME,VERSION,state,presetDefinitions,articulationDefs,PPQN,BAR_TICKS,SPLITS,eventTick,eventUnitTicks,applyBpm,setMasterVolume,setPitchDisplay,start,stop,toggleTransport,tap,snapshotState,getLogs,commitLog,markLogDeleted,validImportedLog,importLogsFile,exportLogs,deriveSound,migrateSaved};
+window.__sequencerTest={APP_NAME,VERSION,state,presetDefinitions,articulationDefs,PPQN,BAR_TICKS,SPLITS,METER_PRESETS,eventTick,eventUnitTicks,patternBarTicks,patternBeatTicks,meterLabel,applyBpm,setMasterVolume,setPitchDisplay,start,pause,stop,toggleTransport,tap,shuffleCurrentTrack,undoLast,applyPatternMeter,snapshotState,getLogs,commitLog,markLogDeleted,validImportedLog,importLogsFile,exportLogs,deriveSound,migrateSaved};
 init();
 </script>
 </body>

@@ -1,7 +1,7 @@
 {
   "name": "1.0595 Rhythm Sequencer",
   "short_name": "1.0595",
-  "description": "1.0595 Rhythm Sequencer — viewport-adaptive 4×4 event sequencer.",
+  "description": "1.0595 Rhythm Sequencer \u2014 adaptive multi-touch rhythm sequencer with per-Pattern meter.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

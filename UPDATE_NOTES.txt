@@ -1,0 +1,38 @@
+1.0595 Rhythm Sequencer
+v3.1.0-beta.1 · RevU
+2026-08-12
+
+CORE UPDATES
+- Full RevR feature set retained.
+- STEP: Tap toggle, Swipe Paint/Erase, 500 ms Long-press Event Edit.
+- Independent multi-pointer gesture state.
+- Desktop right-click opens the same Event Edit context.
+- Per-Pattern Bar Length + Beat Count.
+- Meter presets: 2/4, 3/4, 4/4, 6/8, plus Custom.
+- Different Pattern bar durations are respected by the scheduler.
+- START / PAUSE / STOP are now distinct transport states.
+- PAUSE preserves musical position; STOP returns to bar start.
+- Controlled Shuffle changes active Event positions only and avoids duplicate timing targets.
+- One-step Undo covers Shuffle Track, Clear Track, Clear Pattern, and Bar Structure.
+- Phone grid uses the full remaining stage as a 4×4 equal grid.
+- Same feature semantics across phone, tablet, laptop, and desktop; only layout density differs.
+
+DATA MIGRATION
+- v3.0.0-beta.6 is included as a legacy storage source.
+- Legacy Patterns without barLength / beatCount migrate to 4/4 (4 quarter-note units, 4 beats).
+
+PWA
+- Cache key: 1.0595-v3.1.0-beta.1
+- Selected pulse-pad icon set retained.
+
+VALIDATION
+- JavaScript syntax: PASS
+- Service worker syntax: PASS
+- Manifest JSON: PASS
+- ZIP integrity: PASS
+- Old UI IDs retained: 115/115
+- English-only visible source check: PASS
+- Pure timing model tests: PASS
+- 6/8 = 2880 ticks/bar and 480 ticks/beat: PASS
+- Controlled Shuffle legal timing pool uniqueness: PASS
+- Full browser E2E: NOT RUN (environment blocks file:// and localhost browser navigation).

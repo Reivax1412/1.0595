@@ -1,30 +1,33 @@
-# 1.0595 — GitHub Pages Update
+# 1.0595 — v3.1.0-beta.1 · RevU
 
-Version: v3.0.0-beta.6 · RevR
+## Major update
 
-## Mobile adaptive-grid fix
-This release changes how phone pad sizing works. The app no longer trusts the CSS grid row height on mobile. Instead, it reads the live Visual Viewport and subtracts the measured interface elements around the pad stage, then solves the largest 4×4 grid that fits both available width and height.
+### Event interaction
+- Tap: toggle one Event.
+- Swipe: paint or erase Events.
+- Long press (500 ms, stationary): open Event Edit.
+- Multi-pointer gestures are tracked independently.
+- Desktop right-click is an equivalent Event Edit shortcut.
 
-It also performs a second viewport-boundary check after layout. If browser rounding or a dynamic address bar still causes clipping, the grid is reduced once more.
+### Pattern time
+Each Pattern now stores:
+- `barLength` (quarter-note units)
+- `beatCount`
 
-Triggers include:
-- Visual Viewport resize
-- Visual Viewport scroll / browser chrome movement
-- window resize
-- orientation change
-- ResizeObserver
-- pageshow
+Presets: 2/4, 3/4, 4/4, 6/8, plus Custom.
+The scheduler uses each Pattern's own bar duration. Pattern queues switch only at a bar boundary.
 
-## Version / cache
-- App: v3.0.0-beta.6
-- Package: RevR
-- Service-worker cache: `1.0595-v3.0.0-beta.6`
-- beta.5 local settings migrate forward.
+### Transport
+- START: play or resume.
+- PAUSE: preserve musical position.
+- STOP: stop and return to bar start.
 
-The installed PWA now checks for a new service worker on load and reloads once when the new worker takes control.
+### Tools
+- Controlled Shuffle: randomizes active Event positions only; Event sound/articulation/retrig identity remains attached.
+- One-step Undo for Shuffle Track, Clear Track, Clear Pattern, and Bar Structure.
 
-## Upload
-Upload all files in this package to the GitHub Pages root.
-Pages source should remain:
-- `main`
-- `/(root)`
+### Cross-device contract
+Phone, tablet, laptop, and desktop use the same data model and feature semantics. Layout density can differ, but no feature is intentionally removed by device class.
+
+### Deployment
+Upload all files to the GitHub Pages publishing root (`main / (root)`). The service-worker cache key is `1.0595-v3.1.0-beta.1`.
